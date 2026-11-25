@@ -2215,7 +2215,13 @@ class TestParamSurfaceMatrix:
     def test_the_override_is_still_present_after_the_dump_round_trip(self, path, value, expected):
         resolved = params.resolve_params(_nested({}, path, value))
         dumped = params.dump_params(resolved)
-        assert _read_nested(params.resolve_params(dumped), path) == pytest.approx(expected, rel=1e-6)
+        actual = _read_nested(params.resolve_params(dumped), path)
+        # 参数表里既有数值也有字符串（如 series_id / metric 的枚举值）；
+        # 只有数值才走 approx（pytest.approx 对 str 用 rel 会 TypeError，CI 上暴露过）。
+        if isinstance(expected, (int, float)) and not isinstance(expected, bool):
+            assert actual == pytest.approx(expected, rel=1e-6)
+        else:
+            assert actual == expected
 
     @pytest.mark.parametrize("path,value,expected", PARAM_OVERRIDES)
     def test_an_override_changes_the_effective_evidence_value(self, path, value, expected):
