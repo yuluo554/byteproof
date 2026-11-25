@@ -1,0 +1,89 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "ts-cusum",
+      "title": "两侧 CUSUM 累计偏移超阈",
+      "source": "迁自 target-map ② 行 · data/README.md §4.1 与 detect.py::_cusum_hits",
+      "text": "作用在相邻差分上，用差分的全局稳健尺度标准化，两侧累加器各自减去 cusum_k，任一侧超过 cusum_h（默认 5.0）命中并重置。差分尺度为 0 或低于输入小数分辨率（直线、常量）时规则停手——那里没有可检测的东西。"
+    },
+    {
+      "rule_id": "ts-duplicate-timestamp",
+      "title": "同一序列内的重复时间戳超出容差",
+      "source": "迁自 target-map ② 行 · data/README.md §4.4（E_DUPLICATE_TIMESTAMP）",
+      "text": "每条序列允许至多 duplicate_timestamp_max 个重复时间戳（默认 1，用于容忍采样器重发）。超出部分逐行记账：同一时刻出现两个不同取值时，任何按时间索引的结论都无法唯一归因。"
+    },
+    {
+      "rule_id": "ts-gap",
+      "title": "采样断档：相邻样本间隔超过 gap_factor 倍主间隔",
+      "source": "迁自 target-map ② 行 · data/README.md §4.1（采样网格与断档）",
+      "text": "主间隔取最常见的正间隔（并列取最短）。某个间隔大于 gap_factor × 主间隔即计为断档，缺失点数按 interval ÷ 主间隔 − 1 计。断档的语义是「这里没有样本」，不是「这里什么都没发生」——它也决定了 episode 合并绝不跨越它。"
+    },
+    {
+      "rule_id": "ts-irregular-cadence",
+      "title": "采样偏离主间隔（非断档部分）",
+      "source": "迁自 target-map ② 行 · data/README.md §4.1（采样网格）",
+      "text": "不是主间隔的间隔数（扣除已按断档落账的那些）大于 0 时记录一条提示，比率以 ppm 计。这是比率，不判断好坏：抖动采样常常是可接受的。"
+    },
+    {
+      "rule_id": "ts-missing-run",
+      "title": "连续缺失段",
+      "source": "迁自 target-map ② 行 · data/README.md §4.1（缺失段规则）",
+      "text": "连续缺失样本数达到 missing_run（默认 6）即计为一段，段长即分数。缺失是数据而不是损坏，因此该规则只留痕（info）；它同时让「这一段为什么没有被别的检测器判级」有据可查。"
+    },
+    {
+      "rule_id": "ts-non-monotonic",
+      "title": "同一序列内的时间戳倒退超出容差",
+      "source": "迁自 target-map ② 行 · data/README.md §4.4（E_NON_MONOTONIC）",
+      "text": "每条序列允许至多 non_monotonic_max 步时间倒退（默认 0）。行序即采样序，是尾随窗口与 CUSUM 累加器的方向；倒退会让「前驱」失去意义，因此超出容差的每一步都落账。"
+    },
+    {
+      "rule_id": "ts-pct-jump",
+      "title": "相邻样本百分比跳变超阈",
+      "source": "迁自 target-map ② 行 · data/README.md §4.1（百分比跳变规则）",
+      "text": "|current ÷ previous − 1| > pct_jump（默认 0.35）命中，分数即跳变比例。前驱为零时相对变化没有定义，该规则保持沉默，由零值段规则承接——不静默替换一个值。"
+    },
+    {
+      "rule_id": "ts-rolling-iqr",
+      "title": "滚动四分位箱界越界",
+      "source": "迁自 target-map ② 行 · data/README.md §4.1 与 detect.py::rolling_iqr",
+      "text": "尾随窗口取 Q1/Q3，界为 [Q1 − iqr_mult×IQR, Q3 + iqr_mult×IQR]，越过即命中，分数以 IQR 为单位。IQR 为 0 时与 MAD 路径同一条兜底（中位数 ± iqr_mult × 平均绝对偏差）；换算后尺度仍为 0 则跳过该点。"
+    },
+    {
+      "rule_id": "ts-rolling-mad-z",
+      "title": "滚动 median/MAD 稳健 z 超阈",
+      "source": "迁自 target-map ② 行 · data/README.md §4.1 与 detect.py::rolling_mad_z",
+      "text": "尾随窗口（含被判点）内取中位数与 MAD 估计尺度，|x − median| ÷ scale > k（默认 3.5）命中。MAD 为 0 时回落到平均绝对偏差；尺度仍为 0（常量窗）则该点不可判、不标。窗口内有效样本少于 min_valid 时跳过。"
+    },
+    {
+      "rule_id": "ts-static-threshold",
+      "title": "绝对值超过静态阈值",
+      "source": "迁自 target-map ② 行 · data/README.md §4.1（静态阈值规则）",
+      "text": "仅当 params.rules.static_threshold 显式给值时启用；|value| > static_threshold 命中，分数为超出量。未给值时该规则整条不参与，账本不会出现它的条目。"
+    },
+    {
+      "rule_id": "ts-stl-resid-z",
+      "title": "STL 残差稳健 z 超阈",
+      "source": "迁自 target-map ② 行 · data/README.md §4.1 与 detect.py::stl_residual",
+      "text": "自实现的经典 STL（内循环 inner 次季节/趋势精化，外层 outer 轮 bisquare 稳健迭代），残差再用与滚动 MAD 完全相同的一套 z 打分。周期取 params.period_points；未给时由稳健 ACF 估计；撑不起周期时 period_points=1（季节项退化为均值，只扣趋势）。"
+    },
+    {
+      "rule_id": "ts-timestamp-unreadable",
+      "title": "时间戳不是合法 ISO-8601 值",
+      "source": "迁自 target-map ② 行 · data/README.md §4.4（E_TS_UNPARSEABLE）",
+      "text": "工件每一行的时间戳必须匹配 YYYY-MM-DD[T ]HH:MM[:SS[.f{1,9}]][Z|+HH:MM|+HHMM|+HH]，且民用日期必须真实存在（2024-02-30 不合法）；亚秒位截断到毫秒。读不出来的行不进任何时间轴判定。"
+    },
+    {
+      "rule_id": "ts-value-invalid",
+      "title": "样本值不是有限十进制数",
+      "source": "迁自 target-map ② 行 · data/README.md §4.4（E_VALUE_UNPARSEABLE）",
+      "text": "值必须是有限十进制数（允许指数写法），不接受 inf / nan / 布尔 / 千分位 / 十六进制；空串与 NA、NaN、null、none、-、-- 是「缺失」而不是错误。一个 NaN 会静默污染其后每个区间与分数，因此在此拒绝。"
+    },
+    {
+      "rule_id": "ts-zero-run",
+      "title": "连续零值段",
+      "source": "迁自 target-map ② 行 · data/README.md §4.1（零值段规则）",
+      "text": "连续为 0（含 -0.0）的样本数达到 missing_run 即计为一段，段长即分数。零值段常是采集失败的表现，但零本身是合法取值，因此只留痕（info）。"
+    }
+  ]
+}

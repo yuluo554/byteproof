@@ -1,13 +1,17 @@
 """器官目录：每个器官一个子包 ``<slug>/``，导入时向注册表登记自己的 ``Pack``。
 
 **显式清单，不用 pkgutil 扫描**：扫描式加载会把「某个器官忘了登记」变成静默空跑，
-而显式清单在导入失败时立刻红。Stage 1 尚无器官迁入，清单为空。
+而显式清单在导入失败时立刻红。
 
 新增器官的三步（SKELETON-SPEC §1/§2）：
 
 1. 在 ``byteproof/auditors/<slug>/__init__.py`` 里 ``register(Pack(...))``；
 2. 把模块名加进下面的 ``BUILTIN_MODULES``；
-3. 补 ``tests/<slug>_test.py`` 与 ``docs/<slug>.md``（输入 / 规则 / 输出示例）。
+3. 补 ``tests/test_<slug>.py`` 与 ``docs/<slug>.md``（输入 / 规则 / 输出示例）。
+
+器官的规则包（``rule_id`` + 依据文本 + 版本）随包分发在
+``byteproof/data/<slug>.basis.json``；宿主 CLI 在没给 ``--basis`` 时读它，
+器官本身从不读文件（契约见 ``docs/byteproof.md``）。
 """
 
 from __future__ import annotations
@@ -16,7 +20,14 @@ import importlib
 from typing import Tuple
 
 #: 已迁入的内置器官模块名（相对 ``byteproof.auditors``）。按 slug 字典序维护。
-BUILTIN_MODULES: Tuple[str, ...] = ()
+#:
+#: 模块名用下划线、slug 用连字符（``timeseries_anomaly`` <-> ``timeseries-anomaly``）：
+#: Python 包名不能带 ``-``，而账本与 README 里的 slug 必须能当命令行参数用。
+BUILTIN_MODULES: Tuple[str, ...] = (
+    "duplicate_docs",
+    "media_type_check",
+    "timeseries_anomaly",
+)
 
 
 def load_builtin() -> None:

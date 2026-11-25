@@ -1,0 +1,20 @@
+{
+  "version": "1",
+  "normalize_version": "1",
+  "params_version": "1",
+  "quant_decimals": 6,
+  "params": {
+    "shingle_size": 3,
+    "min_text_chars": 80,
+    "near_duplicate_threshold": 0.8,
+    "header_footer_max_chars": 40,
+    "header_footer_min_repeats": 2
+  },
+  "verdicts": {
+    "dd-duplicate-path": "error",
+    "dd-empty-text": "warn",
+    "dd-exact-duplicate": "warn",
+    "dd-near-duplicate": "warn",
+    "dd-too-short": "info"
+  }
+}

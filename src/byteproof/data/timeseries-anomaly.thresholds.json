@@ -1,0 +1,58 @@
+{
+  "version": "1",
+  "detector_version": "1",
+  "params_version": "1",
+  "quant_decimals": 6,
+  "params": {
+    "rolling_mad_z": {
+      "window": 24,
+      "k": 3.5,
+      "min_valid": 6
+    },
+    "rolling_iqr": {
+      "window": 24,
+      "iqr_mult": 3.0,
+      "min_valid": 6
+    },
+    "stl_resid_z": {
+      "inner": 2,
+      "outer": 1,
+      "window": 24,
+      "k": 3.5,
+      "min_valid": 6
+    },
+    "rules": {
+      "static_threshold": null,
+      "pct_jump": 0.35,
+      "missing_run": 6,
+      "cusum_k": 0.5,
+      "cusum_h": 5.0
+    },
+    "timezone_offset_min": 0,
+    "max_gap_ms": 1800000,
+    "period_points": null,
+    "period_reject_window": 121,
+    "period_reject_sigma": 2.5,
+    "duplicate_timestamp_max": 1,
+    "non_monotonic_max": 0,
+    "gap_factor": 3,
+    "escalate_score_q": null,
+    "default_series_id": "series"
+  },
+  "verdicts": {
+    "ts-cusum": "warn",
+    "ts-duplicate-timestamp": "error",
+    "ts-gap": "warn",
+    "ts-irregular-cadence": "info",
+    "ts-missing-run": "info",
+    "ts-non-monotonic": "error",
+    "ts-pct-jump": "warn",
+    "ts-rolling-iqr": "warn",
+    "ts-rolling-mad-z": "warn",
+    "ts-static-threshold": "warn",
+    "ts-stl-resid-z": "warn",
+    "ts-timestamp-unreadable": "error",
+    "ts-value-invalid": "error",
+    "ts-zero-run": "info"
+  }
+}

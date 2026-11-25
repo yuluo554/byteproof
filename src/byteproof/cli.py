@@ -6,6 +6,13 @@
     byteproof check <slug> --input <file|-> [--basis <file>] [--json]
 
 退出码见 :mod:`byteproof.core.ledger`：0 无阻断 / 1 有阻断 / 2 输入不合法 / 3 契约违约。
+
+**规则包从哪来**：``--basis`` 给了就用它；没给就找随包分发的
+``byteproof/data/<slug>.basis.json``（器官自己的规则包）；两者都没有才是空规则包
+（此时器官调 ``basis.ref`` 会抛 ``RuleMissing`` -> 退出码 3）。
+这条解析放在 CLI 而不是器官里：器官不读文件是契约，而 SKELETON-SPEC §2 把
+``<product> check <slug> --input <file>`` 定成唯一的调用形态 —— 它没有 ``--basis``，
+所以"不带参数也该能审"必须由宿主保证。
 """
 
 from __future__ import annotations
@@ -22,6 +29,15 @@ from byteproof.core.ledger import EXIT_CONTRACT, EXIT_INPUT, EXIT_OK, ContractEr
 from byteproof.core.registry import PackMissing, all_packs, get
 
 PRODUCT = "byteproof"
+
+#: 随包规则包的目录（相对本模块）。
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+
+
+def shipped_basis_path(slug: str):
+    """器官的随包规则包路径；没有就返回 ``None``（不是错误，只是"该器官没带规则"）。"""
+    path = os.path.join(DATA_DIR, "%s.basis.json" % slug)
+    return path if os.path.isfile(path) else None
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -85,7 +101,7 @@ def _cmd_check(args) -> int:
     missing = [name for name in pack.input_fields if name not in subject]
     if missing:
         raise ValueError("输入缺少必填字段：%s" % ", ".join(missing))
-    basis = Basis.from_json(args.basis) if args.basis else Basis.empty()
+    basis = _load_basis(args.basis, pack.slug)
 
     report = Report(
         product=PRODUCT,
@@ -100,6 +116,16 @@ def _cmd_check(args) -> int:
         for line in report.as_lines():
             print(line)
     return report.exit_code()
+
+
+def _load_basis(path, slug: str) -> Basis:
+    """``--basis`` 优先，其次器官随包规则包，最后才是空规则包。"""
+    if path:
+        return Basis.from_json(path)
+    shipped = shipped_basis_path(slug)
+    if shipped is not None:
+        return Basis.from_json(shipped)
+    return Basis.empty()
 
 
 def _load_subject(source: str) -> dict:

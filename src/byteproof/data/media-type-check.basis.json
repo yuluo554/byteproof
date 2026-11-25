@@ -1,0 +1,125 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "MC-A02",
+      "title": "Content-Type 的 name 与 Content-Disposition 的 filename 不一致",
+      "source": "none-by-design",
+      "text": "Content-Type 的 name 与 Content-Disposition 的 filename 不一致（严重度 note；等级 info）"
+    },
+    {
+      "rule_id": "MC-A03",
+      "title": "声明了 disposition 却没有任何 filename / name 参数",
+      "source": "none-by-design",
+      "text": "声明了 disposition 却没有任何 filename / name 参数（严重度 note；等级 info）"
+    },
+    {
+      "rule_id": "MC-A07",
+      "title": "disposition 是 inline 却没有 Content-ID",
+      "source": "none-by-design",
+      "text": "disposition 是 inline 却没有 Content-ID（严重度 note；等级 info）"
+    },
+    {
+      "rule_id": "MC-B01",
+      "title": "multipart/* 缺少 boundary 参数，树无法建立",
+      "source": "RFC 2046 §5.1.1",
+      "text": "multipart/* 缺少 boundary 参数，树无法建立（严重度 blocker；等级 error）"
+    },
+    {
+      "rule_id": "MC-B02",
+      "title": "boundary 长度 > max_boundary_chars",
+      "source": "RFC 2046 §5.1.1",
+      "text": "boundary 长度 > max_boundary_chars（严重度 minor；等级 warn）"
+    },
+    {
+      "rule_id": "MC-B09",
+      "title": "嵌套深度 > max_depth（RFC 未规定深度上限，策略项）",
+      "source": "none-by-design",
+      "text": "嵌套深度 > max_depth（RFC 未规定深度上限，策略项）（严重度 note；等级 info）"
+    },
+    {
+      "rule_id": "MC-H01",
+      "title": "encoded-word 长度 > max_encoded_word_chars",
+      "source": "RFC 2047 §2",
+      "text": "encoded-word 长度 > max_encoded_word_chars（严重度 minor；等级 warn）"
+    },
+    {
+      "rule_id": "MC-H02",
+      "title": "含 encoded-word 的头行 > max_encoded_header_line",
+      "source": "RFC 2047 §2",
+      "text": "含 encoded-word 的头行 > max_encoded_header_line（严重度 minor；等级 warn）"
+    },
+    {
+      "rule_id": "MC-H03",
+      "title": "encoded-word 内部出现空白",
+      "source": "RFC 2047 §2",
+      "text": "encoded-word 内部出现空白（严重度 minor；等级 warn）"
+    },
+    {
+      "rule_id": "MC-H07",
+      "title": "头行 > max_header_line_octets",
+      "source": "RFC 5322 §2.1.1",
+      "text": "头行 > max_header_line_octets（严重度 major；等级 error）"
+    },
+    {
+      "rule_id": "MC-H08",
+      "title": "头值含未编码的非 ASCII 字节（RFC 2047 是编码机制，不是禁令）",
+      "source": "RFC 2047 §1",
+      "text": "头值含未编码的非 ASCII 字节（RFC 2047 是编码机制，不是禁令）（严重度 note；等级 info）"
+    },
+    {
+      "rule_id": "MC-T02",
+      "title": "base64 填充非法",
+      "source": "none-by-design",
+      "text": "base64 填充非法（严重度 note；等级 info）"
+    },
+    {
+      "rule_id": "MC-T03",
+      "title": "base64 字符数不是 4 的倍数",
+      "source": "none-by-design",
+      "text": "base64 字符数不是 4 的倍数（严重度 note；等级 info）"
+    },
+    {
+      "rule_id": "MC-T04",
+      "title": "base64 出现字母表外字符（RFC 要求忽略它，故只留痕）",
+      "source": "RFC 2045 §6.8",
+      "text": "base64 出现字母表外字符（RFC 要求忽略它，故只留痕）（严重度 note；等级 info）"
+    },
+    {
+      "rule_id": "MC-T05",
+      "title": "QP 编码行 > max_qp_line_octets",
+      "source": "RFC 2045 §6.7",
+      "text": "QP 编码行 > max_qp_line_octets（严重度 minor；等级 warn）"
+    },
+    {
+      "rule_id": "MC-T06",
+      "title": "QP 行末 '=' 之后已无下一行（悬空转义）",
+      "source": "RFC 2045 §6.7",
+      "text": "QP 行末 '=' 之后已无下一行（悬空转义）（严重度 minor；等级 warn）"
+    },
+    {
+      "rule_id": "MC-T07",
+      "title": "QP 非法转义（'=' 后不是两位十六进制）",
+      "source": "RFC 2045 §6.7",
+      "text": "QP 非法转义（'=' 后不是两位十六进制）（严重度 major；等级 error）"
+    },
+    {
+      "rule_id": "MC-T08",
+      "title": "未知 CTE 取值（无法做交叉校验）",
+      "source": "none-by-design",
+      "text": "未知 CTE 取值（无法做交叉校验）（严重度 note；等级 info）"
+    },
+    {
+      "rule_id": "MC-T09",
+      "title": "7bit/8bit 正文行 > max_body_line_octets",
+      "source": "none-by-design",
+      "text": "7bit/8bit 正文行 > max_body_line_octets（严重度 note；等级 info）"
+    },
+    {
+      "rule_id": "MC-T10",
+      "title": "未声明 CTE（缺省 7bit）但正文含 8bit 字节",
+      "source": "none-by-design",
+      "text": "未声明 CTE（缺省 7bit）但正文含 8bit 字节（严重度 note；等级 info）"
+    }
+  ]
+}

@@ -20,16 +20,32 @@
 
 ```console
 $ byteproof list
-（未注册任何器官）
+duplicate-docs               1          文档工件缺陷账本：正文归一化后按精确 Jaccard 判同源重复
+media-type-check             1          MIME 工件缺陷账本：头宽/编码字/传输编码/容器/归属五域的条款一致性
+timeseries-anomaly           1          时序工件缺陷账本：时间轴完整性 + 采样形状 + 四个确定性检测器命中段
 ```
 
 契约（唯一入口 / 缺陷账本 / 退出码）见 [`docs/byteproof.md`](docs/byteproof.md)。
 与其余三个产品共用 `SKELETON-SPEC`：账本 = **缺陷账本**（`error` / `warn` / `info`），
 `basis_ref` = 规则登记（`rule_id` + `rule_version`），退出码 `0/1/2/3`。
 
-| 器官（auditor） | 来源仓 | 状态 |
+| 器官（auditor） | 来源 | 状态 |
 |---|---|---|
-| — | — | Stage 1 尚无器官迁入 |
+| `duplicate-docs` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/duplicate-docs.md)） |
+| `media-type-check` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/media-type-check.md)） |
+| `timeseries-anomaly` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/timeseries-anomaly.md)） |
+| — | 其余 23 个 auditor | 待迁入 |
+
+跑一次审计（工件 = 时序长表解析后的 JSON；规则包随包分发，不需要额外参数）：
+
+```bash
+PYTHONPATH=src py -3.12 -m byteproof.cli check timeseries-anomaly \
+  --input samples/timeseries-anomaly.minimal.json
+```
+
+该命令在本仓当前状态下 **7 条记录、全部 `warn`、阻断 0 条、退出码 0**
+（逐条账本见 [`docs/timeseries-anomaly.md`](docs/timeseries-anomaly.md) §3）。
+`--json` 给机器可读账本（同一输入两次运行字节一致），`--input -` 读 stdin。
 
 ---
 

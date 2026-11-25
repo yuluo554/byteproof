@@ -1,0 +1,14 @@
+{
+  "parts": [
+    {
+      "path": "0",
+      "content_type": "text/plain",
+      "boundary": null,
+      "headers": [
+        {"name": "Subject", "value": "plain ascii"},
+        {"name": "Content-Transfer-Encoding", "value": "7bit"}
+      ],
+      "body": "hello"
+    }
+  ]
+}

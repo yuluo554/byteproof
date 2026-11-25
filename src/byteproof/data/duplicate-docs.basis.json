@@ -1,0 +1,35 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "dd-duplicate-path",
+      "title": "工件内多份文档共用同一路径",
+      "source": "迁自 target-map ② 行 · data/README.md §4.2（文档标识与位置）",
+      "text": "账本位置必须是唯一可指回的位置。同一路径出现两次时，任何「这份文档重复了」的结论都无法区分说的是哪一份，因此先按 error 记账；路径重复时账本位置追加 #<序号> 以保证 id 仍唯一。"
+    },
+    {
+      "rule_id": "dd-empty-text",
+      "title": "文档没有正文",
+      "source": "迁自 target-map ② 行 · data/README.md §4.3（正文抽取与归一化）",
+      "text": "抽取后正文为空（或只有空白）的文档无法参与任何内容比对。缺失是数据而不是损坏，但它也不构成可复核的结论，因此记 warn 并在证据里写清原始长度与归一化长度。"
+    },
+    {
+      "rule_id": "dd-exact-duplicate",
+      "title": "与同一工件的另一份文档归一化后完全相同",
+      "source": "迁自 target-map ② 行 · data/README.md §4.5（exact 档）",
+      "text": "归一化正文的 sha256 相同即 exact 档：两份工件是同一份内容的不同容器（PDF/DOCX/MD 互转、只差页码/页眉/全角）。记 warn，证据给出相手、定点 Jaccard、簇 id 与簇大小。"
+    },
+    {
+      "rule_id": "dd-near-duplicate",
+      "title": "与同一工件的另一份文档精确 Jaccard 达到近重复阈值",
+      "source": "迁自 target-map ② 行 · data/README.md §4.5（near 档）与 §4.1（字符 3-gram shingle）",
+      "text": "字符 3-gram shingle 哈希集合上的**精确** Jaccard（不是 MinHash 估计）≥ near_duplicate_threshold（默认 0.80）即 near 档。分数必须精确：128 置换估计的标准误差约 0.035，而语料里最弱的真阳性对只比阈值高 0.01–0.03，用估计值判定等于把采样噪声放在决策边界上。证据指向同一簇里与它最像的那一份，而不是簇代表 —— 簇是连通分量，代表与本成员之间可能根本没有边。"
+    },
+    {
+      "rule_id": "dd-too-short",
+      "title": "归一化正文短于可比对下限",
+      "source": "迁自 target-map ② 行 · config.Settings.min_text_chars（data/README.md §4.6）",
+      "text": "归一化后长度不足 min_text_chars（默认 80）的文档不参与比对：字符 3-gram 在过短文本上会给出虚假的高相似度（两份都只有几个字也可能 Jaccard 很高）。只留痕（info），不得被指为重复，也不得当参照。"
+    }
+  ]
+}

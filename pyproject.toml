@@ -42,7 +42,10 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 errcode_atlas = ["data/*.json", "py.typed"]
-byteproof = ["py.typed"]
+# 器官的静态数据（规则包 + 阈值表）必须随包分发：器官不读文件，
+# 但宿主 CLI 要在没给 --basis 时读到规则包；`pip wheel` 后包里 data/ 为空
+# 就等于"装上了但审不了"。
+byteproof = ["py.typed", "data/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
