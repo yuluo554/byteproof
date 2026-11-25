@@ -27,7 +27,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 README = REPO_ROOT / "README.md"
 
 #: 两种入口形态都必须被收到（否则只覆盖一半用户面）
-INVOCATIONS = ("py -3.12 -m errcode_atlas", "errcode-atlas", "./.venv/Scripts/python.exe -m errcode_atlas")
+INVOCATIONS = ("py -3.12 -m errcode_atlas", "python -m errcode_atlas", "./.venv/Scripts/python.exe -m errcode_atlas")
 SUBCOMMANDS = ("explain", "exitcode", "build", "selftest", "bench")
 
 #: README 里出现的非 CLI 命令（工具脚本）—— 它们不走 argparse 的 CLI parser，
@@ -65,10 +65,12 @@ def test_readme_commands_are_actually_extracted() -> None:
 
 
 def test_readme_covers_both_entry_forms() -> None:
-    """抽取口径必须同时覆盖"模块形态"与"装好后的裸命令形态"。"""
+    """模块形态（旧包）必须被抽到；新入口 ``byteproof`` 由产品契约测试覆盖，不进旧 parser。"""
     forms = {invocation for invocation, _ in _commands()}
     assert any(" -m errcode_atlas" in f for f in forms), f"只抽到 {forms}"
-    assert "errcode-atlas" in forms, f"README 没有裸命令形态（用户真会敲的那条）: {forms}"
+    text = README.read_text(encoding="utf-8")
+    assert "byteproof list" in text and "byteproof check" in text, \
+        "README 未记录新入口 byteproof 的 list/check"
 
 
 def test_readme_covers_every_subcommand() -> None:

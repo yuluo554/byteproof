@@ -1,4 +1,4 @@
-# errcode-atlas
+# byteproof（原 errcode-atlas）
 
 > 给 `EACCES`、`ECONNREFUSED`、`exit 137`、`errno 28` 这类问题一张**带出处、能机器校验、并且明说"这里不可唯一归因"**的判定表。
 >
@@ -10,21 +10,22 @@
 
 ---
 
-## byteproof（Stage 1 内核，与 errcode-atlas 并存）
+## byteproof（Stage 1 内核；旧入口 errcode-atlas 已于 2026-11-25 退役）
 
 本仓正在收敛成 **byteproof**：字节层缺陷取证引擎 —— 给定工件，判「哪里不对」，
 每条结论都必须挂**可复核的规则登记**（`rule_id` + `rule_version`）；没有依据不许下 `error`。
 
-内核骨架已就位（`src/byteproof/`）。旧入口 `errcode-atlas` 与旧包 `errcode_atlas`
-在过渡期内原样保留，器官（auditor）逐个迁入后再删旧包。
+内核骨架已就位（`src/byteproof/`）。旧入口 `errcode-atlas` 已于 2026-11-25 退役；
+旧包 `errcode_atlas` 仍可用模块方式运行，器官（auditor）逐个迁入后再删旧包。
 
 > **身份（2026-11-25 起，轨AD D）**
 > - 仓库名 / 产品名 / 主 CLI：**`byteproof`**
 > - **发行包名：`byteproof`**（原 `errcode-atlas`；PyPI 旧名实测 404、未发布，改名无迁移包袱）
-> - **旧 CLI `errcode-atlas` 是过渡入口，退役截止 `2026-11-30`**；两个入口并存属过渡态，
->   由 `tests/test_entry_surface.py` 门守着（截止后只许 1 条）。**入口删了、旧包 `src/errcode_atlas` 仍可用模块方式跑**——
+> - **旧 CLI `errcode-atlas` 已于 2026-11-25 退役**（`[project.scripts]` 只剩 `byteproof`）；
+>   旧包 `src/errcode_atlas` 仍可用模块方式 `python -m errcode_atlas …` 运行。
 >   这是「旧包代码可留、可执行入口不许留」的口径。
-> - 本 README 下文的 `errcode-atlas …` 示例在退役前仍可用
+> - 本 README 下文的 `errcode-atlas …` 示例是**旧包历史示例**，已改为 `python -m errcode_atlas …` 模块方式；
+>   新入口 `byteproof` 只提供 `list` / `check`，不迁旧子命令
 
 ```console
 $ byteproof list
@@ -47,6 +48,10 @@ timeseries-anomaly           1          时序工件缺陷账本：时间轴完�
 跑一次审计（工件 = 时序长表解析后的 JSON；规则包随包分发，不需要额外参数）：
 
 ```bash
+# 装好后用新入口：
+byteproof check timeseries-anomaly --input samples/timeseries-anomaly.minimal.json
+
+# 源码树未装包时用模块方式：
 PYTHONPATH=src py -3.12 -m byteproof.cli check timeseries-anomaly \
   --input samples/timeseries-anomaly.minimal.json
 ```
@@ -115,14 +120,14 @@ py -3.12 -m errcode_atlas explain 98 --platform linux
 py -3.12 -m errcode_atlas exitcode 137 --platform linux
 ```
 
-装上之后 `errcode-atlas` 就是入口：
+旧 console script 已退役；用 `python -m errcode_atlas`（模块）或新入口 `byteproof`（`list` / `check`）：
 
 ```bash
-errcode-atlas explain EADDRINUSE --platform linux
-errcode-atlas exitcode 1 --platform linux --json
-errcode-atlas build --check
-errcode-atlas selftest
-errcode-atlas bench
+python -m errcode_atlas explain EADDRINUSE --platform linux
+python -m errcode_atlas exitcode 1 --platform linux --json
+python -m errcode_atlas build --check
+python -m errcode_atlas selftest
+python -m errcode_atlas bench
 ```
 
 ### 平台取值
