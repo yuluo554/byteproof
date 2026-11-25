@@ -69,6 +69,10 @@ _headers/
 # 脱敏门的 SKIP_DIRS 里早有这一项 —— 那条对齐纪律是单向的（gitignore -> 门），
 # 所以本目录先前只在门里、不在 gitignore 里，**这个缺口正是 M6 实测踩到的**。
 dist-release/
+# 二次迭代的工作目录（诊断报告/迭代路线/提示词/执行记录）。会话本地产物，
+# 含本机绝对路径，不入库；脱敏门的 SKIP_DIRS 有对应项
+# （双向登记纪律：tests/test_gate_alignment.py 两个方向都查）。
+update/
 # 打包产物的通用形态（`python -m build` 等）
 *.whl
 

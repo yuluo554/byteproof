@@ -6,6 +6,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+# 最小权限面 + 同分支新推自动取消旧 run（2026-11-03 二次迭代批 3）。
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 # job 级 env 一次写全（不是按 step 零散加）：step 漏一行就是同一个红。
 # 三条配置面坑（plan/02 §4.3、plan/05 §4 U2/U4）：
 #   PYTHONPATH  —— src 布局，不装包时只有它能撑住 import
@@ -32,8 +39,8 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       # 生成器冻结态那一步要 PyYAML（`tools/build_catalog.py` 是 dev 侧工具，`plan/02` D2）。
@@ -62,10 +69,10 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python: ["3.10", "3.12"]
+        python: ["3.12"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
       - name: 安装 dev extra
@@ -100,7 +107,7 @@ jobs:
     # （docker: conflicting options: cannot attach both user-defined and non-user-defined
     # network-modes）。正解 = 普通 runner + 嵌套 `docker run --network none`。
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: 构建离线镜像（构建期可联网，运行期完全无网络）
         run: docker build -f .github/offline.Dockerfile -t errcode-atlas-offline .
       - name: 无网络跑门与 CLI

@@ -146,3 +146,9 @@
 > 并补两条判据：`test_publish_artifact_dirs_are_ignored_and_skipped`（双向对齐，已做阴性验证）
 > 与 `test_release_attachments_are_not_tracked_in_git`（问的是 **git 索引**，不是磁盘）。
 `
+
+### 2.5 二次迭代诊断更正（2026-11-03）
+
+- **判据数更正（D5）**：§1.3 与 §2.4 写的布局门「8 项 PASS」是**误记**——`tools/check_sprint_layout.py` 实为 **9 个 `LAYOUT.*` 判据**。2026-11-03 执行方一手复验：工作树与 tag v0.1.0 的 tag 树（`git worktree` 检出后跑 tag 自带脚本）各重跑一次，均 **9 项 PASS**。按不回填纪律不改 §一/§2.4 原文，仅在此更正。
+- **不发版决定（Q2 = 甲）**：本批二次迭代（PEP 561 `py.typed` 标记、编目源钉定清单 `data/catalog-sources.json` 入仓、CI actions/权限面、本节更正）不触及 v0.1.0 附件的内容面——附件是 `git archive` 派生件，其文件集合与字节不受上述改动影响。只修 main：不发 v0.1.1、不动 tag/Release/附件、不做 PyPI 上传。
+- **拍板记录（2026-11-03）**：Q1 = 丙，`requires-python` 由 `>=3.10` 升 `>=3.12`（3.10 已于 2026-10-01 EOL），CI test 矩阵只留 `3.12` 单腿；Q3 = topics 增设 `errno` / `error-codes` / `cli` / `developer-tools`（PUT 为整体替换语义，一次写全）；Q4 = 不补 3.11/3.13 矩阵腿（`plan/05` U2 行已按事实更新并注明日期）。

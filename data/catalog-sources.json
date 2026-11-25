@@ -1,0 +1,81 @@
+{
+  "generator_version": "m2",
+  "refs": {
+    "apple-oss-distributions/xnu": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea",
+    "torvalds/linux": "cbbddb6b08cc9900a87cccaa9b22bbe06aa4f50a"
+  },
+  "sources": [
+    {
+      "bytes": "5826",
+      "dest": "linux-errno.h",
+      "fetched_at": "2026-11-01T11:12:21Z",
+      "id": "linux-errno",
+      "path": "include/uapi/asm-generic/errno.h",
+      "ref": "cbbddb6b08cc9900a87cccaa9b22bbe06aa4f50a",
+      "repo": "torvalds/linux",
+      "sha256": "66a5ad60566fdd62e41701bcfc42bfeca5e5696ad1d47d78981575e0c51622be"
+    },
+    {
+      "bytes": "1612",
+      "dest": "linux-errno-base.h",
+      "fetched_at": "2026-11-01T11:12:21Z",
+      "id": "linux-errno-base",
+      "path": "include/uapi/asm-generic/errno-base.h",
+      "ref": "cbbddb6b08cc9900a87cccaa9b22bbe06aa4f50a",
+      "repo": "torvalds/linux",
+      "sha256": "2c148e92b8318deeb767fabd60822113e575ee664ff09a1873aed8f7a495793c"
+    },
+    {
+      "bytes": "1847",
+      "dest": "linux-signal.h",
+      "fetched_at": "2026-11-01T11:12:21Z",
+      "id": "linux-signal",
+      "path": "include/uapi/asm-generic/signal.h",
+      "ref": "cbbddb6b08cc9900a87cccaa9b22bbe06aa4f50a",
+      "repo": "torvalds/linux",
+      "sha256": "936247c76acb82e5c82c58c2cddfe45fcb71230465f6c137966a8a285a3dc04c"
+    },
+    {
+      "bytes": "14075",
+      "dest": "macos-errno.h",
+      "fetched_at": "2026-11-01T11:12:21Z",
+      "id": "macos-errno",
+      "path": "bsd/sys/errno.h",
+      "ref": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea",
+      "repo": "apple-oss-distributions/xnu",
+      "sha256": "b16e5eb195f153793b14c3826e6b04db945e9ed6a37c5a9046196555bded6906"
+    },
+    {
+      "bytes": "24570",
+      "dest": "macos-signal.h",
+      "fetched_at": "2026-11-01T11:12:21Z",
+      "id": "macos-signal",
+      "path": "bsd/sys/signal.h",
+      "ref": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea",
+      "repo": "apple-oss-distributions/xnu",
+      "sha256": "2efb1aca5abdfa6f9e8bad155f2db319fdca1a029400cad1558e4df981d6eeea"
+    },
+    {
+      "bytes": "415009",
+      "dest": "node-errors.html",
+      "fetched_at": "2026-11-01T11:12:21Z",
+      "id": "node-errors-page",
+      "path": "",
+      "ref": "",
+      "repo": "",
+      "sha256": "361c0fcb0139c5961d7fc1dd5f6d6e7c578dcb5252cd0bb54d6c1c33916cc0ca",
+      "url": "https://nodejs.org/api/errors.html"
+    },
+    {
+      "bytes": "12127",
+      "dest": "sysexits.html",
+      "fetched_at": "2026-11-01T11:12:21Z",
+      "id": "sysexits-page",
+      "path": "",
+      "ref": "",
+      "repo": "",
+      "sha256": "c6e04f4306a0ec7879153f0c666305e83f11ffc9a63d66a8562ecc121fe915a9",
+      "url": "https://man.openbsd.org/sysexits"
+    }
+  ]
+}

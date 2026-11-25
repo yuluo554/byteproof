@@ -82,13 +82,15 @@
 
 ### 2.1 底座（编目随包分发，运行时零联网）
 
-| 底座 | 获取方式 | 状态 | 规模 |
-|---|---|---|---|
-| Linux errno / 信号 | `gh api repos/torvalds/linux/contents/... --jq .content \| base64 -d` | ✅ 可直连 | 两文件 |
-| macOS errno / 信号 | `gh api repos/apple-oss-distributions/xnu/contents/...` | ✅ 可直连 | 两文件 |
-| Windows errno | 本机运行时实读（Node + Python） | ✅ 可直连 | 134 + 88 项 |
-| Node 错误码 | `nodejs.org/api/errors.html` | ✅ 可直连 | 415 KB |
-| `sysexits` | `man.openbsd.org/sysexits` | ✅ 可直连 | 单页 |
+| 底座 | 获取方式 | 状态 | 规模 | 钉定 |
+|---|---|---|---|---|
+| Linux errno / 信号 | `gh api repos/torvalds/linux/contents/... --jq .content \| base64 -d` | ✅ 可直连 | 两文件 | `torvalds/linux@cbbddb6` |
+| macOS errno / 信号 | `gh api repos/apple-oss-distributions/xnu/contents/...` | ✅ 可直连 | 两文件 | `apple-oss-distributions/xnu@f6217f8` |
+| Windows errno | 本机运行时实读（Node + Python） | ✅ 可直连 | 134 + 88 项 | —（本机实读，无上游可钉） |
+| Node 错误码 | `nodejs.org/api/errors.html` | ✅ 可直连 | 415 KB | 页 sha256 `361c0fcb` |
+| `sysexits` | `man.openbsd.org/sysexits` | ✅ 可直连 | 单页 | 页 sha256 `c6e04f43` |
+
+完整清单（ref/sha256/fetched_at）= `data/catalog-sources.json`（机读；上游若漂移，以钉定值为准）。
 
 > **⚠️ 环境坑（已实测，写入 M1 前置条件）**：
 > `raw.githubusercontent.com` 在本机 **HTTP 000**（不可达），`github.com` 网页直连亦被重置。

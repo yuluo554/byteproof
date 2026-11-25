@@ -47,6 +47,9 @@ SKIP_DIRS = frozenset(
         ".errcode-atlas",
         "tmp",
         "_scratch",
+        # 二次迭代工作目录（诊断/路线/提示词/执行记录）：会话本地产物，含本机绝对路径，
+        # 不入库。与 .gitignore 的 `update/` 双向登记（test_gate_alignment.py 双向断言）。
+        "update",
         # ── 虚拟环境 / 构建产物 ──
         ".venv",
         ".venv-readme",

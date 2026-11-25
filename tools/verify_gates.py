@@ -12,8 +12,9 @@
 5. **三态分开计**：``CAUGHT`` / ``MISSED`` / ``ERROR``（靶子漂了）；只有 CAUGHT 算通过，
    阴性对照（``expect_green``）单独计。
 
-还原策略 = **整仓文本快照**。变异只碰文本文件，还原时把快照写回、并删掉快照里没有的多余文件，
-所以"删除类"变异也能精确复原。
+还原策略 = **整仓字节级快照**。变异只碰文本文件，还原时把快照按原字节写回、并删掉快照里
+没有的多余文件，所以"删除类"变异也能精确复原（字节级 = 行尾也复原；文本态读写的
+universal-newlines 会把行尾洗掉，2026-11-03 实测修正）。
 
 退出码：``0`` 全部符合预期 / ``1`` 有组不符 / ``2`` 用法错误。
 """
@@ -53,14 +54,18 @@ class Mutation:
 
 
 # ── 快照 ────────────────────────────────────────────────────────────────────
-def snapshot() -> dict[str, str]:
-    state: dict[str, str] = {}
+def snapshot() -> dict[str, bytes]:
+    state: dict[str, bytes] = {}
 
     def add(path: Path) -> None:
         rel = path.relative_to(ROOT).as_posix()
         try:
-            state[rel] = path.read_text(encoding="utf-8")
-        except (UnicodeDecodeError, OSError):
+            # 字节级快照：read_text 的 universal-newlines 会把 CRLF 吃成 LF、
+            # write_text 在 Windows 上又把 LF 写成 CRLF —— 还原 ≠ 复原，
+            # EOL 严格的消费者（如 data/catalog-sources.json 的逐字节钉定判据）会被
+            # 每次 verify_gates 运行洗一遍行尾。2026-11-03 二次迭代实测修正。
+            state[rel] = path.read_bytes()
+        except OSError:
             pass
 
     for name in SNAPSHOT_FILES:
@@ -79,11 +84,11 @@ def snapshot() -> dict[str, str]:
     return state
 
 
-def restore(state: dict[str, str]) -> None:
-    for rel, text in state.items():
+def restore(state: dict[str, bytes]) -> None:
+    for rel, blob in state.items():
         path = ROOT / rel
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding="utf-8")
+        path.write_bytes(blob)
     # 删掉快照里没有、但本轮变异可能新建的文件
     current = snapshot()
     for rel in set(current) - set(state):

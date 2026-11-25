@@ -7,7 +7,7 @@ name = "errcode-atlas"
 version = "0.1.0"
 description = "三平台错误码与退出码判定表：给定「数字 + 平台 + 语境」，判它能否被唯一归因"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = { text = "MIT" }
 authors = [{ name = "yuluo554" }]
 keywords = ["errno", "exit-code", "signals", "posix", "error-code", "cli"]
@@ -39,7 +39,7 @@ package-dir = { "" = "src" }
 where = ["src"]
 
 [tool.setuptools.package-data]
-errcode_atlas = ["data/*.json"]
+errcode_atlas = ["data/*.json", "py.typed"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
