@@ -28,9 +28,11 @@ dev = ["pytest>=7.4", "PyYAML>=6.0"]
 
 [project.scripts]
 errcode-atlas = "errcode_atlas.cli:main"
+# Stage 1 产品入口；errcode-atlas 是过渡期旧入口，器官迁移完成后删除（届时全仓只剩 byteproof）
+byteproof = "byteproof.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/yuluo554/errcode-atlas"
+Homepage = "https://github.com/yuluo554/byteproof"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
@@ -40,6 +42,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 errcode_atlas = ["data/*.json", "py.typed"]
+byteproof = ["py.typed"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

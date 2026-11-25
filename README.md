@@ -10,6 +10,29 @@
 
 ---
 
+## byteproof（Stage 1 内核，与 errcode-atlas 并存）
+
+本仓正在收敛成 **byteproof**：字节层缺陷取证引擎 —— 给定工件，判「哪里不对」，
+每条结论都必须挂**可复核的规则登记**（`rule_id` + `rule_version`）；没有依据不许下 `error`。
+
+内核骨架已就位（`src/byteproof/`）。旧入口 `errcode-atlas` 与旧包 `errcode_atlas`
+在过渡期内原样保留，器官（auditor）逐个迁入后再删旧包。
+
+```console
+$ byteproof list
+（未注册任何器官）
+```
+
+契约（唯一入口 / 缺陷账本 / 退出码）见 [`docs/byteproof.md`](docs/byteproof.md)。
+与其余三个产品共用 `SKELETON-SPEC`：账本 = **缺陷账本**（`error` / `warn` / `info`），
+`basis_ref` = 规则登记（`rule_id` + `rule_version`），退出码 `0/1/2/3`。
+
+| 器官（auditor） | 来源仓 | 状态 |
+|---|---|---|
+| — | — | Stage 1 尚无器官迁入 |
+
+---
+
 ## 为什么需要它
 
 同一台机器、同一时刻，两个运行时对**同一个错误名**给出两个数值：
