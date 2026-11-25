@@ -18,6 +18,14 @@
 内核骨架已就位（`src/byteproof/`）。旧入口 `errcode-atlas` 与旧包 `errcode_atlas`
 在过渡期内原样保留，器官（auditor）逐个迁入后再删旧包。
 
+> **身份（2026-11-25 起，轨AD D）**
+> - 仓库名 / 产品名 / 主 CLI：**`byteproof`**
+> - **发行包名：`byteproof`**（原 `errcode-atlas`；PyPI 旧名实测 404、未发布，改名无迁移包袱）
+> - **旧 CLI `errcode-atlas` 是过渡入口，退役截止 `2026-11-30`**；两个入口并存属过渡态，
+>   由 `tests/test_entry_surface.py` 门守着（截止后只许 1 条）。**入口删了、旧包 `src/errcode_atlas` 仍可用模块方式跑**——
+>   这是「旧包代码可留、可执行入口不许留」的口径。
+> - 本 README 下文的 `errcode-atlas …` 示例在退役前仍可用
+
 ```console
 $ byteproof list
 duplicate-docs               1          文档工件缺陷账本：正文归一化后按精确 Jaccard 判同源重复

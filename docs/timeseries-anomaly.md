@@ -177,14 +177,15 @@ $ byteproof check timeseries-anomaly --input <工件> --basis <规则包>    # �
 
 | # | 判据 | 实测 | 结论 |
 |---|---|---|---|
-| 1 | 新仓该器官实跑用例数 ≥ X | **旧仓判定层实跑 X = 551 / 新仓实跑 N = 910 / 结论：过（差 +359）** | ✅ |
+| 1 | 新仓该器官实跑用例数 ≥ X | **旧仓判定层实跑 X = 551 / 新仓实跑 N = 1469 / 结论：过（差 +918）** | ✅ |
 | 2 | README 示例命令 rc 相同 | 旧仓 README 原文命令 `profile data/samples/minimal.csv` / `detect data/samples/minimal.csv` 实跑 rc **0 / 0**；新入口 `check timeseries-anomaly --input samples/timeseries-anomaly.minimal.json` rc **0** | ✅ 过（失败路径见下） |
-| 3 | 测试文件数 / 测试函数数 | 新 **1 文件 / 267 个 `def test_`**；旧判定层 **13 文件 / 462 函数** | ❌ 不过（两项都低于旧层；§3.0 单文件约定与"数量相等"直接冲突，实跑数由判据 1 承担） |
+| 3 | 测试文件数 / 测试函数数 | **口径乙（2026-11-25 用户裁决）**：文件数**按域计** → 新 **2 文件**（`tests/test_timeseries-anomaly.py` 267 函数 / 910 用例 + `tests/test_timeseries_anomaly_extra.py` 51 函数 / 559 用例；增量文件原名 `test_timeseries_anomaly.py`，2026-11-25 已改名，避免与连字符文件同名混淆）/ 旧判定层 13 文件；函数数**按条计（AST）** → 新 **318** / 旧 **462** | ⚠️ **waiver**：函数数 318 < 462（缺口 144）。用户 2026-11-25 批准；理由：判据 1 用例数 **1469 ≥ 551** 已过；残余风险：函数级断言粒度变粗，回归定位需读用例参数。归档 `records/criterion-verdicts-20261125.md` |
 | 4 | `pip wheel` 后 `data/` 进包 | wheel 内 `byteproof/data/` **2 个文件**（basis 6416 B + thresholds 1313 B）；装到中立目录后 `check` 仍 rc **0** | ✅ 过 |
 
 > 判据 3 的"文件数/函数数"与 SKELETON-SPEC §1「每器官一个 `tests/test_<slug>.py`」直接冲突（旧层 13 个文件 / 462 个函数）。
-> 本轮按手册的单文件约定执行，**实跑用例数**改由判据 1 承担；差 195 个 `def test_` 全部由 `@pytest.mark.parametrize`
-> 矩阵承担（910 实跑 = 267 个函数 × 参数化），不是靠重复断言凑的。
+> 轨AD 选定**口径乙（功能）**：文件数按域计、函数数按条计；**实跑用例数**由判据 1 承担。
+> 本器官现状 = **2 文件 / 318 函数 / 1469 用例**；差旧层的 144 个 `def test_` 由 `@pytest.mark.parametrize`
+> 矩阵承担（不是靠重复断言凑的），缺口已按用户 2026-11-25 裁决登记为 **waiver**，不冒充"已达标"。
 
 ### 7.1 脚手架测试处置表（旧仓被剔除的每个测试文件）
 

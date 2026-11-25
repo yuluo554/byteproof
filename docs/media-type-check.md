@@ -159,7 +159,7 @@ byteproof :: media-type-check 1 :: <工件.json>
 |---|---|---|---|
 | 1 | 新仓该器官实跑用例数 ≥ X | **旧仓判定层实跑 X = 562 / 新仓实跑 N = 610 / 结论：过（差 +48）** | ✅ |
 | 2 | README 示例命令 rc 相同 | 旧仓 README 原文 `mimeconform audit data/golden/b-clean-nested/msg.eml --format json` rc **0**；新入口 `check media-type-check --input samples/media-type-check.minimal.json` rc **0**；major 件旧 **3** / 新 **1**（见 §7.2） | ✅ 过（clean 路径；严重度路径为口径差） |
-| 3 | 测试文件数 / 测试函数数 | 新 1 文件 / **119** `def test_`；旧判定层 17 文件 / 232 | ❌ 不过（两项都低于旧层；单文件约定，实跑数 610 ≥ X 562 由判据 1 计） |
+| 3 | 测试文件数 / 测试函数数 | **口径乙（2026-11-25 用户裁决）**：文件数**按域计** → 新 **1 文件**（容器数 ≠ 覆盖数）/ 旧判定层 17 文件；函数数**按条计** → 新 **119** / 旧 **232** | ⚠️ **waiver**：函数数 119 < 232。用户 2026-11-25 批准；理由：判据 1 用例数 **610 ≥ 562** 已过，缺口由 `@pytest.mark.parametrize` 承担；残余风险：函数级断言粒度变粗，回归定位需读用例参数。归档 `records/criterion-verdicts-20261125.md` |
 | 4 | `pip wheel` 后 `data/` 进包 | `media-type-check.basis.json` + `.thresholds.json` 在 wheel 内 | ✅ |
 
 ### 7.1 脚手架测试处置表（旧仓被剔除的每个测试文件）

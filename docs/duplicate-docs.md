@@ -125,7 +125,7 @@ byteproof :: duplicate-docs 1 :: <工件.json>
 |---|---|---|---|
 | 1 | 新仓该器官实跑用例数 ≥ X | **旧仓判定层实跑 X = 356 / 新仓实跑 N = 361 / 结论：过（差 +5）** | ✅ |
 | 2 | README 示例命令 rc 相同 | 旧仓 README 原文 `doc-dedupe scan data/samples --db index.db` 实跑 rc **0**；新入口 `check duplicate-docs --input samples/duplicate-docs.minimal.json` rc **0** | ✅ 过（`report` 的 rc 差见 §7.2） |
-| 3 | 测试文件数 / 测试函数数 | 新 **1 文件 / 144 个 `def test_`**；旧判定层 **14 文件 / 336 函数** | ❌ 不过（两项都低于旧层；单文件约定与"数量相等"冲突，实跑数 361 ≥ X 356 由判据 1 计） |
+| 3 | 测试文件数 / 测试函数数 | **口径乙（2026-11-25 用户裁决）**：文件数**按域计** → 新 **1 文件**（该域容器数；容器数 ≠ 覆盖数）/ 旧判定层 14 文件；函数数**按条计** → 新 **144** / 旧 **336** | ⚠️ **waiver**：函数数 144 < 336。用户 2026-11-25 批准；理由：判据 1 用例数 **361 ≥ 356** 已过，缺口由 `@pytest.mark.parametrize` 承担；残余风险：函数级断言粒度变粗，回归定位需读用例参数。归档 `records/criterion-verdicts-20261125.md` |
 | 4 | `pip wheel` 后 `data/` 进包 | `byteproof/data/duplicate-docs.basis.json` + `.thresholds.json` 均在 wheel 内 | ✅ 过 |
 
 ### 7.1 脚手架测试处置表（旧仓被剔除的每个测试文件）
