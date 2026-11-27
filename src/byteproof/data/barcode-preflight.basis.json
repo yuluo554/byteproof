@@ -1,0 +1,167 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "bp-gate",
+      "title": "达到报告门禁",
+      "source": "迁自 target-map ② 行 · 旧仓 exitcodes.exit_code；出处：data/README.md §8.5",
+      "text": "worst = 全部 finding 的最严重级别；fail_on = none 永不过门，warn/error 分别要求 worst 达到 warn/error。旧仓用 1/2 区分 warn/error 跨门，本产品只有阻断/不阻断两档，2→1 已登记为口径差。这是本器官唯一的 error 级结论。"
+    },
+    {
+      "rule_id": "bp-gs1-charset",
+      "title": "元素值不在字符集内",
+      "source": "迁自 target-map ② 行 · 旧仓 gs1/validators.py（cset82/cset39/csetnumeric/base64url）；出处：GS1 General Specifications 字符集",
+      "text": "AI 的字典条目声明字符集（N/X/Y/Z）。值中任一字符不在该字符集内即记 error：编码层无论怎么切分都表示不了这个字符。"
+    },
+    {
+      "rule_id": "bp-gs1-checksum",
+      "title": "GS1 校验位不正确",
+      "source": "迁自 target-map ② 行 · 旧仓 gs1/checksum.py；出处：gs1-syntax-dictionary/src/lint_csum.c",
+      "text": "权重由「含校验位的总长度」奇偶决定（偶 3、奇 1），从最左数据位开始交替；只累加数据位；校验位 = (10 - sum % 10) % 10。非数字输入同样是错误，不猜。"
+    },
+    {
+      "rule_id": "bp-gs1-date",
+      "title": "GS1 日期不合法",
+      "source": "迁自 target-map ② 行 · 旧仓 gs1/validators.py（yymmd0/yyyymmd0）；出处：lint_yymmd0.c / lint_yyyymmd0.c",
+      "text": "月份必须 01..12；日期按月长校验（含闰年）；DD=00 合法且表示当月最后一天（仅 yymmd0/yyyymmd0）；两位年份用字典声明的世纪窗口展开，不读系统时钟。"
+    },
+    {
+      "rule_id": "bp-gs1-exclusive",
+      "title": "互斥 AI 同时出现",
+      "source": "迁自 target-map ② 行 · 旧仓 gs1/validators.py（ex 属性）；出处：GS1 语法字典 ex 属性",
+      "text": "字典条目声明 ex 列表时，任一被列 AI 与它同时出现即记 error。一个 AI 不与自己互斥。"
+    },
+    {
+      "rule_id": "bp-gs1-length",
+      "title": "元素值长度不符",
+      "source": "迁自 target-map ② 行 · 旧仓 gs1/validators.py（split_components）；出处：GS1 语法字典 specification 列",
+      "text": "AI 的定长字段必须恰好是声明长度；不足或超出都记 error，交给修正工件，不截断也不补位。"
+    },
+    {
+      "rule_id": "bp-gs1-malformed",
+      "title": "元素串结构不合法",
+      "source": "迁自 target-map ② 行 · 旧仓 gs1/elements.py；出处：GS1 语法字典（AI/分隔符结构）",
+      "text": "括号外游离字符、定长字段不足、无法识别 AI 等结构问题各自成条。结构不合法时不再声称已校验语义。"
+    },
+    {
+      "rule_id": "bp-gs1-required",
+      "title": "缺少必需关联 AI",
+      "source": "迁自 target-map ② 行 · 旧仓 gs1/validators.py（req 属性）；出处：GS1 语法字典 req 属性",
+      "text": "req 是「逗号组之间 OR、组内 + 为 AND」的必需关联。任一组成立即满足；全部不成立记 error。"
+    },
+    {
+      "rule_id": "bp-gs1-skipped",
+      "title": "解释器未实现或不可用",
+      "source": "迁自 target-map ② 行 · 旧仓 gs1/validators.py（skipped）；出处：data/README.md §8.9 G2/G3",
+      "text": "字典声明了本实现不解释的 linter，或需要 GCP/GEPIR 联网查询时，记「不可判」而不是通过。解析一个 AI 不等于校验过它的内容。"
+    },
+    {
+      "rule_id": "bp-gs1-unknown-ai",
+      "title": "未知 AI",
+      "source": "迁自 target-map ② 行 · 旧仓 gs1/elements.py（unknown_ai）；出处：GS1 语法字典",
+      "text": "输入的 AI 不在已装载字典内即记 error。未知 AI 的语义无法判定，不能静默跳过。"
+    },
+    {
+      "rule_id": "bp-oracle-agreement",
+      "title": "oracle 回读对照三态",
+      "source": "迁自 target-map ② 行 · 旧仓 oracle/agreement.py；出处：plan/00 D10",
+      "text": "consistent = M3 风险结论与回读一致；m3_stricter = M3 判有风险但解得出来（known-disagreements，可能是假阳性）；m3_laxer = M3 判干净但解不出来（bug 通道，必须修判定）。三态互斥且完备，不参与 verdict。"
+    },
+    {
+      "rule_id": "bp-oracle-absent",
+      "title": "回读引擎缺失",
+      "source": "迁自 target-map ② 行 · 旧仓 oracle/zxing.py（oracle_absent）；出处：data/README.md §8.9 G6",
+      "text": "没有外部解码引擎时如实记 skipped: oracle_absent，不伪造实测结论，也不把缺失当成通过。"
+    },
+    {
+      "rule_id": "bp-print-bar-height",
+      "title": "条高不足",
+      "source": "迁自 target-map ② 行 · 旧仓 print/bar_height.py；出处：GenSpec 条高 Modules（未核）",
+      "text": "bar_height_modules = bar_height_mm / x_dimension_mm；低于该符号的 modules_min 记 error。未核阈值派生时降级为 warn（strict_thresholds 恢复）。没有该符号的阈值就不判——不借另一符号的数字。"
+    },
+    {
+      "rule_id": "bp-print-color",
+      "title": "条/空颜色对比不足",
+      "source": "迁自 target-map ② 行 · 旧仓 print/color.py；出处：WCAG 2.x sRGB 相对亮度定义 + 本项目工程判据（data/README.md §8.4）",
+      "text": "两个探针永不合并：亮度对比 (L_light+.05)/(L_dark+.05) < 3.0 记 error、< 4.5 记 warn；窄带照明下通道反射率差 < 阈值记 error。工程判据不参与未核降级。"
+    },
+    {
+      "rule_id": "bp-print-incomplete",
+      "title": "印刷层输入不足",
+      "source": "迁自 target-map ② 行 · 旧仓 print/audit.py（input_incomplete）；出处：data/README.md §8.9 G3",
+      "text": "静区 / x_dimension / target_dpi 缺任一，或值不可解析，或 x_dimension<=0：只产一条 input_incomplete，所有派生几何判据一条都不出。用默认值补齐等于替用户编数据。"
+    },
+    {
+      "rule_id": "bp-print-magnification",
+      "title": "放大率超出范围",
+      "source": "迁自 target-map ② 行 · 旧仓 print/magnification.py；出处：GenSpec 放大率范围（未核）",
+      "text": "magnification_pct = x_dimension_mm / nominal_x_mm * 100；低于下限或高于上限记 warn（边界值在区间内不算越界）。"
+    },
+    {
+      "rule_id": "bp-print-quiet-zone",
+      "title": "静区不足或临界",
+      "source": "迁自 target-map ② 行 · 旧仓 print/quiet_zone.py；出处：GenSpec 静区 Modules（未核）",
+      "text": "qz_modules = margin / x_dimension_mm；低于 modules_min 记 error（未核降级为 warn）；在 [modules_min, modules_min x factor) 内记 warn（临界带）。"
+    },
+    {
+      "rule_id": "bp-print-quiet-zone-absent",
+      "title": "必需侧静区为零",
+      "source": "迁自 target-map ② 行 · 旧仓 print/quiet_zone.py（quiet_zone_absent）；出处：data/README.md §8.2（结构层）",
+      "text": "必需侧静区为 0 是结构失败，永远 error，不受未核降级影响、也不需要任何标准数字。1D 符号的 top/bottom 不要求静区，零值合法。"
+    },
+    {
+      "rule_id": "bp-print-raster",
+      "title": "DPI 混叠风险",
+      "source": "迁自 target-map ② 行 · 旧仓 print/raster.py；出处：本项目工程判据（dots per module）",
+      "text": "dots_per_module = x_dimension_mm / 25.4 * target_dpi；< 1.5 记 error、< 2.0 记 warn、>= 2.0 通过。工程判据没有 status，不参与未核降级；修复项给出所需最小整数 DPI。"
+    },
+    {
+      "rule_id": "bp-print-unmodelled",
+      "title": "颜色/照明组合未建模",
+      "source": "迁自 target-map ② 行 · 旧仓 print/color.py（surface_effect_unmodeled）；出处：data/README.md §8.9 G5",
+      "text": "非 #RRGGBB 颜色或未建模照明（如红外）记 info：既不给 pass 也不给 fail，因为油墨反射率无法由 sRGB 推导。"
+    },
+    {
+      "rule_id": "bp-summary",
+      "title": "判定计数摘要",
+      "source": "迁自 target-map ② 行 · 旧仓 pipeline（summary / verdict）；出处：data/README.md §8.8",
+      "text": "按 severity 计数并给出 worst_severity 与 verdict（pass/warn/fail）。verdict 只由 findings 派生；skipped 单独列出，不冒充通过。"
+    },
+    {
+      "rule_id": "bp-symbol-capacity",
+      "title": "符号容量不足",
+      "source": "迁自 target-map ② 行 · 旧仓 symbols/feasibility.py（matrix modules table）；出处：symbol_profiles.json 容量表（未核）",
+      "text": "编码计划的位数换算成数据码字后，必须放得进矩阵容量表；放不进记 error（未核降级为 warn）。表内最大值就是上限，不跨符号借容量。"
+    },
+    {
+      "rule_id": "bp-symbol-charset",
+      "title": "字符不被符号字符集覆盖",
+      "source": "迁自 target-map ② 行 · 旧仓 symbols/feasibility.py（charset union）；出处：symbol_profiles.json 字符集（未核）",
+      "text": "载荷每个字符必须落在该符号任一声明字符集的并集内；否则任何模式都表示不了它，记 error（未核降级为 warn）。"
+    },
+    {
+      "rule_id": "bp-symbol-checksum",
+      "title": "符号校验位不正确",
+      "source": "迁自 target-map ② 行 · 旧仓 symbols/feasibility.py（checksum）；出处：symbol_profiles.json checksum 声明",
+      "text": "checksum.kind=gs1 时按 GS1 校验位复算；不匹配记 error（未核降级为 warn）。其他校验类型只记录算法与是否随符号附加，不伪造复算。"
+    },
+    {
+      "rule_id": "bp-symbol-length",
+      "title": "载荷长度不符",
+      "source": "迁自 target-map ② 行 · 旧仓 symbols/feasibility.py（length）；出处：symbol_profiles.json 容量表（未核）",
+      "text": "length.kind=exact 必须恰好相等；kind=range 必须在 [min,max] 内。retail-gtin 先按 gtin_map 去掉前导零再判。"
+    },
+    {
+      "rule_id": "bp-symbol-plan",
+      "title": "编码计划与模块总数",
+      "source": "迁自 target-map ② 行 · 旧仓 symbols/feasibility.py（encoding_plan / modules）；出处：plan/03 §M2",
+      "text": "按 priority 贪心选模式并合并同模式段，形成唯一编码计划；fixed 符号给出模块总数，code128 按 start/data/check/stop 计算。计划不存在即 error；计划本身作为证据记录。"
+    },
+    {
+      "rule_id": "bp-symbol-unsupported",
+      "title": "符号不在 profile 表内",
+      "source": "迁自 target-map ② 行 · 旧仓 symbols/feasibility.py（symbol_unsupported）；出处：data/README.md §8.9 G3",
+      "text": "符号不在已装载 profile 表内时记 warn 并写 skipped: symbol_unsupported:<name>；不猜它的字符集或容量。"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "mode": "check",
+  "spec": {"schema": "bpreflight/spec/1", "mode": "params"},
+  "identifier": "4006381333931",
+  "symbol": "ean13",
+  "x_dimension_mm": "0.330",
+  "target_dpi": 203,
+  "quiet_zone_mm": {"left": "3.63", "right": "2.31", "top": "0", "bottom": "0"},
+  "bar_height_mm": "20.00",
+  "bar_color": "#000000",
+  "space_color": "#FFFFFF",
+  "illumination": "white",
+  "strict_thresholds": false,
+  "fail_on": "none",
+  "thresholds": {
+    "gen_spec": {
+      "mm_per_inch": "25.4",
+      "values": {
+        "nominal_x_mm": {"value": "0.330", "source": "secondary: 示例册", "status": "unverified", "verified_at": null, "basis": "gen-spec"},
+        "magnification_min_pct": {"value": "80", "source": "secondary: 示例册", "status": "unverified", "verified_at": null, "basis": "gen-spec"},
+        "magnification_max_pct": {"value": "200", "source": "secondary: 示例册", "status": "unverified", "verified_at": null, "basis": "gen-spec"},
+        "bar_height_modules_min_ean13": {"value": "69.24", "source": "derived: 22.85 / 0.330", "status": "unverified", "verified_at": null, "basis": "gen-spec"}
+      },
+      "engineering_heuristics": {
+        "dots_per_module": {"warn_below": "2.0", "error_below": "1.5", "basis": "engineering-heuristic"},
+        "contrast_ratio": {"error_below": "3.0", "warn_below": "4.5", "basis": "engineering-heuristic"},
+        "wavelength_reflectance_delta_min": {"value": "0.30", "basis": "engineering-heuristic"},
+        "quiet_zone_marginal_factor": {"value": "1.2", "basis": "engineering-heuristic"}
+      }
+    },
+    "quiet_zone": {
+      "symbols": {
+        "ean13": {
+          "left": {"modules_min": 11, "required": true, "source": "placeholder: GenSpec 未取得", "status": "unverified", "verified_at": null},
+          "right": {"modules_min": 7, "required": true, "source": "placeholder: GenSpec 未取得", "status": "unverified", "verified_at": null},
+          "top": {"modules_min": 0, "required": false, "source": "placeholder: GenSpec 未取得", "status": "unverified", "verified_at": null},
+          "bottom": {"modules_min": 0, "required": false, "source": "placeholder: GenSpec 未取得", "status": "unverified", "verified_at": null}
+        }
+      }
+    },
+    "color_cases": {
+      "illuminations": {
+        "white": {"modelled": true, "channel": "luminance", "source": "sRGB 相对亮度公式"},
+        "red": {"modelled": true, "channel": "red", "source": "窄带红光反射率"},
+        "ir": {"modelled": false, "channel": null, "source": "红外不建模"}
+      }
+    }
+  },
+  "profiles": {
+    "ean13": {
+      "family": "linear-retail",
+      "data_shape": "retail-gtin",
+      "gtin_map": {"from_length": 14, "target_length": 13, "zero_padding_width": 1, "status": "unverified"},
+      "charsets": {"digits": {"characters": "0123456789", "status": "unverified", "verified_at": null}},
+      "length": {"kind": "exact", "exact": 13, "includes_check_digit": true, "status": "unverified", "verified_at": null},
+      "modes": [{"name": "retail-numeric", "charset": "digits", "group_size": 1, "min_run": 1, "priority": 1, "status": "unverified"}],
+      "modules": {"kind": "fixed", "total": 95, "status": "unverified", "verified_at": null},
+      "checksum": {"kind": "gs1", "appended": false, "status": "unverified", "verified_at": null}
+    }
+  }
+}
