@@ -1,0 +1,92 @@
+{
+  "fund_code": "990001",
+  "fund_name": "样例稳健股票",
+  "period": "2026Q3",
+  "prev_period": "2026Q2",
+  "params": {
+    "mode": "computed",
+    "threshold": "0.10"
+  },
+  "holdings": {
+    "prev": {
+      "report_period": "2026Q2",
+      "status": "ok",
+      "rows": [
+        {"stock_code": "600001", "ratio": "7.66"},
+        {"stock_code": "600002", "ratio": "4.26"},
+        {"stock_code": "600003", "ratio": "8.45"},
+        {"stock_code": "600004", "ratio": "8.63"},
+        {"stock_code": "600007", "ratio": null}
+      ]
+    },
+    "cur": {
+      "report_period": "2026Q3",
+      "status": "ok",
+      "rows": [
+        {"stock_code": "600001", "ratio": "8.16", "change_type": "增持", "change_pct": "0.50"},
+        {"stock_code": "600002", "ratio": "3.76", "change_type": "减持", "change_pct": "-0.50"},
+        {"stock_code": "600003", "ratio": "8.45", "change_type": "不变", "change_pct": "0.00"},
+        {"stock_code": "600005", "ratio": "8.54"},
+        {"stock_code": "600007", "ratio": null},
+        {"stock_code": "ABC123", "ratio": "1.00"}
+      ]
+    }
+  },
+  "managers": [
+    {
+      "name": "样例经理甲",
+      "change_date": "2026-08-15",
+      "end": null,
+      "change_class": "in_period",
+      "source": "jjjl"
+    },
+    {
+      "name": null,
+      "change_date": null,
+      "change_class": "unparsed",
+      "raw_text": "2026-13-40 | 至今 | 样例经理甲",
+      "unparsed_reason": "起始期无法解析"
+    }
+  ],
+  "scale": {
+    "report_period": "2026Q3",
+    "subscribe": "1.20",
+    "redeem": "0.80",
+    "shares": "30.00",
+    "net_assets": "45.00",
+    "share_change_rate": "1.35%",
+    "baseline": "available",
+    "units_from_header": {"subscribe": "亿份", "net_assets": "亿元"},
+    "source": "gmbd",
+    "raw_sha256": null
+  },
+  "report_text": "本季度持仓发生变化，详见明细。\n基金经理未发生变更。",
+  "compliance_terms": ["保证收益", "排名第一"],
+  "disclosure": {
+    "metadata_available": true,
+    "rule": {"kind": "workdays_after_period_end", "count": 15},
+    "calendar": {
+      "2026": {
+        "holidays": [
+          "2026-01-01", "2026-01-02", "2026-01-03",
+          "2026-02-15", "2026-02-16", "2026-02-17", "2026-02-18", "2026-02-19",
+          "2026-02-20", "2026-02-21", "2026-02-22", "2026-02-23",
+          "2026-04-04", "2026-04-05", "2026-04-06",
+          "2026-05-01", "2026-05-02", "2026-05-03", "2026-05-04", "2026-05-05",
+          "2026-06-19", "2026-06-20", "2026-06-21",
+          "2026-09-25", "2026-09-26", "2026-09-27",
+          "2026-10-01", "2026-10-02", "2026-10-03", "2026-10-04",
+          "2026-10-05", "2026-10-06", "2026-10-07"
+        ],
+        "makeup_workdays": [
+          "2026-01-04", "2026-02-14", "2026-02-28",
+          "2026-05-09", "2026-09-20", "2026-10-10"
+        ]
+      }
+    },
+    "reports": [
+      {"fundcode": "990001", "report_period": "2026Q3", "report_send_date": "2026-10-20"}
+    ],
+    "as_of": "2026-10-18"
+  }
+}

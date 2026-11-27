@@ -1,0 +1,125 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "fq-invalid-code",
+      "title": "持仓证券代码不是 6 位数字",
+      "source": "迁自 target-map ② 行 · 旧仓 normalize.is_valid_code / diff.detect_anomaly(invalid_stock_code)",
+      "text": "持仓行的 stock_code 必须是 6 位数字（正则 ^\\d{6}$）。不是 6 位数字时，这一行无法与另一季的同名行稳定对齐，也无法保证账本位置可复核；来源把它记为 invalid_stock_code 异常。"
+    },
+    {
+      "rule_id": "fq-duplicate-holding",
+      "title": "同一季持仓里同一证券代码出现多次",
+      "source": "迁自 target-map ② 行 · 旧仓 diff.diff_fund（rows 直接建 dict，重复项会被静默覆盖）",
+      "text": "同一季的 rows 按 stock_code 建索引后，重复代码只保留最后一行，前面的行被静默丢弃。丢弃后任何「这只股票加仓/减仓」的结论都不再可复核，因此本器官把重复代码记为 error（来源无此检查，属于本次迁移新增的结构完整性规则，已在 docs §5 登记）。"
+    },
+    {
+      "rule_id": "fq-ratio-missing",
+      "title": "持仓占比缺失（null）",
+      "source": "迁自 target-map ② 行 · 旧仓 diff.diff_fund（K3：null ≠ 0）/ detect_anomaly(ratio_null)",
+      "text": "ratio 缺失是数据缺失，不是 0。任一侧 missing 时该证券记为待确认（insufficient_data），不参与加仓/减仓判断；null 也绝不参与差额计算。"
+    },
+    {
+      "rule_id": "fq-ratio-invalid",
+      "title": "持仓占比不是十进制数值",
+      "source": "迁自 target-map ② 行 · 旧仓 diff.parse_ratio（非十进制即内部一致性错误）",
+      "text": "ratio 必须是可解析的十进制字符串（Decimal 运算，禁二进制浮点）。无法解析时不能猜测数值，本器官记 error 并要求先修正工件。"
+    },
+    {
+      "rule_id": "fq-change-type-missing",
+      "title": "本期持仓行没有上游变动标识",
+      "source": "迁自 target-map ② 行 · 旧仓 diff.detect_anomaly(change_type_missing) / provider_status",
+      "text": "上游变动标识（PCTNVCHGTYPE）缺失时 provider 口径不可用，只能按两季 ratio 自算。缺失本身是数据事实，不阻断结论，记 info 并在证据里写明。"
+    },
+    {
+      "rule_id": "fq-provider-conflict",
+      "title": "上游变动标识与两季占比自算结论不一致",
+      "source": "迁自 target-map ② 行 · 旧仓 diff.diff_fund（conflicts 清单：不静默合并、不猜谁对）",
+      "text": "computed 口径由两季 ratio 自算，provider 口径直接采信上游变动标识。两者结论不一致时，本器官同时给出供应商标签与自算状态，记 warn，不替用户裁决。"
+    },
+    {
+      "rule_id": "fq-failed-quarter",
+      "title": "某一季持仓抓取失败（不是空仓）",
+      "source": "迁自 target-map ② 行 · 旧仓 diff.diff_fund（failed 季 → insufficient_data，与 empty 严格区分）",
+      "text": "status=failed 表示该季数据没拿到；status=empty 表示结构性没有持仓（如 ETF 联接）。前者让整只基金的变动结论不可给出，后者只是 0 行。两者不得混同，失败季记 warn 并停止给出五态结论。"
+    },
+    {
+      "rule_id": "fq-period-mismatch",
+      "title": "工件里的报告期与请求的报告期不一致",
+      "source": "迁自 target-map ② 行 · 旧仓 events.validate_events（报告期不一致即内部一致性错误）",
+      "text": "prev/cur 快照自带 report_period。若它与 subject.period/prev_period 不一致，按它算出的差额就是跨季错配，因此记 error，不再对该侧给出五态结论。"
+    },
+    {
+      "rule_id": "fq-manager-unparsed",
+      "title": "基金经理变更记录无法解析",
+      "source": "迁自 target-map ② 行 · 旧仓 managers（unparsed 必须附页面快照，与 none 分开）",
+      "text": "change_class=unparsed 表示页面结构无法解析。它不是「无变更」，也不是「无记录」：字段留空并附 raw_text 与 sha256 快照，记 warn；无变更用空列表表达，不落到单条记录上。"
+    },
+    {
+      "rule_id": "fq-manager-label-drift",
+      "title": "经理变更分类与配置区间重算不一致",
+      "source": "迁自 target-map ② 行 · 旧仓 managers._normalize_record（label 漂移即内部一致性错误）",
+      "text": "change_class 必须能由冻结的报告期区间反向复算出同一个值。台账写了 in_period 而区间重算是 prior_period（或反之）时，记 error；不静默采信台账标签。"
+    },
+    {
+      "rule_id": "fq-scale-field-missing",
+      "title": "规模台账缺少必需字段",
+      "source": "迁自 target-map ② 行 · 旧仓 scale._validate_scale（六字段 + 来源/单位/基准）",
+      "text": "规模对象必须含 report_period / subscribe / redeem / shares / net_assets / share_change_rate / baseline / units_from_header / source。缺字段就无法判断「缺失 vs 零」，记 error。"
+    },
+    {
+      "rule_id": "fq-scale-baseline-flow",
+      "title": "无上季基准时流量字段被写成非 null",
+      "source": "迁自 target-map ② 行 · 旧仓 scale._validate_scale（baseline=no_prev_baseline 时流量必须为 null，不得补 0）",
+      "text": "新成立基金没有上季基准时，期间申购/赎回/份额变动率三者必须为 null。把它们补成 \"0.00\" 会把「不知道」伪装成「真实零申赎」，记 error。"
+    },
+    {
+      "rule_id": "fq-scale-unit-missing",
+      "title": "规模表头缺少申购或净资产单位",
+      "source": "迁自 target-map ② 行 · 旧仓 scale.parse_scale_html / _validate_scale（单位必须来自表头，代码不换算）",
+      "text": "单位一律读表头原样记录，代码不做换算。申购份额与期末净资产必须各有单位（如 亿份 / 亿元），缺失时数值的量纲不可知，记 error。"
+    },
+    {
+      "rule_id": "fq-scale-number",
+      "title": "规模数值不是十进制数值",
+      "source": "迁自 target-map ② 行 · 旧仓 scale._decimal_or_none / _validate_scale",
+      "text": "subscribe / redeem / shares / net_assets 允许 null（缺失），但非 null 时必须能被 Decimal 解析。解析失败记 error，不猜测数值。"
+    },
+    {
+      "rule_id": "fq-scale-rate",
+      "title": "份额变动率格式非法",
+      "source": "迁自 target-map ② 行 · 旧仓 scale.parse_scale_html / _validate_scale（^-?\\d+(\\.\\d+)?%$）",
+      "text": "share_change_rate 允许 null，但非 null 时必须带百分号且是十进制（如 48.93% / -3.69%）。其它形态记 error。"
+    },
+    {
+      "rule_id": "fq-scale-source",
+      "title": "规模台账来源或页面哈希非法",
+      "source": "迁自 target-map ② 行 · 旧仓 scale._validate_scale（source 必须是 gmbd；raw_sha256 为 64 位小写十六进制）",
+      "text": "scale.source 必须等于 gmbd（规模页来源）；raw_sha256 若给出必须是 64 位小写十六进制。两者都是「这份台账从哪来」的锚，锚不合就不该采信其中的数值，记 error。"
+    },
+    {
+      "rule_id": "fq-compliance-term",
+      "title": "季报正文命中合规禁词",
+      "source": "迁自 target-map ② 行 · 旧仓 compliance.scan_text（硬门禁；词表来自配置）",
+      "text": "报告正文按行扫描禁词；匹配前做 NFKC、casefold 与空白折叠。命中即阻断（来源 exit 1），账本给出 行号 / 命中词 / 原行摘录。词表由 subject.compliance_terms 提供，器官不内置业务词表。"
+    },
+    {
+      "rule_id": "fq-disclosure-unverified",
+      "title": "披露截止日不可计算（日历未登记）",
+      "source": "迁自 target-map ② 行 · 旧仓 window._deadline（缺年份即 unverified，禁止近似）",
+      "text": "披露截止日按「季度结束次日起 15 个工作日」推导，依赖国务院节假日日历。所需年份未登记时不得近似，deadline 记 null 并写 unverified_reason，本器官记 warn。"
+    },
+    {
+      "rule_id": "fq-disclosure-pending",
+      "title": "本期报告尚未披露",
+      "source": "迁自 target-map ② 行 · 旧仓 window.disclosure_status（待披露）",
+      "text": "官方元数据可用、但本期报告尚未出现（或在 as_of 之前尚未发送）时为「待披露」。它不是缺陷，只是时间状态，记 info；发送日缺失或非法不能证明当时已披露，也按待披露处理。"
+    },
+    {
+      "rule_id": "fq-disclosure-no-data",
+      "title": "官方披露元数据不可用",
+      "source": "迁自 target-map ② 行 · 旧仓 window.disclosure_status（无数据）",
+      "text": "官方元数据源不可用时是「无数据」，不得与「待披露」合并：前者说明我们不知道发没发，后者说明已知还没发。记 warn 并写明报告期。"
+    }
+  ]
+}

@@ -25,6 +25,7 @@ from typing import Tuple
 #: Python 包名不能带 ``-``，而账本与 README 里的 slug 必须能当命令行参数用。
 BUILTIN_MODULES: Tuple[str, ...] = (
     "duplicate_docs",
+    "fund_quarter_report",
     "media_type_check",
     "timeseries_anomaly",
 )

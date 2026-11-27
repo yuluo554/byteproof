@@ -1,0 +1,38 @@
+{
+  "version": "1",
+  "params_version": "1",
+  "quant_decimals": 2,
+  "params": {
+    "mode": "computed",
+    "threshold": "0.10",
+    "disclosure_count": 15,
+    "quarter_ends": {
+      "Q1": "03-31",
+      "Q2": "06-30",
+      "Q3": "09-30",
+      "Q4": "12-31"
+    }
+  },
+  "verdicts": {
+    "fq-invalid-code": "warn",
+    "fq-duplicate-holding": "error",
+    "fq-ratio-missing": "warn",
+    "fq-ratio-invalid": "error",
+    "fq-change-type-missing": "info",
+    "fq-provider-conflict": "warn",
+    "fq-failed-quarter": "warn",
+    "fq-period-mismatch": "error",
+    "fq-manager-unparsed": "warn",
+    "fq-manager-label-drift": "error",
+    "fq-scale-field-missing": "error",
+    "fq-scale-baseline-flow": "error",
+    "fq-scale-unit-missing": "error",
+    "fq-scale-number": "error",
+    "fq-scale-rate": "error",
+    "fq-scale-source": "error",
+    "fq-compliance-term": "error",
+    "fq-disclosure-unverified": "warn",
+    "fq-disclosure-pending": "info",
+    "fq-disclosure-no-data": "warn"
+  }
+}
