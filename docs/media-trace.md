@@ -123,9 +123,9 @@ DTSRegressionTolerance 0 / 16.16 rate 1.0。
 
 | # | 判据 | 实测 | 结论 |
 |---|---|---|---|
-| 1 | 新仓该器官实跑用例数 ≥ X | 旧仓 10 个判定包 `go test -json -count=1` 实跑 **X = 115 pass 事件**（含子测试；顶层 `func Test` 111）/ 新仓实跑 **117 passed** | ✅ 过（117 ≥ 115） |
+| 1 | 新仓该器官实跑用例数 ≥ X | 旧仓 10 个判定包 `go test -json -count=1` 实跑 **X = 105**（= `go test` **测试** pass 事件，`Test` 非空；包级 pass 事件 10 条不计入；顶层 `func Test` 105）/ 新仓实跑 **117 passed** | ✅ 过（117 ≥ 105） |
 | 2 | README 示例命令 rc 相同 | `go run ./cmd/mediatrace audit fixtures/out/c2_stco_out_of_mdat.mp4 --modules M1` rc **1**（`stco_out_of_mdat` fail）→ 新 `mode=audit` 等价事实 rc **1** | ✅ 过（1 = 1） |
-| 3 | 测试文件数 / 测试函数数 | 口径乙：文件数**按域计** → 新 **1 文件** / 旧 10 包；函数数**按条计** → 新 **117**（AST）/ 旧 **105**（顶层 `func Test`，排除 `internal/report`） | ✅ 过（117 ≥ 115；117 ≥ 105） |
+| 3 | 测试文件数 / 测试函数数 | 口径乙：文件数**按域计** → 新 **1 文件** / 旧 10 包；函数数**按条计** → 新 **117**（AST）/ 旧 **105**（顶层 `func Test`，排除 `internal/report`） | ✅ 过（117 ≥ 105） |
 | 4 | `pip wheel` 后 `data/` 进包 | `%TEMP%` 暂存树构建 `byteproof-0.1.0-py3-none-any.whl`（**128 条目**）；`byteproof/data/media-trace.basis.json` **10310B / 34 条** + `.thresholds.json` **2210B** 均在包内；解包 `list` = **13 器官**、样例 `check` rc **0** | ✅ 过 |
 
 ### 6.1 判据 1 的实跑命令与输出原文（来源仓只读）
@@ -138,13 +138,14 @@ go test -json -count=1 ./cmd/mediatrace ./internal/archtest ./internal/isobmff \
   ./internal/rules/timestamps ./tools/fixture-gen/gen
 ```
 
-输出：`passed_events_incl_subtests 115 / failed 0 / skipped 0`；各包 `ok`。
+输出：`test_pass_events 105 / top_level_func_Test 105 / package_level_pass_events 10 (not counted) / failed 0 / skipped 0`；各包 `ok`。
 顶层 `func Test` **105**（已排除 `internal/report` 与 `dist/`、`.tmp/` 副本）。
 新器官 `tests/test_media-trace.py` 实跑 **117 passed**、AST `test_` 函数 **117**。
 
-逐包 pass 事件：cmd/mediatrace 31 / archtest 8 / isobmff 17 / policy 4 /
-rules/display 6 / rules/duration 17 / rules/offset 6 / rules/structure 9 /
-rules/timestamps 8 / tools/fixture-gen/gen 9 = **115**。
+逐包测试 pass 事件（`Test` 非空）：cmd/mediatrace 30 / archtest 7 / isobmff 16 / policy 3 /
+rules/display 5 / rules/duration 16 / rules/offset 5 / rules/structure 8 /
+rules/timestamps 7 / tools/fixture-gen/gen 8 = **105**；
+另有包级 pass 事件 10 条（每包 1 条，`Test` 为空）不计入。
 
 ### 6.2 D1+D18 逐包处置表（判定层 10 包 / 顶层 105 函数）
 
