@@ -1,0 +1,137 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "mf-attr-candidate",
+      "title": "有界搜索内存在无损候选",
+      "source": "迁自 target-map ② 行 · 旧仓 mojibake_forensics/attr.py + score.py（attr 子命令）",
+      "text": "候选 = 从输入文本出发、经「encode -> decode」链（链深上限 3）反向逐字节复算无损、且结果不同于输入的全部路径，按不同结果折叠后按冻结排序键 (-score_total, depth, path_string) 排序。每条候选必须带路径、链深、三层打分与相对份额区间；候选恒为列表，不承诺唯一真相。"
+    },
+    {
+      "rule_id": "mf-attr-confidence-degenerate",
+      "title": "候选份额区间不可定义",
+      "source": "迁自 target-map ② 行 · 旧仓 attr.py::_confidence（no_positive_score）",
+      "text": "全部候选的总分 <= 0 时，归一化份额没有定义。此时区间记为 null 并给出 note=no_positive_score，不编造分布、不把 null 冒充 0。"
+    },
+    {
+      "rule_id": "mf-attr-no-candidate",
+      "title": "冻结集合与链深上限内没有无损候选",
+      "source": "迁自 target-map ② 行 · 旧仓 attr.py（status=no_candidate）",
+      "text": "给定冻结编码集合与链深上限，若没有任何无损且非恒等的候选，必须返回空候选列表 + note=depth_limit_reached，并让结论阻断；不许用空列表冒充成功，也不许越过上限静默截断。"
+    },
+    {
+      "rule_id": "mf-attr-single-candidate",
+      "title": "有界搜索里只有一条无损候选",
+      "source": "迁自 target-map ② 行 · 旧仓 attr.py::_confidence（single_candidate_in_bounded_search）",
+      "text": "只有一条候选时相对份额恒为 1.0，但这只表示「在给定集合与链深下只有这一条」，不是唯一真相；note 必须写明 single_candidate_in_bounded_search。"
+    },
+    {
+      "rule_id": "mf-attr-truncated",
+      "title": "展示被 --top 截断",
+      "source": "迁自 target-map ② 行 · 旧仓 attr.py（NOTE_TRUNCATED）",
+      "text": "--top 只影响展示，不影响完整候选数。发生截断时 total_candidates 仍报完整数，并记 note=truncated_to_top_n。"
+    },
+    {
+      "rule_id": "mf-explain-divergence",
+      "title": "与对照候选的第一处差异",
+      "source": "迁自 target-map ② 行 · 旧仓 explain.py::compare_proofs",
+      "text": "对选中候选与对照候选的逐步证明按固定顺序比较：op/codec、encode 步的字节、decode 步的字符、链长。只陈述第一处差异及其步号/偏移，不判断哪个候选更好；候选不足两条时记 no_second_candidate。"
+    },
+    {
+      "rule_id": "mf-explain-verify",
+      "title": "逐步重放复算通过",
+      "source": "迁自 target-map ② 行 · 旧仓 explain.py::replay_chain（status=ok）",
+      "text": "证明必须可独立重放：每步从计算出的状态重新 encode/decode，并与链记录比对；链记录必须与计算状态一致。全部步骤一致才算 verify=true。"
+    },
+    {
+      "rule_id": "mf-explain-verify-failed",
+      "title": "逐步重放复算失败",
+      "source": "迁自 target-map ② 行 · 旧仓 explain.py（status=verify_failed）/ recover.py（verify_failed）",
+      "text": "任一步的输入、输出或字节与链记录不一致，或 encode/decode 抛错，即停在 failed_step（1 起）。失败证明不可采信；在 recover 模式下，未通过复算的修复绝不输出。"
+    },
+    {
+      "rule_id": "mf-file-bom",
+      "title": "BOM 检查结论",
+      "source": "迁自 target-map ② 行 · 旧仓 file.py::_bom_section/_sniff_bom",
+      "text": "按最长前缀优先匹配 UTF-32LE/BE、UTF-8、UTF-16LE/BE 的 BOM，报告是否命中、类型、字节与偏移。无 BOM 也是检查结论（present=false），不是缺陷。"
+    },
+    {
+      "rule_id": "mf-file-bom-conflict",
+      "title": "BOM 声明的编码解不开正文",
+      "source": "迁自 target-map ② 行 · 旧仓 file.py（bom_conflict + content 双解证据）",
+      "text": "声明了 UTF BOM 但去除 BOM 后的正文按该编码不可解码时，记 bom_conflict，并同时列出按 UTF-8 与 GB18030 的解码结果。工具只列证据，不选择、不改写输入。"
+    },
+    {
+      "rule_id": "mf-file-csv-candidate",
+      "title": "CSV 编码候选与分隔符嗅探",
+      "source": "迁自 target-map ② 行 · 旧仓 file.py::_csv_section（preset=csv-excel-win）",
+      "text": "对 cp1252 / gbk / shift_jis 三个候选分别报告是否可解码，并对首行按逗号/分号/制表符/竖线计数取最多者为分隔符；不做唯一选择、不改写文件。"
+    },
+    {
+      "rule_id": "mf-file-utf16-misalignment",
+      "title": "UTF-16 奇数字节与错位证据",
+      "source": "迁自 target-map ② 行 · 旧仓 file.py::_utf16_section",
+      "text": "无 BOM、非 ZIP、字节数为奇数且 >= 3 时，报告未错位解码的失败偏移，以及错位一字节后能否解出文本。证据只用于诊断，不自动纠正。"
+    },
+    {
+      "rule_id": "mf-file-zip-name",
+      "title": "ZIP 中央目录成员名解释",
+      "source": "迁自 target-map ② 行 · 旧仓 file.py::_zip_section",
+      "text": "只读中央目录：按 flag_bits & 0x800 判定是否 UTF-8，给出原始名字节、标志位与按声明编码的解释。成员内容不解压。"
+    },
+    {
+      "rule_id": "mf-file-zip-name-ambiguous",
+      "title": "归档名 CP437 与 UTF-8 两解并存",
+      "source": "迁自 target-map ② 行 · 旧仓 file.py（alternatives / note）",
+      "text": "未置 UTF-8 标志而 UTF-8 也解得开时，两种解释都列出，并写明工具不选择。少列一解或替用户选择都会丢掉可复核性。"
+    },
+    {
+      "rule_id": "mf-recover-lost",
+      "title": "不可逆判死",
+      "source": "迁自 target-map ② 行 · 旧仓 recover.py::_triage（LOST）",
+      "text": "U+FFFD（replacement_char）、锟斤拷（kun_jin_kao）、'?' 截断（encode_truncated）属于不可逆类：只能报丢失点（步、偏移、替换物、原因）与 LOST，不猜原字、不输出未经验证的修复。silent_drop 需要出处证据，本入口不伪造。"
+    },
+    {
+      "rule_id": "mf-recover-no-candidate",
+      "title": "没有可还原的候选",
+      "source": "迁自 target-map ② 行 · 旧仓 recover.py（reason=no_candidate）",
+      "text": "先判不可逆类，再取候选；若候选为空，记 LOST(reason=no_candidate) 并阻断。不把「没有候选」写成「已还原」。"
+    },
+    {
+      "rule_id": "mf-recover-not-mojibake",
+      "title": "分类为不是乱码",
+      "source": "迁自 target-map ② 行 · 旧仓 recover.py::_check_msvc_fill（NOT_MOJIBAKE）",
+      "text": "烫烫烫（0xCC）/ 屯屯屯（0xCD）是 MSVC 调试栈填充，不是乱码；判为 NOT_MOJIBAKE 并写明 classified_not_mojibake_no_repair_attempted，不尝试修复。该结论需要人处理，按阻断级记录。"
+    },
+    {
+      "rule_id": "mf-recover-recovered",
+      "title": "确定性还原",
+      "source": "迁自 target-map ② 行 · 旧仓 recover.py::_recovered_payload（RECOVERED）",
+      "text": "候选按 pick 取出后逐步重放并复算；只有 verify=true 且输出等于候选结果时才报 RECOVERED。还原是确定性的：同一输入同一 pick 得到同一输出。"
+    },
+    {
+      "rule_id": "mf-scan-baselined",
+      "title": "已登记命中（基线内）",
+      "source": "迁自 target-map ② 行 · 旧仓 scan.py（baselined 桶）",
+      "text": "命中行所在文件已在基线 files 清单里，记为 baselined，只留痕不阻断；基线只按路径登记，不改变命中判据。"
+    },
+    {
+      "rule_id": "mf-scan-clean",
+      "title": "干净语料零命中",
+      "source": "迁自 target-map ② 行 · 旧仓 scan.py（status=ok，0 new hits）",
+      "text": "全部输入文件逐非空行检查后没有任何命中、也没有过期基线项时，记一条 clean 结论并写明 files_scanned，证明门确实跑过（不是没跑）。"
+    },
+    {
+      "rule_id": "mf-scan-new",
+      "title": "新增命中",
+      "source": "迁自 target-map ② 行 · 旧仓 scan.py（new 桶 + K9 判据）",
+      "text": "一行同时满足：输入可读性 < 0.5；存在链深上限内的无损候选，其可读性 >= 0.8；可读性增益 >= 0.3。所在文件不在基线里即为新增命中，阻断。"
+    },
+    {
+      "rule_id": "mf-scan-stale",
+      "title": "基线登记的文件已不在磁盘上",
+      "source": "迁自 target-map ② 行 · 旧仓 scan.py（stale 桶）",
+      "text": "基线里的路径在输入层给出的存在性清单里找不到时记 stale；旧仓明确 stale 不影响退出码，因此本器官记为 warn 而不阻断。"
+    }
+  ]
+}

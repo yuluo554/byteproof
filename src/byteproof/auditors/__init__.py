@@ -31,6 +31,7 @@ BUILTIN_MODULES: Tuple[str, ...] = (
     "duplicate_docs",
     "fund_quarter_report",
     "media_type_check",
+    "mojibake_forensics",
     "timeseries_anomaly",
 )
 

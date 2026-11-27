@@ -1,0 +1,71 @@
+{
+  "version": "1",
+  "organ": "mojibake-forensics",
+  "encoders": [
+    "utf-8",
+    "gb18030",
+    "gbk",
+    "big5",
+    "shift_jis",
+    "euc-jp",
+    "euc-kr",
+    "cp1252",
+    "latin-1",
+    "cp437"
+  ],
+  "decoders": [
+    "utf-8",
+    "gb18030",
+    "big5",
+    "shift_jis",
+    "euc-kr",
+    "cp1252",
+    "latin-1"
+  ],
+  "max_depth": 3,
+  "default_top": 5,
+  "weights": {
+    "readability": 1.0,
+    "depth": 0.5,
+    "language": 0.3
+  },
+  "readability_classes": {
+    "ascii_visible": 0.2,
+    "cjk": 1.0,
+    "latin_ext": 0.1,
+    "halfwidth_katakana": -0.5,
+    "control": -1.0,
+    "pua": -1.0,
+    "replacement": -1.5,
+    "other": 0.0
+  },
+  "scan": {
+    "input_readability_below": 0.5,
+    "candidate_readability_at_least": 0.8,
+    "readability_gain_at_least": 0.3
+  },
+  "verdicts": {
+    "mf-attr-candidate": "info",
+    "mf-attr-confidence-degenerate": "warn",
+    "mf-attr-no-candidate": "error",
+    "mf-attr-single-candidate": "info",
+    "mf-attr-truncated": "info",
+    "mf-explain-divergence": "info",
+    "mf-explain-verify": "info",
+    "mf-explain-verify-failed": "error",
+    "mf-file-bom": "info",
+    "mf-file-bom-conflict": "warn",
+    "mf-file-csv-candidate": "info",
+    "mf-file-utf16-misalignment": "warn",
+    "mf-file-zip-name": "info",
+    "mf-file-zip-name-ambiguous": "warn",
+    "mf-recover-lost": "error",
+    "mf-recover-no-candidate": "error",
+    "mf-recover-not-mojibake": "error",
+    "mf-recover-recovered": "info",
+    "mf-scan-baselined": "info",
+    "mf-scan-clean": "info",
+    "mf-scan-new": "error",
+    "mf-scan-stale": "warn"
+  }
+}
