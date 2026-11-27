@@ -27,6 +27,7 @@ BUILTIN_MODULES: Tuple[str, ...] = (
     "artifact_drift",
     "chart_integrity",
     "config_drift",
+    "contract_drift",
     "duplicate_docs",
     "fund_quarter_report",
     "media_type_check",

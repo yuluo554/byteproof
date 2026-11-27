@@ -1,0 +1,21 @@
+{
+  "version": "1",
+  "params_version": "1",
+  "quant_decimals": 0,
+  "params": {
+    "policy": "backward",
+    "deploy_order": null,
+    "history": []
+  },
+  "verdicts": {
+    "contract-r1": "error",
+    "contract-r2": "error",
+    "contract-r3": "error",
+    "contract-r4": "warn",
+    "contract-r5": "error",
+    "contract-r6": "warn",
+    "contract-r7": "info",
+    "contract-gate": "error",
+    "contract-summary": "info"
+  }
+}

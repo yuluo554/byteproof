@@ -1,0 +1,13 @@
+{
+  "differences": [
+    {
+      "kind": "default_changed",
+      "format": "proto",
+      "stable_path": "message.User.field.name",
+      "direction": "BACKWARD_OK",
+      "detail": "default",
+      "old": "anon",
+      "new": "guest"
+    }
+  ]
+}

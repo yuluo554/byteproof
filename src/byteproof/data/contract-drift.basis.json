@@ -1,0 +1,59 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "contract-r1",
+      "title": "R1 字段删除",
+      "source": "迁自 target-map ② 行 · 旧仓 rules/rule-table.json R1（FIELD_REMOVED）",
+      "text": "旧 schema 的字段在新 schema 中消失且没有 alias / default / reserved 兜底。默认 breaking；policy 接受该方向时为 non-breaking。修复动作 reserve。"
+    },
+    {
+      "rule_id": "contract-r2",
+      "title": "R2 类型变更",
+      "source": "迁自 target-map ② 行 · 旧仓 rules/rule-table.json R2（TYPE_CHANGED）",
+      "text": "字段类型/逻辑类型变化。默认 breaking；union_widened 为 non-breaking；wire_compatible / promotion / widened 为 runtime-dependent（静态必破 ≠ 线上必炸）。修复动作 bump-and-version。"
+    },
+    {
+      "rule_id": "contract-r3",
+      "title": "R3 必填性变更",
+      "source": "迁自 target-map ② 行 · 旧仓 rules/rule-table.json R3（REQUIREDNESS_CHANGED）",
+      "text": "新增必填且无默认的字段，或既有字段被改为必填。默认 breaking。修复动作 add-default。新增**可选**字段不是破例（不进 R3）。"
+    },
+    {
+      "rule_id": "contract-r4",
+      "title": "R4 枚举收窄",
+      "source": "迁自 target-map ② 行 · 旧仓 rules/rule-table.json R4（ENUM_NARROWED）",
+      "text": "枚举取值集合收窄/重编号；默认 runtime-dependent（只有数据流出现被删取值时才会炸）。修复动作 bump-and-version。"
+    },
+    {
+      "rule_id": "contract-r5",
+      "title": "R5 字段号复用",
+      "source": "迁自 target-map ② 行 · 旧仓 rules/rule-table.json R5（FIELD_NUMBER_REUSED）",
+      "text": "Protobuf 字段号被复用、与 reserved 冲突，或旧 message 退休的号被另一个 message 以不同名字接手。默认 breaking。Avro / JSON Schema 无字段号概念 -> 显式 N/A 行。修复动作 reserve。"
+    },
+    {
+      "rule_id": "contract-r6",
+      "title": "R6 oneof 归属变化",
+      "source": "迁自 target-map ② 行 · 旧仓 rules/rule-table.json R6（ONEOF_MOVED）",
+      "text": "字段进入或离开 oneof / oneOf 分支。默认 runtime-dependent（只有消息体携带被移动成员时才会炸）。Avro 无 oneof 概念 -> 显式 N/A 行。修复动作 add-branch。"
+    },
+    {
+      "rule_id": "contract-r7",
+      "title": "R7 默认值变化",
+      "source": "迁自 target-map ② 行 · 旧仓 rules/rule-table.json R7（DEFAULT_CHANGED）",
+      "text": "默认值变化：读侧兼容，写侧语义变化需在发布说明标注。默认 non-breaking。修复动作 add-default。"
+    },
+    {
+      "rule_id": "contract-gate",
+      "title": "方向 × policy 判定",
+      "source": "迁自 target-map ② 行 · 旧仓 policy.allows / policy.judge（七档方向矩阵）",
+      "text": "每条差异的方向是事实，policy 是选择：BACKWARD_OK / FORWARD_OK / BOTH_OK / NONE_OK。policy=none 不判定；backward 接受 BACKWARD_OK+BOTH_OK；forward 接受 FORWARD_OK+BOTH_OK；full 只接受 BOTH_OK。任一差异方向不被接受 -> breaking（含 runtime-dependent），记 error。"
+    },
+    {
+      "rule_id": "contract-summary",
+      "title": "判定与归因汇总",
+      "source": "迁自 target-map ② 行 · 旧仓 report 汇总（verdict / counts / blast_radius）",
+      "text": "verdict（compatible/breaking）、命中计数、部署顺序与四态归因的汇总，只作 info 留痕。缺 --deploy-order 时 blast_radius 留 null 并写 deploy_order_not_given（不猜默认顺序）。"
+    }
+  ]
+}
