@@ -1,0 +1,10 @@
+{
+  "entries": [
+    {
+      "path": "/metadata/annotations/revision",
+      "kind": "changed",
+      "left": {"family": "decimal", "raw": "1.0"},
+      "right": {"family": "decimal", "raw": "1"}
+    }
+  ]
+}

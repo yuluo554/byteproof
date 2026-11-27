@@ -1,0 +1,20 @@
+{
+  "version": "1",
+  "params_version": "1",
+  "quant_decimals": 0,
+  "params": {
+    "fail_on": [],
+    "allow_indeterminate": false
+  },
+  "verdicts": {
+    "cfg-resource-shrink": "warn",
+    "cfg-deploy-shrink": "warn",
+    "cfg-image-change": "warn",
+    "cfg-exposure": "warn",
+    "cfg-config-change": "warn",
+    "cfg-cosmetic": "info",
+    "cfg-indeterminate": "warn",
+    "cfg-gate": "error",
+    "cfg-summary": "info"
+  }
+}

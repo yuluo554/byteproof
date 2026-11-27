@@ -1,0 +1,59 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "cfg-resource-shrink",
+      "title": "资源·收缩",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.classifyEntry（resources limits/requests 变小、replicas 减少）",
+      "text": "limits/requests 同族归一后右侧更小，或 replicas 减少：容量/副本收缩会直接影响行为。记 warn；是否阻断由 gate 决定（fail-on 未列入时只输出）。"
+    },
+    {
+      "rule_id": "cfg-deploy-shrink",
+      "title": "部署·收缩",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.classifyEntry（maxUnavailable 变大 / minReadySeconds 变大）",
+      "text": "maxUnavailable 变大或 minReadySeconds 变大：滚动更新更激进/更慢。记 warn；是否阻断由 gate 决定。"
+    },
+    {
+      "rule_id": "cfg-image-change",
+      "title": "镜像·变更",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.classifyEntry + semverBump（major/minor/patch/non-semver）",
+      "text": "image 引用变化；两侧标签都是纯数字点分时给 major/minor/patch，其余 non-semver。记 warn；是否阻断由 gate 决定。"
+    },
+    {
+      "rule_id": "cfg-exposure",
+      "title": "接口·暴露",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.isExposurePath（/ports /serviceType /selector /ingress /rules /host /http/paths；protocol 除外）",
+      "text": "Service 端口/类型/selector、Ingress 路由等可达性变化。记 warn；是否阻断由 gate 决定。"
+    },
+    {
+      "rule_id": "cfg-config-change",
+      "title": "配置·新增·移除",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.classifyEntry（env / ConfigMap / Secret key，及无法归类的兜底）",
+      "text": "env / data / stringData / envFrom / configMap / secret 路径的增删；其余无法归入专门类的变化也落这里，并标记 class_guess=true（分类不确定不得归入纯书写）。记 warn。"
+    },
+    {
+      "rule_id": "cfg-cosmetic",
+      "title": "纯书写（只计数）",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.classifyEntry（归一后语义相同）",
+      "text": "kind=cosmetic，或 changed 两侧同族归一后相等（1Gi ≡ 1024Mi、1h ≡ 60m）→ 纯书写，只计数，不入行为类。记 info。"
+    },
+    {
+      "rule_id": "cfg-indeterminate",
+      "title": "不可判定",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.summarize / Gate（indeterminate 是一等结果）",
+      "text": "kind=indeterminate 携带原因码（如 ambiguous_unit_family / unevaluated_expression）。不可判定不是错误；但默认阻断（--allow-indeterminate 可抑制）。记 warn；gate 决定是否阻断。"
+    },
+    {
+      "rule_id": "cfg-gate",
+      "title": "门禁命中",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.Gate（fail-on / allow-indeterminate）",
+      "text": "存在不可判定（未 allow）或 fail-on 列出的类命中（未列 fail-on 时 = 任一行为差异）→ 阻断，记 error。未列出的行为差异照常输出但不阻断。"
+    },
+    {
+      "rule_id": "cfg-summary",
+      "title": "分类汇总",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.summarize（计数从明细算得）",
+      "text": "total / 逐类计数 / behavioral / cosmetic / indeterminate 的汇总，只作 info 留痕；不单独阻断。"
+    }
+  ]
+}
