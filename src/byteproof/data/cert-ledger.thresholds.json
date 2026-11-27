@@ -1,0 +1,52 @@
+{
+  "version": "1",
+  "organ": "cert-ledger",
+  "policy_version": "1.1.0",
+  "modes": ["inventory", "hygiene", "report", "containers"],
+  "severity_order": {"ERROR": 0, "WARN": 1, "INFO": 2},
+  "levels": ["ERROR", "WARN", "INFO", "off"],
+  "fail_on_values": ["ERROR", "WARN", "INFO", "none"],
+  "defaults": {
+    "expiring_warn_days": 30,
+    "cliff_window_days": 30,
+    "cliff_min_count": 3,
+    "rsa_min_bits": 2048,
+    "ec_allowed_curves": ["secp256r1", "secp384r1", "secp521r1"],
+    "weak_sig_forbidden_digests": ["sha1", "md5"],
+    "nist_2031_enabled": false,
+    "nist_2031_bits": 2048,
+    "permissions_max_posix_mode": "640",
+    "diagnostics_default": "INFO",
+    "default_fail_on": "ERROR"
+  },
+  "diagnostics_codes": {
+    "PARSE_FAILED": "WARN",
+    "PARSE_UNSUPPORTED": "INFO",
+    "CONTAINER_UNREADABLE": "WARN",
+    "SOURCE_UNAVAILABLE": "INFO"
+  },
+  "verdicts": {
+    "cl-container-open-credential": "info",
+    "cl-container-truststore": "warn",
+    "cl-diagnostic": "info",
+    "cl-diff": "info",
+    "cl-duplicate-cert": "info",
+    "cl-duplicate-key": "info",
+    "cl-expired": "error",
+    "cl-expiring": "warn",
+    "cl-expiry-cliff": "warn",
+    "cl-expiry-table": "info",
+    "cl-inventory": "info",
+    "cl-ledger-summary": "info",
+    "cl-nist-2031": "info",
+    "cl-orphan-cert": "info",
+    "cl-orphan-key": "info",
+    "cl-permission-too-open": "warn",
+    "cl-policy-suppressed": "info",
+    "cl-private-key-unencrypted": "warn",
+    "cl-threshold-reached": "error",
+    "cl-weak-key-ec": "warn",
+    "cl-weak-key-rsa": "warn",
+    "cl-weak-sig": "warn"
+  }
+}

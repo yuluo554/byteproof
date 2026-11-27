@@ -1,0 +1,49 @@
+{
+  "mode": "hygiene",
+  "as_of": 1900000000,
+  "ledger": {
+    "certs": [
+      {
+        "fingerprint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "spki_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "subject": {
+          "display": "CN=sample.example",
+          "der_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "issuer": {
+          "display": "CN=sample-ca.example",
+          "der_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        },
+        "san": {"dns": ["sample.example"], "ip": [], "email": [], "uri": []},
+        "not_before": "2029-03-17T17:46:40Z",
+        "not_after": "2030-03-27T17:46:40Z",
+        "key_algo": "rsa",
+        "key_bits": 2048,
+        "curve": null,
+        "sig_algo": "1.2.840.113549.1.1.11",
+        "key_usage": ["digitalSignature"],
+        "extended_key_usage": ["serverAuth"],
+        "is_ca": false,
+        "subject_key_id": "AA:BB:CC",
+        "sources": [
+          {"kind": "file", "path": "pki/sample.pem", "container_format": null, "alias": null, "entry_type": null, "store_name": null, "posix_mode": "640"}
+        ]
+      }
+    ],
+    "keys": [
+      {
+        "spki_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "key_algo": "rsa",
+        "key_bits": 2048,
+        "curve": null,
+        "encrypted": false,
+        "paired_cert_fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sources": [
+          {"kind": "file", "path": "pki/sample.key", "container_format": null, "alias": null, "entry_type": null, "store_name": null, "posix_mode": "644"}
+        ]
+      }
+    ],
+    "containers": [],
+    "diagnostics": []
+  }
+}

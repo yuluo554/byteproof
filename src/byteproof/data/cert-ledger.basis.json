@@ -1,0 +1,137 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "cl-container-open-credential",
+      "title": "容器可用空口令打开",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._container_rules(CONTAINER_EMPTY_PASSWORD)；出处：本项目定义（data/README.md 5.15）",
+      "text": "容器能以空口令打开是一条事实性发现：口令保护存在但等于没有。等级与出处由策略与依据包决定；旧仓把该代码记为 INFO。"
+    },
+    {
+      "rule_id": "cl-container-truststore",
+      "title": "truststore 中出现私钥条目",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._container_rules(CONTAINER_TRUSTSTORE_WITH_KEY)；出处：本项目定义（data/README.md 5.15）",
+      "text": "同一个容器里既有私钥条目又有非私钥条目，说明它同时承担信任库与身份库两种角色；轮换与分发权限会互相牵连。"
+    },
+    {
+      "rule_id": "cl-diagnostic",
+      "title": "采集/容器失败路径",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._diagnostic_rules；出处：本项目定义（data/README.md 5.10）",
+      "text": "台账里每条 diagnostic（PARSE_FAILED / PARSE_UNSUPPORTED / SOURCE_UNAVAILABLE / CONTAINER_UNREADABLE / SKIP_*）都成为 finding。代码不在等级表里时继承策略声明的 default，不允许静默消失——「没看」与「没有问题」必须能区分。"
+    },
+    {
+      "rule_id": "cl-diff",
+      "title": "与上一份报告的证书差异",
+      "source": "迁自 target-map ② 行 · 旧仓 render._diff_against；出处：本项目定义（plan/03 §④）",
+      "text": "按指纹给出 added / removed / rotated。rotated = 同 subject DER、同 SPKI、换指纹（重签）；公钥也换了的按 removed + added 计，不冒充轮换。基线形状不对是输入错误（退出码 2）。"
+    },
+    {
+      "rule_id": "cl-duplicate-cert",
+      "title": "同一证书存在多个副本",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._duplicate_rules(DUPLICATE_CERT)；出处：本项目定义（data/README.md 5.7）",
+      "text": "同指纹证书的 sources 长度 > 1 即为多副本。它不是安全问题而是轮换问题：续期一处会留下其余副本，机器上没有任何东西说明哪份是权威。"
+    },
+    {
+      "rule_id": "cl-duplicate-key",
+      "title": "同一私钥存在多个副本",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._duplicate_rules(DUPLICATE_KEY)；出处：本项目定义（data/README.md 5.7）",
+      "text": "同 SPKI 私钥的 sources 长度 > 1 即为多副本。锁定密钥（无 SPKI）不参与，避免用哨兵值把不同密钥合并成一个身份。"
+    },
+    {
+      "rule_id": "cl-expired",
+      "title": "证书已过期",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._expiry_rules(EXPIRED)；出处：RFC 5280 4.1.2.5（Validity）",
+      "text": "notAfter 严格早于 as_of 即过期；notAfter == as_of 视为仍有效（边界只定义一次）。不可解析的时间戳不判过期。"
+    },
+    {
+      "rule_id": "cl-expiring",
+      "title": "证书即将到期",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._expiry_rules(EXPIRING)；出处：RFC 5280 4.1.2.5；窗口长度为本项目定义（data/README.md 5.2）",
+      "text": "as_of <= notAfter < as_of + warn_days 记 EXPIRING；剩余天数向上取整（不足一天按一天）。窗口长度来自策略，不写死在代码里。"
+    },
+    {
+      "rule_id": "cl-expiry-cliff",
+      "title": "同窗口内扎堆到期",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._cliff_rule(EXPIRY_CLIFF)；出处：本项目定义（data/README.md 5.3）",
+      "text": "窗口内不同 fingerprint_sha256 的数量 >= min_count 时记一条 EXPIRY_CLIFF。按唯一指纹计数：同一证书的三份副本是一次续期，不是三次危机。"
+    },
+    {
+      "rule_id": "cl-expiry-table",
+      "title": "到期表",
+      "source": "迁自 target-map ② 行 · 旧仓 render._expiries；出处：plan/03 §③ 过期表",
+      "text": "EXPIRED / EXPIRING 两种 finding 派生出到期表，按 not_after 升序、再按指纹排序；--top 只截断展示，不截断 findings。表只能列出判决提到过的证书。"
+    },
+    {
+      "rule_id": "cl-inventory",
+      "title": "台账归并结果",
+      "source": "迁自 target-map ② 行 · 旧仓 inventory._build；出处：plan/03 §② 记录模型",
+      "text": "证书按指纹去重、私钥按 SPKI 去重（锁定密钥每文件一条）、容器始终入账、证书与私钥按 SPKI 配对（同 SPKI 多证书取最小指纹）。台账是事实表，不是判决表。"
+    },
+    {
+      "rule_id": "cl-ledger-summary",
+      "title": "台账/判决计数摘要",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._summary；出处：plan/03 §③ 计数单位",
+      "text": "records 计台账行，findings 计判决；一条记录可以带多条 finding，也可以一条都不带。suppressed 单独计数——被策略关掉的规则不许与「没有命中」混为一谈。"
+    },
+    {
+      "rule_id": "cl-nist-2031",
+      "title": "NIST 2031 过渡提示",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._strength_rules(POLICY_NIST_2031)；出处：NIST SP 800-57 Part 1 Rev.5 Table 2/Table 4；SP 800-131A Rev.2 §1.1",
+      "text": "仅在策略开启（enabled=true）且密钥为 RSA、位数等于配置的 bits 时记一条提示。默认关闭：RSA 2048 现阶段仍是 112-bit strength，2031 年起才不再允许用于施加保护。"
+    },
+    {
+      "rule_id": "cl-orphan-cert",
+      "title": "证书没有对应私钥",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._pairing_rules(ORPHAN_CERT)；出处：本项目定义（data/README.md 5.6）",
+      "text": "证书的 SPKI 在私钥侧没有记录即记孤儿。没有 SPKI 的证书不做配对判断——「没法判断」不是「没有」。「没看」与「没有」必须能区分。"
+    },
+    {
+      "rule_id": "cl-orphan-key",
+      "title": "私钥没有对应证书",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._pairing_rules(ORPHAN_KEY)；出处：本项目定义（data/README.md 5.6）",
+      "text": "私钥的 SPKI 在证书侧没有记录即记孤儿。锁定密钥（spki_sha256=null）不判孤儿：没有 SPKI 就没有说它没有证书的依据。"
+    },
+    {
+      "rule_id": "cl-permission-too-open",
+      "title": "私钥文件权限过宽",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._key_hygiene_rules(PERMISSION_TOO_OPEN)；出处：本项目定义（data/README.md 5.5）",
+      "text": "记录的 POSIX mode 与策略的 max_posix_mode 做位掩码比较：actual & ~permitted & 0o777 非零即过宽。没有记录 mode 的来源（Windows / 容器条目）不判——凭空补一个 mode 会让每台 Windows 机器上的私钥都被标记。"
+    },
+    {
+      "rule_id": "cl-policy-suppressed",
+      "title": "策略关闭了规则",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene.RuleSet.suppressed；出处：plan/03 §③",
+      "text": "level=off 的规则不产出 finding，但被抑制的次数必须计数并留一条记录。关掉规则是「不要因它阻断」，不是「不要告诉我它发生过」。"
+    },
+    {
+      "rule_id": "cl-private-key-unencrypted",
+      "title": "私钥未加密",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._key_hygiene_rules(PRIVATE_KEY_UNENCRYPTED)；出处：本项目定义（data/README.md 5.5）",
+      "text": "私钥可无口令解析成功即为未加密。容器内私钥记为 encrypted=true（受容器口令保护）；文件私钥没有这层声明，按实际形态判。"
+    },
+    {
+      "rule_id": "cl-threshold-reached",
+      "title": "达到报告阻断阈值",
+      "source": "迁自 target-map ② 行 · 旧仓 render._exit_code；出处：plan/03 §④ 退出码",
+      "text": "fail_on = ERROR/WARN/INFO 时，任一 finding 的等级不高于阈值即记一条阻断结论（退出码 1）；none 永不阻断但 findings 照常输出。这是本器官唯一的 error 级结论：finding 自身只带 severity 证据。"
+    },
+    {
+      "rule_id": "cl-weak-key-ec",
+      "title": "EC 曲线不在允许集合内",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._strength_rules(WEAK_KEY / ec)；出处：CA/B Forum TLS BR v2.3.1 6.1.5 Key sizes",
+      "text": "仅当 key_algo=ec 且 curve 非空且不在策略 allowed_curves 内时判弱。curve 为空（解不出）不判弱；未知不是弱。"
+    },
+    {
+      "rule_id": "cl-weak-key-rsa",
+      "title": "RSA 密钥位数低于门槛",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._strength_rules(WEAK_KEY / rsa)；出处：CA/B Forum TLS BR v2.3.1 6.1.5 Key sizes；NIST SP 800-131A Rev.2",
+      "text": "仅当 key_algo=rsa 且 key_bits 是整数且小于策略 min_bits 时判弱。key_algo 为空（本构建解不出）不判弱：那是「没读懂」，不是「弱」。"
+    },
+    {
+      "rule_id": "cl-weak-sig",
+      "title": "签名摘要算法已禁用",
+      "source": "迁自 target-map ② 行 · 旧仓 hygiene._strength_rules(WEAK_SIG)；出处：NIST SP 800-131A Rev.2（SHA-1 禁止用于签名生成）",
+      "text": "签名算法 OID 映射为小写短名后，与策略 forbidden_digests（如 sha1、md5）做子串匹配。未收录的 OID 保留点串，匹配不到摘要名即不判弱——未知不是弱。"
+    }
+  ]
+}
