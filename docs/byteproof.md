@@ -89,7 +89,7 @@ src/byteproof/data/<slug>.thresholds.json   # 阈值/等级台账（与运行期
 **显式清单而不是扫描**：扫描式加载会把「器官忘了登记」变成静默空跑。
 **规则包必须随包分发**：`pip wheel` 后包里 `data/` 为空就等于"装上了但审不了"。
 
-## 7. 示例（已迁入 12 个器官）
+## 7. 示例（已迁入 13 个器官）
 
 ```console
 $ byteproof list
@@ -102,6 +102,7 @@ contract-drift                   1          契约差异账本：R1–R7 规则 
 duplicate-docs                   1          文档工件缺陷账本：正文归一化后按精确 Jaccard 判同源重复
 fund-quarter-report              1          基金季报工件缺陷账本：五态 diff 异常行 + 经理分类 + 规模缺失/零值 + 合规与披露
 image-oracle                     1          图像呈现预言账本：方向矩阵 + 双重旋转三条件 + ICC/色彩体检 + 容器结构 + 消费者矩阵
+media-trace                      1          MP4 时间轴账本：结构自洽 + 时长/编辑表 + stts/tfdt + priming/裁剪 + display matrix
 media-type-check                 1          MIME 工件缺陷账本：头宽/编码字/传输编码/容器/归属五域的条款一致性
 mojibake-forensics               1          乱码尸检账本：有界候选 + 每步字节证明 + 不可逆判死 + 字节工件诊断 + 语料门禁
 timeseries-anomaly               1          时序工件缺陷账本：时间轴完整性 + 采样形状 + 四个确定性检测器命中段
@@ -121,6 +122,7 @@ PackMissing: 未注册的器官：no-such          # 退出码 3
 | `duplicate-docs` | 1 | [`duplicate-docs.md`](duplicate-docs.md) |
 | `fund-quarter-report` | 1 | [`fund-quarter-report.md`](fund-quarter-report.md) |
 | `image-oracle` | 1 | [`image-oracle.md`](image-oracle.md) |
+| `media-trace` | 1 | [`media-trace.md`](media-trace.md) |
 | `media-type-check` | 1 | [`media-type-check.md`](media-type-check.md) |
 | `mojibake-forensics` | 1 | [`mojibake-forensics.md`](mojibake-forensics.md) |
 | `timeseries-anomaly` | 1 | [`timeseries-anomaly.md`](timeseries-anomaly.md) |
