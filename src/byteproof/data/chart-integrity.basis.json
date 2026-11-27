@@ -1,0 +1,113 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "chart-bar-baseline",
+      "title": "柱状图基线非零（截断轴）",
+      "source": "迁自 target-map ② 行 · 旧仓 rules.json R001（对齐已有工作，非创新）",
+      "text": "柱状图声明 y_zero=false 即截断基线：零线不在原点时柱高差异被视觉放大。y_zero 未显式为 false 不算命中。"
+    },
+    {
+      "rule_id": "chart-dual-y",
+      "title": "双 Y 轴",
+      "source": "迁自 target-map ② 行 · 旧仓 rules.json R002",
+      "text": "声明 dual_y=true 即双轴：两轴刻度可独立缩放，制造虚假相关。"
+    },
+    {
+      "rule_id": "chart-pie-sectors",
+      "title": "饼图扇区数上限与百分比求和",
+      "source": "迁自 target-map ② 行 · 旧仓 rules.json R003（thresholds.max_sectors）",
+      "text": "饼图扇区数超过上限，或扇区百分比按声明小数位 ROUND_HALF_UP 后合计不等于 100，即命中。上限与舍入口径来自 params。"
+    },
+    {
+      "rule_id": "chart-pseudo-3d",
+      "title": "3D 效果",
+      "source": "迁自 target-map ② 行 · 旧仓 rules.json R004",
+      "text": "声明 pseudo_3d=true 即伪 3D：透视变形扭曲数值比较。"
+    },
+    {
+      "rule_id": "chart-radius",
+      "title": "面积 / 半径编码",
+      "source": "迁自 target-map ② 行 · 旧仓 rules.json R005",
+      "text": "size_channel=radius 表示以半径代替面积编码：差异按平方级夸大。"
+    },
+    {
+      "rule_id": "chart-smooth",
+      "title": "平滑曲线过冲",
+      "source": "迁自 target-map ② 行 · 旧仓 rules.json R006",
+      "text": "声明 smooth=true 即平滑插值：曲线可能越过数据点极值；本工具不渲染平滑曲线，须移除声明。"
+    },
+    {
+      "rule_id": "chart-time-axis",
+      "title": "时间轴等距",
+      "source": "迁自 target-map ② 行 · 旧仓 rules.json R007",
+      "text": "x 轴字段类型为 date、且渲染类目解析成日期后相邻间隔不全相等，即按类目等距绘制会扭曲时间趋势。少于 2 个日期或日期串非法时不可判定，不命中。"
+    },
+    {
+      "rule_id": "chart-low-contrast",
+      "title": "文字 / 图元对比度",
+      "source": "迁自 target-map ② 行 · 旧仓 rules.json R008",
+      "text": "声明 low_contrast=true 即低对比度：图元与标签难以分辨。"
+    },
+    {
+      "rule_id": "chart-spec-invalid",
+      "title": "规格合法性（解析层拦截）",
+      "source": "迁自 target-map ② 行 · 旧仓 rules.json R009（K15：规则层不二次改判）",
+      "text": "非法 mark / 未知字段等规格合法性问题由解析层以输入不合法（退出码 2）拦截；本器官不二次报错，规则保留为登记项。"
+    },
+    {
+      "rule_id": "chart-provenance-missing",
+      "title": "缺少渲染值溯源记录",
+      "source": "迁自 target-map ② 行 · 旧仓 provenance.validate（G1_PROVENANCE_MISSING）",
+      "text": "按 spec 枚举出的每个渲染值都必须恰有一条溯源记录。缺少记录时该渲染值不可复核，记 error。"
+    },
+    {
+      "rule_id": "chart-provenance-unexpected",
+      "title": "存在不属于当前 spec 的渲染值",
+      "source": "迁自 target-map ② 行 · 旧仓 provenance.validate（G1_UNEXPECTED_RECORD）",
+      "text": "记录集合必须是 spec 枚举的精确集合：多出的 rendered_value_id 说明工件与规格不对应，记 error。"
+    },
+    {
+      "rule_id": "chart-provenance-malformed",
+      "title": "溯源记录结构或源哈希非法",
+      "source": "迁自 target-map ② 行 · 旧仓 provenance.validate（G1_MALFORMED_RECORD / G1_HASH_MISMATCH / G1_DUPLICATE_RENDERED_VALUE_ID）",
+      "text": "记录字段缺失、rendered_value_id 非 16 位 hex、id 重复、csv_line ≠ row_index+2、或 provenance.source.sha256 与数据集不符，均记 error。"
+    },
+    {
+      "rule_id": "chart-provenance-mismatch",
+      "title": "溯源记录与源单元格/重算不一致",
+      "source": "迁自 target-map ② 行 · 旧仓 provenance.validate（G1_ROW_COLUMN_NOT_FOUND / G1_RAW_CELL_MISMATCH / G1_ID_MISMATCH / G1_PROVENANCE_MISMATCH）",
+      "text": "row_index/column 不存在、raw_cell 与源单元格不符、rendered_value_id 与字段重算不符、或 match/recomputed_value/rendered_label 与独立重算不一致，均记 error。"
+    },
+    {
+      "rule_id": "chart-g2-small-n",
+      "title": "小样本均值柱（阻断）",
+      "source": "迁自 target-map ② 行 · 旧仓 gates.json G2_SMALL_N_MEAN_BAR（violation）",
+      "text": "组内 n < n_min 且样本偏斜（|g1| > 阈值）或呈多峰，而规格没有合规替代（散点叠加 / box / scatter）时，均值柱会掩盖分布，记 error 阻断。"
+    },
+    {
+      "rule_id": "chart-g2-undetermined",
+      "title": "小样本分布未判定",
+      "source": "迁自 target-map ② 行 · 旧仓 gates.json G2_SMALL_N_MEAN_BAR（undetermined）",
+      "text": "组内 n < n_min，但样本量不足以计算偏度/多峰（或全等值）时，分布未判定，记 warn 而不冒充安全。"
+    },
+    {
+      "rule_id": "chart-g2-alternative",
+      "title": "小样本但已用合规替代",
+      "source": "迁自 target-map ② 行 · 旧仓 gates.json G2_SMALL_N_MEAN_BAR（alternative）",
+      "text": "小样本且偏斜/多峰，但规格声明了全量散点叠加，或图型本身就是 box / scatter 时，只记 info：分布仍可见，不阻断。"
+    },
+    {
+      "rule_id": "chart-g3-source",
+      "title": "误差棒来源缺失或数值矛盾",
+      "source": "迁自 target-map ② 行 · 旧仓 gates.json G3_*（sd/sem/ci/n 来源判定）",
+      "text": "声明 SD/SEM/CI/n 误差棒时，必须能在数据列（按别名表）或成对上下限中找到来源；SEM 列数值须与 sd/sqrt(n) 在容差内一致；n 列须与组内计数一致。否则记 error。"
+    },
+    {
+      "rule_id": "chart-g3-undeclared",
+      "title": "未声明误差棒但存在可疑列",
+      "source": "迁自 target-map ② 行 · 旧仓 gates.json G3_ERRORBAR_UNDECLARED",
+      "text": "规格未声明 error_bar，但数据中存在数值型的 SD/SEM 别名列时，只记 info 提示，不阻断。"
+    }
+  ]
+}

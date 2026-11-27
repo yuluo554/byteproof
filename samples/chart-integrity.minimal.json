@@ -1,0 +1,150 @@
+{
+  "dataset": {
+    "header": [
+      "月份",
+      "值"
+    ],
+    "columns": [
+      {
+        "name": "月份",
+        "type": "date"
+      },
+      {
+        "name": "值",
+        "type": "decimal"
+      }
+    ],
+    "rows": [
+      [
+        "2026-01-01",
+        "10.00"
+      ],
+      [
+        "2026-01-08",
+        "12.50"
+      ],
+      [
+        "2026-01-15",
+        "11.25"
+      ]
+    ],
+    "row_count": 3,
+    "source": {
+      "name": "monthly.csv",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "spec": {
+    "spec_id": "spec-demo",
+    "mark": "line",
+    "title": "月度值（合成样例）",
+    "encoding": {
+      "x": {
+        "field": "月份"
+      },
+      "y": {
+        "field": "值",
+        "decimals": 2
+      }
+    }
+  },
+  "provenance": {
+    "spec_id": "spec-demo",
+    "source": {
+      "name": "monthly.csv",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "rendered_values": [
+      {
+        "rendered_value_id": "d204b2048f4b9dfb",
+        "mark_id": "line",
+        "series": null,
+        "category": "2026-01-01",
+        "row_index": 0,
+        "csv_line": 2,
+        "column": "值",
+        "raw_cell": "10.00",
+        "parsed_value": "10",
+        "transform_chain": [
+          {
+            "op": "identity",
+            "field": "值"
+          }
+        ],
+        "sources": [
+          {
+            "row_index": 0,
+            "csv_line": 2,
+            "column": "值",
+            "raw_cell": "10.00",
+            "parsed_value": "10"
+          }
+        ],
+        "exact_value": "10",
+        "rendered_label": "10.00",
+        "recomputed_value": "10.00",
+        "match": true
+      },
+      {
+        "rendered_value_id": "2feaea03245bfdb9",
+        "mark_id": "line",
+        "series": null,
+        "category": "2026-01-08",
+        "row_index": 1,
+        "csv_line": 3,
+        "column": "值",
+        "raw_cell": "12.50",
+        "parsed_value": "12.5",
+        "transform_chain": [
+          {
+            "op": "identity",
+            "field": "值"
+          }
+        ],
+        "sources": [
+          {
+            "row_index": 1,
+            "csv_line": 3,
+            "column": "值",
+            "raw_cell": "12.50",
+            "parsed_value": "12.5"
+          }
+        ],
+        "exact_value": "12.5",
+        "rendered_label": "12.50",
+        "recomputed_value": "12.50",
+        "match": true
+      },
+      {
+        "rendered_value_id": "a560d78612eb9361",
+        "mark_id": "line",
+        "series": null,
+        "category": "2026-01-15",
+        "row_index": 2,
+        "csv_line": 4,
+        "column": "值",
+        "raw_cell": "11.25",
+        "parsed_value": "11.25",
+        "transform_chain": [
+          {
+            "op": "identity",
+            "field": "值"
+          }
+        ],
+        "sources": [
+          {
+            "row_index": 2,
+            "csv_line": 4,
+            "column": "值",
+            "raw_cell": "11.25",
+            "parsed_value": "11.25"
+          }
+        ],
+        "exact_value": "11.25",
+        "rendered_label": "11.25",
+        "recomputed_value": "11.25",
+        "match": true
+      }
+    ]
+  }
+}

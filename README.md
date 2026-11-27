@@ -29,6 +29,7 @@
 
 ```console
 $ byteproof list
+chart-integrity              1          图表工件缺陷账本：九条反误导规则 + 逐值溯源 + 样本量门禁 + 误差棒来源
 duplicate-docs               1          文档工件缺陷账本：正文归一化后按精确 Jaccard 判同源重复
 fund-quarter-report          1          基金季报工件缺陷账本：五态 diff 异常行 + 经理分类 + 规模缺失/零值 + 合规与披露
 media-type-check             1          MIME 工件缺陷账本：头宽/编码字/传输编码/容器/归属五域的条款一致性
@@ -42,10 +43,11 @@ timeseries-anomaly           1          时序工件缺陷账本：时间轴完�
 | 器官（auditor） | 来源 | 状态 |
 |---|---|---|
 | `duplicate-docs` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/duplicate-docs.md)） |
+| `chart-integrity` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/chart-integrity.md)） |
 | `fund-quarter-report` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/fund-quarter-report.md)） |
 | `media-type-check` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/media-type-check.md)） |
 | `timeseries-anomaly` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/timeseries-anomaly.md)） |
-| — | 其余 22 个 auditor | 待迁入 |
+| — | 其余 21 个 auditor | 待迁入 |
 
 跑一次审计（工件 = 时序长表解析后的 JSON；规则包随包分发，不需要额外参数）：
 

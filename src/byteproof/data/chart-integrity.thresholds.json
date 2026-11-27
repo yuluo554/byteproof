@@ -1,0 +1,51 @@
+{
+  "version": "1",
+  "params_version": "1",
+  "quant_decimals": 6,
+  "params": {
+    "n_min": 5,
+    "skew_abs_threshold": 1.0,
+    "skew_min_n": 3,
+    "multimodal_bins": 6,
+    "multimodal_min_n": 4,
+    "multimodal_min_count_floor": 2,
+    "multimodal_min_count_divisor": 6,
+    "sem_tolerance_abs": "0.000000000001",
+    "pie_max_sectors": 4,
+    "aliases": {
+      "case_sensitive": false,
+      "match_mode": "suffix",
+      "type_order": ["sd", "sem", "ci", "n"],
+      "types": {
+        "sd": {"columns": ["SD", "标准差", "标准偏差", "std", "stddev"], "title": ["SD", "标准差"]},
+        "sem": {"columns": ["SEM", "标准误", "标准误差", "SE"], "title": ["SEM", "标准误"]},
+        "ci": {
+          "lower": ["CI下限", "CI下界", "置信区间下限", "ci_low", "ci_lower"],
+          "upper": ["CI上限", "CI上界", "置信区间上限", "ci_high", "ci_upper"],
+          "title": ["CI", "置信区间"]
+        },
+        "n": {"columns": ["样本数", "样本量"], "title": ["样本量", "样本数", "n="]}
+      }
+    }
+  },
+  "verdicts": {
+    "chart-bar-baseline": "error",
+    "chart-dual-y": "error",
+    "chart-pie-sectors": "error",
+    "chart-pseudo-3d": "error",
+    "chart-radius": "error",
+    "chart-smooth": "error",
+    "chart-time-axis": "error",
+    "chart-low-contrast": "error",
+    "chart-spec-invalid": "error",
+    "chart-provenance-missing": "error",
+    "chart-provenance-unexpected": "error",
+    "chart-provenance-malformed": "error",
+    "chart-provenance-mismatch": "error",
+    "chart-g2-small-n": "error",
+    "chart-g2-undetermined": "warn",
+    "chart-g2-alternative": "info",
+    "chart-g3-source": "error",
+    "chart-g3-undeclared": "info"
+  }
+}
