@@ -24,6 +24,7 @@ from typing import Tuple
 #: 模块名用下划线、slug 用连字符（``timeseries_anomaly`` <-> ``timeseries-anomaly``）：
 #: Python 包名不能带 ``-``，而账本与 README 里的 slug 必须能当命令行参数用。
 BUILTIN_MODULES: Tuple[str, ...] = (
+    "artifact_drift",
     "chart_integrity",
     "duplicate_docs",
     "fund_quarter_report",

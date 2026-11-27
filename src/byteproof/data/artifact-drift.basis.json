@@ -1,0 +1,89 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "drift-t1",
+      "title": "T1 时间戳差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute.classifyFact（tar.mtime / zip.mtime / gzip.mtime）",
+      "text": "归档头里的 mtime 是构建时刻的痕迹。可归一化（去掉该事实），不改变内容；记 warn，由 budget 白名单决定是否放行。"
+    },
+    {
+      "rule_id": "drift-t2",
+      "title": "T2 属主差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute.classifyFact（tar.uid / tar.gid / tar.uname / tar.gname）",
+      "text": "属主/属组是构建环境身份。可归一化；记 warn，由 budget 决定是否放行。"
+    },
+    {
+      "rule_id": "drift-t3",
+      "title": "T3 权限差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute.classifyFact（tar.mode / zip.external_attr 权限位）",
+      "text": "权限位差异可归一化；zip 的权限位与非权限位同时变时同时命中 T3/T7（notes 记 rule_overlap）。记 warn。"
+    },
+    {
+      "rule_id": "drift-t4",
+      "title": "T4 根前缀差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute（两侧公共根前缀不同 → 树级差异）",
+      "text": "两侧条目的公共目录前缀不同（如 synthpkg-0.1.0/ vs synthpkg-0.1.1/）。先于逐条目比对，记一条树级 warn。"
+    },
+    {
+      "rule_id": "drift-t5",
+      "title": "T5 归档内顺序差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute（条目集合与哈希一致时比较 index）",
+      "text": "条目集合与内容哈希完全一致、仅归档内序号不同。可归一化（index 置 0）；记 warn。"
+    },
+    {
+      "rule_id": "drift-t6",
+      "title": "T6 gzip 头差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute.classifyFact（gzip.xfl / gzip.os）",
+      "text": "gzip 压缩级别与 OS 字节差异可归一化；记 warn。"
+    },
+    {
+      "rule_id": "drift-t7",
+      "title": "T7 容器头差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute.classifyFact（raw_header_sha256 / zip.create_system）",
+      "text": "原始容器头哈希或 zip 创建系统差异可归一化；记 warn。"
+    },
+    {
+      "rule_id": "drift-t8",
+      "title": "T8 编译器注释差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute.classifyFact（elf.comment / elf.producer / .comment 节）",
+      "text": "编译器版本/生产者字符串（.comment 或 elf.producer）随工具链变化。可归一化；记 warn。"
+    },
+    {
+      "rule_id": "drift-t9",
+      "title": "T9 构建 ID 差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute.classifyFact（elf.build_id / .note.gnu.build-id）",
+      "text": "build-id 与调试节内容随构建变化，可归一化；记 warn。"
+    },
+    {
+      "rule_id": "drift-t10",
+      "title": "T10 签名节差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute.classifyFact（.sig 节）",
+      "text": "签名节存在性/内容差异可归一化；记 warn。"
+    },
+    {
+      "rule_id": "drift-t11",
+      "title": "T11 构建目录差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute.classifyFact（elf.comp_dir）",
+      "text": "编译目录（comp_dir）泄漏构建路径，可归一化；记 warn。"
+    },
+    {
+      "rule_id": "drift-t12",
+      "title": "T12 残留内容差异",
+      "source": "迁自 target-map ② 行 · 旧仓 attribute（T1–T11 归一化后仍不同的内容字节）",
+      "text": "没有任何 T1–T11 事实能解释的内容字节差异就是残留：归一化后仍不同，记 error（阻断）。"
+    },
+    {
+      "rule_id": "drift-unbudgeted",
+      "title": "差异类别不在预算白名单内",
+      "source": "迁自 target-map ② 行 · 旧仓 report 退出码门禁（--budget）",
+      "text": "实际出现的 T1–T11 类别必须全部在 budget 白名单内；未给 budget 时白名单为空。超出白名单记 error（来源 exit 2 的阻断语义，本产品映射 rc 1）。"
+    },
+    {
+      "rule_id": "drift-cause",
+      "title": "最小原因集与残留字节",
+      "source": "迁自 target-map ② 行 · 旧仓 minimize.Search / report.minimal_cause_set",
+      "text": "使两侧归一化后树摘要相等的最小 T1–T11 集合；空集 = 完全一致，null = 无解（此时残留字节 > 0）。只作 info 留痕，不单独阻断。"
+    }
+  ]
+}

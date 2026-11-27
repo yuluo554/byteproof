@@ -1,0 +1,26 @@
+{
+  "left": {
+    "kind": "tar",
+    "entries": [
+      {
+        "path": "synthpkg-0.1.0/a.txt",
+        "kind": "file",
+        "index": 0,
+        "data": "payload",
+        "facts": {"tar.mtime": "1700000000", "tar.mode": "644"}
+      }
+    ]
+  },
+  "right": {
+    "kind": "tar",
+    "entries": [
+      {
+        "path": "synthpkg-0.1.0/a.txt",
+        "kind": "file",
+        "index": 0,
+        "data": "payload",
+        "facts": {"tar.mtime": "1700000000", "tar.mode": "644"}
+      }
+    ]
+  }
+}

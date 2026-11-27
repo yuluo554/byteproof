@@ -89,10 +89,11 @@ src/byteproof/data/<slug>.thresholds.json   # 阈值/等级台账（与运行期
 **显式清单而不是扫描**：扫描式加载会把「器官忘了登记」变成静默空跑。
 **规则包必须随包分发**：`pip wheel` 后包里 `data/` 为空就等于"装上了但审不了"。
 
-## 7. 示例（已迁入 5 个器官）
+## 7. 示例（已迁入 6 个器官）
 
 ```console
 $ byteproof list
+artifact-drift                   1          构建产物差异账本：结构对齐 + T1–T12 归因 + 残留字节 + 最小原因集
 chart-integrity                  1          图表工件缺陷账本：九条反误导规则 + 逐值溯源 + 样本量门禁 + 误差棒来源
 duplicate-docs                   1          文档工件缺陷账本：正文归一化后按精确 Jaccard 判同源重复
 fund-quarter-report              1          基金季报工件缺陷账本：五态 diff 异常行 + 经理分类 + 规模缺失/零值 + 合规与披露
@@ -105,6 +106,7 @@ PackMissing: 未注册的器官：no-such          # 退出码 3
 
 | 器官 | 版本 | 文档 |
 |---|---|---|
+| `artifact-drift` | 1 | [`artifact-drift.md`](artifact-drift.md) |
 | `chart-integrity` | 1 | [`chart-integrity.md`](chart-integrity.md) |
 | `duplicate-docs` | 1 | [`duplicate-docs.md`](duplicate-docs.md) |
 | `fund-quarter-report` | 1 | [`fund-quarter-report.md`](fund-quarter-report.md) |

@@ -1,0 +1,24 @@
+{
+  "version": "1",
+  "params_version": "1",
+  "quant_decimals": 0,
+  "params": {
+    "budget": []
+  },
+  "verdicts": {
+    "drift-t1": "warn",
+    "drift-t2": "warn",
+    "drift-t3": "warn",
+    "drift-t4": "warn",
+    "drift-t5": "warn",
+    "drift-t6": "warn",
+    "drift-t7": "warn",
+    "drift-t8": "warn",
+    "drift-t9": "warn",
+    "drift-t10": "warn",
+    "drift-t11": "warn",
+    "drift-t12": "error",
+    "drift-unbudgeted": "error",
+    "drift-cause": "info"
+  }
+}
