@@ -1,0 +1,13 @@
+{
+  "mode": "orientation",
+  "facts": {
+    "kind": "jpeg",
+    "width": 4000,
+    "height": 3000,
+    "exif": [
+      {"ifd": "ifd0", "type": 3, "value": 1, "offset": 128}
+    ],
+    "xmp": null,
+    "frames": []
+  }
+}
