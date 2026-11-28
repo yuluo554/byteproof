@@ -1,0 +1,43 @@
+{
+  "version": "1",
+  "organ": "bookmark-doctor",
+  "modes": ["audit", "check", "dedupe", "aging"],
+  "default_mode": "audit",
+  "verdicts": {
+    "bd-aging-tier": "info",
+    "bd-aging-unknown": "info",
+    "bd-anchor-disabled": "info",
+    "bd-duplicate-group": "warn",
+    "bd-link-alive": "info",
+    "bd-link-dead": "error",
+    "bd-link-review": "warn",
+    "bd-rule-conflict": "warn",
+    "bd-summary": "info"
+  },
+  "link_verdict_severity": {
+    "dead": "error",
+    "review": "warn",
+    "alive": "info"
+  },
+  "conservative_order": {
+    "review": 0,
+    "dead": 1,
+    "alive": 2
+  },
+  "generic_reasons": {
+    "http_2xx": "alive",
+    "redirect_unresolved": "review",
+    "http_404": "dead",
+    "http_410": "dead",
+    "http_4xx_blocked": "review",
+    "http_5xx": "review",
+    "cdn_blocked": "review",
+    "http_other": "review",
+    "probe_incomplete": "review"
+  },
+  "review_4xx_statuses": [401, 403, 405, 406, 429, 451],
+  "cdn_blocked_statuses": [521, 522, 523],
+  "anchor_gate_reasons": ["anchor_missing", "anchor_not_verified"],
+  "keep_policy": ["https-first", "no-tracked-param", "earliest-add-date", "file-order"],
+  "aging_note": "以添加时间近似未访问；浏览器不导出真实访问记录"
+}

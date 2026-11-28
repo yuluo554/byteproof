@@ -1,0 +1,59 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "bd-anchor-disabled",
+      "title": "降级规则锚点未验证，拒绝启用",
+      "source": "迁自 target-map ② 行 · 旧仓 ruleset.apply_anchor_gate（锚点硬门 K4）；出处：plan/04 §2.3",
+      "text": "每条降级规则的 anchor.observation_id 必须解析到观测台账中 check_status=verified 的观测；否则该规则拒绝启用，连同原因（anchor_missing / anchor_not_verified）进未启用清单。未启用清单必须随每次 check 运行显式产出——防「承诺可追溯、实际静默照判」。info 级：可见，不阻断。"
+    },
+    {
+      "rule_id": "bd-aging-tier",
+      "title": "长期未访问分档",
+      "source": "迁自 target-map ② 行 · 旧仓 aging.build_aging_profile；出处：plan/04 §4.1",
+      "text": "以 add_date（添加时间）近似「未访问时长」——代理指标，必须显式注明，不得表述为实测。分档阈值取 aging.tiers_days（引擎零内联零默认值，缺失/非升序/非正即拒绝）；档位标签由阈值换算。分档判定用调用方传入的参考日与 add_date 的日历日差，不读系统时钟，保产物确定性。info 级。"
+    },
+    {
+      "rule_id": "bd-aging-unknown",
+      "title": "添加时间未知条目单列",
+      "source": "迁自 target-map ② 行 · 旧仓 aging（缺失不猜补 K14）；出处：plan/04 §4.1",
+      "text": "add_date 为 null 的条目不参与分档，单列「添加时间未知」计数——缺失不猜补，未知不与已知争。info 级。"
+    },
+    {
+      "rule_id": "bd-duplicate-group",
+      "title": "同键重复书签组",
+      "source": "迁自 target-map ② 行 · 旧仓 dedupe.build_duplicate_groups；出处：plan/04 §3.1/§3.2",
+      "text": "比较键 = normalize_url（六步流水线：scheme→host/端口→路径→查询串→fragment）；观测有 final_url 时优先用 normalize(final_url)。保留策略固定可复现：https 优先 > 无追踪参数 > add_date 最早 > 文件序最早。仅 fragment 不同的成员归入同组并附 fragment_variant 标记。绝不自动删：只出清单，删除必须由调用方显式执行。warn 级（清理建议）。"
+    },
+    {
+      "rule_id": "bd-link-alive",
+      "title": "链接存活",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.generic_verdict（终态 2xx）；出处：plan/04 §2.2",
+      "text": "终态 2xx 且无 error_class → alive。「未探测」不会被说成「存活」：观测记录缺失时按 probe_incomplete 待复核处理，绝不静默记存活。判定为辅助参考：链接是否真正失效以浏览器实际打开为准。info 级。"
+    },
+    {
+      "rule_id": "bd-link-dead",
+      "title": "链接失效",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.generic_verdict（404/410）；出处：plan/04 §2.2",
+      "text": "终态 404 / 410 是唯一通用判死证据。其余一切非 2xx 形态（反爬、风控、5xx、网络不可达）都不判死——一刀切误杀中文站点是旧仓立项动机。error 级（阻断：收藏夹清理建议的直接依据）。"
+    },
+    {
+      "rule_id": "bd-link-review",
+      "title": "链接待复核",
+      "source": "迁自 target-map ② 行 · 旧仓 classify.generic_verdict / match_rule；出处：plan/04 §2.2/§2.3 降级规则",
+      "text": "网络不可达（DNS 失败、超时、TLS、连接失败、跳转异常）与 401/403/405/406/429/451 反爬、521/522/523 CDN 拦截、终态 3xx 未解析、语义不明的其余 4xx 一律判待复核，绝不判失效。降级规则按 host_suffix + http_status 匹配（首跳或终态任一命中——风控链首跳 302、终态 200，只读终态规则永不命中），命中即按规则处置。warn 级。"
+    },
+    {
+      "rule_id": "bd-rule-conflict",
+      "title": "多规则判定冲突",
+      "source": "迁自 target-map ② 行 · 旧仓 classify._conservative；出处：plan/04 §2.2",
+      "text": "多条规则同时命中同一观测且处置不一致时，按保守序 review > dead > alive 取值，并在备注记录冲突明细（rule_conflict:规则=原因 按字典序）。降级不等于静默：冲突必须可见。warn 级。"
+    },
+    {
+      "rule_id": "bd-summary",
+      "title": "账本汇总",
+      "source": "迁自 target-map ② 行 · 旧仓 CLI 汇总的账本化",
+      "text": "按模式汇总 error/warn/info 计数与 dead/review/alive 数量。旧仓 check 的退出码语义：判定为辅助参考、失效以浏览器实开为准，报告不因待复核数量而阻断；本账本 dead=error 阻断、review=warn、alive=info，与「绝不把待复核写成失效」口径对齐。info 级。"
+    }
+  ]
+}

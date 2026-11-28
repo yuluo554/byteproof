@@ -26,6 +26,7 @@ from typing import Tuple
 BUILTIN_MODULES: Tuple[str, ...] = (
     "artifact_drift",
     "barcode_preflight",
+    "bookmark_doctor",
     "cert_ledger",
     "chart_integrity",
     "config_drift",

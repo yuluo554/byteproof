@@ -1,0 +1,18 @@
+{
+  "mode": "audit",
+  "bookmarks": [
+    { "id": "bm-001", "title": "semver 文档", "url": "https://github.com/npm/semver", "add_date": 1760000000, "folder": ["dev"], "source": "demo.html" },
+    { "id": "bm-002", "title": "发布页", "url": "https://github.com/npm/semver/releases", "add_date": 1760000100, "folder": ["dev"], "source": "demo.html" },
+    { "id": "bm-003", "title": "GS1 语法字典", "url": "https://www.gs1.org/standards/barcodes", "add_date": null, "folder": ["标准"], "source": "demo.html" }
+  ],
+  "observations": [
+    { "url": "https://github.com/npm/semver", "http_status": 200, "first_hop_status": 200, "error_class": null },
+    { "url": "https://github.com/npm/semver/releases", "http_status": 200, "first_hop_status": 200, "error_class": null },
+    { "url": "https://www.gs1.org/standards/barcodes", "http_status": 200, "first_hop_status": 200, "error_class": null }
+  ],
+  "degrade_rules": [],
+  "observations_ledger": { "observations": [] },
+  "tracked_query_params": { "exact": ["share_token", "spm"], "prefixes": ["utm_", "share_"] },
+  "aging": { "tiers_days": [365, 730, 1095] },
+  "options": { "aging_date": "2026-01-01" }
+}

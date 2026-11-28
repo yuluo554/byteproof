@@ -31,6 +31,7 @@
 $ byteproof list
 artifact-drift               1          构建产物差异账本：结构对齐 + T1–T12 归因 + 残留字节 + 最小原因集
 barcode-preflight            1          条码印前账本：GS1 校验/语义 + 符号可行性 + 静区/放大率/DPI/条高/颜色 + 阈值三态
+bookmark-doctor              1          收藏夹体检账本：三态失效判定（规则优先+保守冲突+锚点硬门）+ URL 规范化去重 + 未访问画像分档
 cert-ledger                  1          证书台账缺陷账本：去重配对 + 过期/强度/权限/孤儿/重复 + 容器信号 + 基线差异
 chart-integrity              1          图表工件缺陷账本：九条反误导规则 + 逐值溯源 + 样本量门禁 + 误差棒来源
 config-drift                 1          配置差异账本：值族归一 + 六类影响分类 + semver 子类 + gate 门禁
@@ -53,6 +54,7 @@ version-audit                1          npm 版本约束账本：R1–R8 范围�
 |---|---|---|
 | `artifact-drift` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/artifact-drift.md)） |
 | `barcode-preflight` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/barcode-preflight.md)） |
+| `bookmark-doctor` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/bookmark-doctor.md)） |
 | `cert-ledger` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/cert-ledger.md)） |
 | `chart-integrity` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/chart-integrity.md)） |
 | `config-drift` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/config-drift.md)） |
@@ -65,7 +67,7 @@ version-audit                1          npm 版本约束账本：R1–R8 范围�
 | `mojibake-forensics` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/mojibake-forensics.md)） |
 | `timeseries-anomaly` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/timeseries-anomaly.md)） |
 | `version-audit` | 迁自 target-map ② 行（Node/mjs 源） | 已迁入 v1（[文档](docs/version-audit.md)） |
-| — | 其余 12 个 auditor | 待迁入 |
+| — | 其余 11 个 auditor | 待迁入 |
 
 跑一次审计（工件 = 时序长表解析后的 JSON；规则包随包分发，不需要额外参数）：
 
