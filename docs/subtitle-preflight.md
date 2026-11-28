@@ -132,10 +132,11 @@ node --test tests/architecture.test.mjs tests/artifact_e2e.test.mjs tests/build.
 `readability_chars_duration 24` / `readability_cps 12` / `readability_line 14` /
 `timing_rules 24` / `truth 9` = **155**。
 
-> **D1+D18 机械口径（13 文件）**：旧仓 `tests/` 共 24 个 `*.test.mjs`，按文件名正则
+> **D1+D18 机械口径（13 文件）**：旧仓 `tests/` 共 **23** 个 `*.test.mjs`（另有 1 个
+> 非测试 `helpers/load.mjs`），按文件名正则
 > （`cli|gui|packaging|audit|desensit|guard|bench|infra|export|version|license|generat|
 > docs?_|health|release|selftest|smoke|parse|report|input|output|web|panel`）
-> 剔除 **11** 件（逐词见 §6.2）→ **24 − 11 = 13 文件**进分母。
+> 剔除 **10** 件（逐词见 §6.2）→ **23 − 10 = 13 文件**进分母。
 > 旧层函数数 = 这 13 文件的 `test(` 调用 **155**（JS 口径：调用数，不是子测试数；
 > 与 pass 数 1:1，无参数化展开）。
 > 来源仓 `git status --porcelain` 全程 **0 行**（HEAD `f95cc5e` 与队列一致；临时产物
@@ -169,7 +170,7 @@ node --test tests/architecture.test.mjs tests/artifact_e2e.test.mjs tests/build.
 | `samples_generator.test.mjs`（16） | **generat** | 剔除 | 样本/真值确定性生成器——旧仓数据装订工具。 |
 | `version_pointer.test.mjs`（7） | **version** | 剔除 | 版本指针一致性（package.json ↔ dist）——打包面由本仓 `pyproject`/wheel 承接。 |
 
-被剔除 11 件实跑合计 **99 pass**（5+1+5+12+21+11+12+9+16+7）；24 文件 = 13 判定层 + 11 剔除，
+被剔除 10 件实跑合计 **99 pass**（5+1+5+12+21+11+12+9+16+7）；23 文件 = 13 判定层 + 10 剔除，
 `npm test` 全量 **254 pass** = 155 + 99。表格逐文件数字来自单文件复跑
 （`node --test tests/<name>`），与合并跑一致。
 
