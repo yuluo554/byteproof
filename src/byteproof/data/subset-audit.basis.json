@@ -1,0 +1,137 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "sa-char-index-mismatch",
+      "title": "OS/2 首末码位与 cmap 不一致",
+      "source": "迁自 10-21-subset-audit · metadata._char_index_findings；出处：data/README §6.9.5",
+      "text": "只判『没覆盖住』方向；usFirstCharIndex/usLastCharIndex = 0xFFFF 是哨兵（该方向不判）。三形态：声明首码位高于实测最小 BMP 码位、声明末码位低于实测最大 BMP 码位、首大于末（区间为空）。warn 级。"
+    },
+    {
+      "rule_id": "sa-codepage-latin1-overdeclared",
+      "title": "码页 bit0 声称 Latin-1 而 cmap 无 Latin-1 码位",
+      "source": "迁自 10-21-subset-audit · metadata._codepage_findings；出处：data/README §6.9.2",
+      "text": "只判 bit0：ulCodePageRange1 bit0 置位而 C ∩ [U+0000, U+00FF] = ∅ → error（fontTools 的 recalcCodePageRanges 在无码页可用时回退置 bit0——子集工具常踩）。error 级。"
+    },
+    {
+      "rule_id": "sa-generic-error",
+      "title": "error 级 finding 兜底",
+      "source": "迁自 10-21-subset-audit · canonical.finding；账本化兜底",
+      "text": "未知 code 的 error 级 finding 显式落账（不静默丢弃）；本器官三个模块的 error 级 code 已全部具名登记，此规则只作防御面。error 级。"
+    },
+    {
+      "rule_id": "sa-generic-note",
+      "title": "note 级 finding 兜底",
+      "source": "迁自 10-21-subset-audit · canonical.finding；账本化兜底",
+      "text": "note 级 finding 折算 info 显式落账。info 级。"
+    },
+    {
+      "rule_id": "sa-generic-warn",
+      "title": "warn 级 finding 兜底",
+      "source": "迁自 10-21-subset-audit · canonical.finding；账本化兜底",
+      "text": "未知 code 的 warn 级 finding 显式落账（防御面）。warn 级。"
+    },
+    {
+      "rule_id": "sa-layout-feature-lost",
+      "title": "GSUB/GPOS 布局三元组在产物里消失",
+      "source": "迁自 10-21-subset-audit · layout_survival._feature_lost_findings；出处：data/README §6.5.3",
+      "text": "四元组 (TableTag, ScriptTag, LangSysTag, FeatureTag) 差集：GSUB/GPOS 分开成条，LangSysTag ∈ {dflt, <原样>, all}（all 是附加聚合条），四元组精确去重。primary_key 字面拼法 = GSUB/hani/ZHS /liga。error 级。"
+    },
+    {
+      "rule_id": "sa-layout-ligature-lost",
+      "title": "连字规则在产物里消失",
+      "source": "迁自 10-21-subset-audit · layout_survival._ligature_findings；出处：data/README §6.5.4",
+      "text": "按**输入码位序列**比对、不按字形名——子集后 uniFB01 → glyph00003 是改名的实测事实。输入字形里任一个不在 cmap 反查里就跳过该规则（无法建立跨字体的同一性，不猜）；同输入序列保留首次（LigatureSet.Ligature 按优先级排序）；目标字形不参与键（通常无 cmap 映射）。error 级。"
+    },
+    {
+      "rule_id": "sa-layout-ligature-renamed",
+      "title": "连字规则仍生效但目标字形改名",
+      "source": "迁自 10-21-subset-audit · layout_survival._ligature_findings；出处：data/README §6.5.4",
+      "text": "LOST 优先于 RENAMED（互斥）。改名判定：source=named 且 subset=placeholder（pyftsubset 默认 glyph_names=False → post 降 3.0，fontTools 按 GID 合成 glyph%05d 占位名）→ 改名；两侧都 named 比较字形名；两侧都 placeholder **不算**改名（名字两侧都没了，不是改名）。warn 级。"
+    },
+    {
+      "rule_id": "sa-lost-in-subset",
+      "title": "LOST_IN_SUBSET（原字体有、产物丢失）",
+      "source": "迁自 10-21-subset-audit · coverage_diff._classify_findings；出处：data/README §6.2",
+      "text": "(R ∩ S) − U 的每个码位一条 finding，恒 error（静默丢字是最严重的事故）。映射到 .notdef 的码位视为缺（剔除动作只在 cmapset.codepoints 一处落）。evidence 四键固定：codepoint/block/source_covered/subset_covered——两个覆盖位都填实测值（产物可能恰好覆盖源没有的字），subset_covered 只在没给 --subset 时是 None（信息不存在，不猜）。spec_ref 字面量 data/README §6.2。error 级。"
+    },
+    {
+      "rule_id": "sa-maxp-mismatch",
+      "title": "maxp.numGlyphs 与独立量不符",
+      "source": "迁自 10-21-subset-audit · metadata._maxp_findings；出处：data/README §6.9.4",
+      "text": "maxp.numGlyphs vs 独立量（glyf/loca 或 CFF CharStrings 计数）：不等 → error。既无 glyf/loca 也无 CFF → SKIPPED(no_outline_table)（maxp 无独立量可比，其余判定照常）。error 级。"
+    },
+    {
+      "rule_id": "sa-missing-in-source",
+      "title": "MISSING_IN_SOURCE（需求字符源字体没有）",
+      "source": "迁自 10-21-subset-audit · coverage_diff._classify_findings；出处：data/README §6.2",
+      "text": "R − S 的每个码位一条 finding：默认 warn；--strict-source → error（需求集是硬约束时，源字体缺字升级为事故）。判定式三分类口径单点在 §6.2；组合字符闭包只计数不产 finding（三分类仍只用 R0）。warn 级（strict_source 时折 error）。"
+    },
+    {
+      "rule_id": "sa-name-stripped",
+      "title": "nameID 被默认白名单剥离",
+      "source": "迁自 10-21-subset-audit · metadata._name_findings；出处：data/README §6.9.1",
+      "text": "REQUIRED_NAME_IDS（0/1/2/3/4/6/13/14/17）里产物缺失的 nameID 分三类：default_stripped（原字体有、产物没有 → finding，warn）、author_absent（原作者没写 → 不产）、unclassified（无源字体可比 → 不产）。九个 nameID 各有自己的 finding 代码（NAME_COPYRIGHT_STRIPPED 等），账本统一落 sa-name-stripped、代码进 evidence。warn 级。"
+    },
+    {
+      "rule_id": "sa-skip-layout-one-side",
+      "title": "SKIPPED：布局表只在一侧存在",
+      "source": "迁自 10-21-subset-audit · layout_survival._compare；出处：data/README §6.5.5",
+      "text": "§六.5.5 两条 SKIPPED 理由**不得合并**：只有一侧有 GSUB/GPOS → 照常判定 + 本 SKIPPED（全量丢失去重报，不放弃整份判定）。info 级显式记录。"
+    },
+    {
+      "rule_id": "sa-skip-no-layout-tables",
+      "title": "SKIPPED：两侧都无布局表",
+      "source": "迁自 10-21-subset-audit · layout_survival._compare；出处：data/README §6.5.5",
+      "text": "两侧都没有 GSUB/GPOS → 显式跳过且 summary 为空（不猜、不给半份结论）。info 级显式记录。"
+    },
+    {
+      "rule_id": "sa-skip-no-outline",
+      "title": "SKIPPED：无轮廓表（maxp 无独立量可比）",
+      "source": "迁自 10-21-subset-audit · metadata.evaluate；出处：data/README §6.9.4",
+      "text": "subset 既无 glyf/loca 也无 CFF → maxp 判定跳过，其余判定照常（不是整份放弃）。info 级显式记录。"
+    },
+    {
+      "rule_id": "sa-skip-no-unicode-cmap",
+      "title": "SKIPPED：cmap 无 Unicode 子表",
+      "source": "迁自 10-21-subset-audit · coverage_diff._read_side；出处：data/README §6.3",
+      "text": "§六.3：cmap 编码优先级选表后取不到 Unicode 子表（如仅 (1,0)/format 0）→ SKIPPED 且 summary 为空——绝不输出『覆盖为空』的 OK 结论。与 no_cmap_table 两条失败路径互不合并。info 级显式记录。"
+    },
+    {
+      "rule_id": "sa-skip-no-cmap",
+      "title": "SKIPPED：字体没有 cmap 表",
+      "source": "迁自 10-21-subset-audit · coverage_diff._read_side；出处：data/README §6.3",
+      "text": "§六.3：任一侧取不到 Unicode cmap → 整份报告不给三分类（不猜、不给半份结论）；本理由与 no_unicode_cmap 不合并。info 级显式记录。"
+    },
+    {
+      "rule_id": "sa-skip-other",
+      "title": "SKIPPED 兜底",
+      "source": "账本化兜底",
+      "text": "不在已知 SKIPPED 理由枚举里的显式跳过照常落账（不静默）。info 级。"
+    },
+    {
+      "rule_id": "sa-summary",
+      "title": "运行汇总",
+      "source": "账本化新增（同 va-summary 先例）",
+      "text": "每次运行输出一条 info 级汇总：mode、error/warn/info 计数与该模块 summary（coverage 三分类计数与闭包、layout 的 kept/lost、metadata 的 name/位域/maxp 面）。"
+    },
+    {
+      "rule_id": "sa-unicode-range-overdeclared",
+      "title": "ulUnicodeRange 置位但 cmap 无该块码位",
+      "source": "迁自 10-21-subset-audit · metadata._unicode_range_findings；出处：data/README §6.9.3",
+      "text": "只判过度、欠声明不判（位是可选自我声明；实测欠声明率 91–254/559）。行为型位（全部区间落在代理区，实测只有 bit57 =『本字体含 BMP 之外的码位』）按『存在非 BMP 码位』判。OS/2 范围表由输入层经 subject 提供（不复制第二套口径）。warn 级。"
+    },
+    {
+      "rule_id": "sa-skip-no-os2",
+      "title": "SKIPPED：无 OS/2 表",
+      "source": "迁自 10-21-subset-audit · metadata.evaluate REASON_NO_OS2；出处：data/README §6.9.6",
+      "text": "该字体没有 OS/2 表，位域一致性无从判定 → SKIPPED + 空 summary（不猜、不给半份结论；§六.9.6）。info 级显式记录。"
+    },
+    {
+      "rule_id": "sa-skip-no-name",
+      "title": "SKIPPED：无 name 表",
+      "source": "迁自 10-21-subset-audit · metadata.evaluate REASON_NO_NAME；出处：data/README §6.9.6",
+      "text": "该字体没有 name 表，name 存活无从判定 → SKIPPED + 空 summary。info 级显式记录。"
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+ "slug": "subset-audit",
+ "version": "1",
+ "source": "迁自 10-21-subset-audit · canonical.py + 各模块常量（运行期常量快照）",
+ "schema": "subsetaudit/report@1",
+ "severities": [
+  "error",
+  "warn",
+  "note"
+ ],
+ "modules": [
+  "coverage-diff",
+  "layout-survival",
+  "metadata"
+ ],
+ "modes": [
+  "coverage-diff",
+  "layout-survival",
+  "metadata"
+ ],
+ "required_name_ids": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  6,
+  13,
+  14,
+  17
+ ],
+ "layout_tags": [
+  "GSUB",
+  "GPOS"
+ ],
+ "notdef_names": [
+  ".notdef",
+  "glyph00000",
+  ""
+ ],
+ "blocks": [
+  "BMP",
+  "ExtA",
+  "ExtB+",
+  "other"
+ ],
+ "exta_range": [
+  13312,
+  19903
+ ],
+ "extb_range": [
+  131072,
+  196639
+ ],
+ "skip_reasons": [
+  "no_cmap_table",
+  "no_unicode_cmap",
+  "no_layout_tables",
+  "layout_tables_missing_on_one_side",
+  "no_os2_table",
+  "no_name_table",
+  "no_outline_table"
+ ],
+ "verdict_map": {
+  "error": [
+   "sa-lost-in-subset",
+   "sa-layout-feature-lost",
+   "sa-layout-ligature-lost",
+   "sa-codepage-latin1-overdeclared",
+   "sa-maxp-mismatch",
+   "sa-generic-error"
+  ],
+  "warn": [
+   "sa-missing-in-source",
+   "sa-layout-ligature-renamed",
+   "sa-name-stripped",
+   "sa-unicode-range-overdeclared",
+   "sa-char-index-mismatch",
+   "sa-generic-warn"
+  ],
+  "info": [
+   "sa-generic-note",
+   "sa-skip-layout-one-side",
+   "sa-skip-no-cmap",
+   "sa-skip-no-layout-tables",
+   "sa-skip-no-name",
+   "sa-skip-no-os2",
+   "sa-skip-no-outline",
+   "sa-skip-no-unicode-cmap",
+   "sa-skip-other",
+   "sa-summary"
+  ]
+ },
+ "exit_note": "旧仓退出码 0/1/2（0 无事故 / 1 有 error 级 finding / 2 输入非法 InputError）→ 新 0/1/2 语义一致；SKIPPED 不是事故（info 显式记录）；MISSING_IN_SOURCE 默认 warn、strict_source 时 error。"
+}

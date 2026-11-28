@@ -1,0 +1,45 @@
+{
+ "mode": "coverage-diff",
+ "required_text": "汉字ﬁ",
+ "source_cmap": {
+  "23383": "uni5B57",
+  "27721": "uni6C49",
+  "64257": "uniFB01"
+ },
+ "subset_cmap": {
+  "23383": "uni5B57",
+  "27721": "uni6C49"
+ },
+ "source_cmap_facts": {
+  "chosen": [
+   [
+    3,
+    1,
+    4
+   ]
+  ],
+  "subtables": [
+   [
+    3,
+    1,
+    4
+   ]
+  ]
+ },
+ "subset_cmap_facts": {
+  "chosen": [
+   [
+    3,
+    1,
+    4
+   ]
+  ],
+  "subtables": [
+   [
+    3,
+    1,
+    4
+   ]
+  ]
+ }
+}
