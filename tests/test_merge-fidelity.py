@@ -9,9 +9,10 @@
 **没迁的部分逐条写在 ``docs/merge-fidelity.md`` §6 的处置表里**（git 子进程面、
 report 渲染、gate TOML 基线、fixture 生成器、CLI 面）。不迁的东西不在这里假装测过。
 
-判定层口径（D1 + D18）：旧仓 15 个测试文件剔除 ``bench_snapshot`` / ``cli`` /
-``gen_fixtures`` / ``report`` 后 11 文件实跑 pytest **X = 198 passed**
-（``198 passed in 221.47s``）；旧层 AST ``test`` 函数 **146**。
+判定层口径（D1 + D18）：旧仓 14 个测试文件按文件名正则机械剔除
+``bench_snapshot`` / ``cli`` / ``diffparse``（parse）/ ``report`` 后 **10 文件**实跑 pytest
+**X = 213 passed**（``213 passed in 197.44s``）；旧层 AST ``test`` 函数 **159**。
+``test_gen_fixtures`` 文件名不含 ``generat``，**机械计入**（其生成器本体另属工具面）。
 """
 
 from __future__ import annotations
@@ -1379,4 +1380,170 @@ def test_warn_records_never_block():
     ):
         records = _evaluate(subject)
         assert _report(records).exit_code() in (EXIT_OK, EXIT_BLOCKED)
+
+
+# ==================================================================
+# §8 补测（机械口径 · 判定面深矩阵；每条都可证伪）
+# ==================================================================
+
+@pytest.mark.parametrize("lines,reverse,expect_in,expect_absent", [
+    (("+a",), True, "-a", "+a"),          # 反向：+ → -
+    (("-a",), False, "-a", "+a"),         # 正向：- 保 -（新增方向由调用方给 reverse）
+    (("-a",), True, "+a", "-a"),          # 反向：- → +
+    (("+a",), False, "+a", "-a"),         # 正向：+ 保 +
+    ((" a",), True, " a", None),          # 上下文行不翻转
+])
+def test_hunk_patch_text_matrix_parametrized(lines, reverse, expect_in, expect_absent):
+    text = diffparse.hunk_patch_text("f.txt", lines, reverse=reverse)
+    assert expect_in in text
+    if expect_absent:
+        assert expect_absent not in text
+
+
+@pytest.mark.parametrize("text,expected_rules", [
+    ("*.lock merge=mine\n", [("*.lock", "mine")]),
+    ("a.bin merge=x\nb.bin merge=y\n", [("a.bin", "x"), ("b.bin", "y")]),
+    ("*.lock merge=ours\n", []),            # git 自带 driver 不进
+    ("*.lock merge=text\n", []),
+    ("a.txt -merge\n", [("a.txt", "-merge")]),
+])
+def test_parse_gitattributes_matrix_parametrized(text, expected_rules):
+    assert judge.parse_gitattributes(text) == expected_rules
+
+
+def test_parse_gitattributes_preserves_rule_order():
+    # 规则表顺序即文件顺序（判定时首个命中规则决定路径归属，顺序不可换）
+    text = "z/** merge=zb\n*.lock merge=lb\n"
+    assert [p for p, _d in judge.parse_gitattributes(text)] == ["z/**", "*.lock"]
+
+
+@pytest.mark.parametrize("recorded,mechanical,excluded,fid,only_rec,only_mech", [
+    ({"a": "1"}, {"a": "1"}, set(), 1.0, [], []),
+    ({"a": "1", "b": "2"}, {"a": "X", "b": "Y"}, set(), 0.0, [], []),
+    ({"a": "1", "b": "2"}, {"a": "1"}, set(), 1.0, ["b"], []),
+    ({}, {"a": "1"}, set(), None, [], ["a"]),
+    ({"a": "1", "b": "2"}, {"b": "2"}, {"a"}, 1.0, [], []),
+])
+def test_blob_fidelity_matrix_parametrized(recorded, mechanical, excluded,
+                                           fid, only_rec, only_mech):
+    got = judge.blob_fidelity(recorded, mechanical, excluded=excluded)
+    assert got["blob_fidelity"] == fid
+    assert got["path_only_in_recorded"] == only_rec
+    assert got["path_only_in_mechanical"] == only_mech
+
+
+def test_classify_hunks_context_only_hunk_falls_to_dropped():
+    # 无 +/- 的纯上下文 hunk：不满足"含 + 行"，走删除探针路径 → DROPPED（真语义）
+    diff = ("diff --git a/f b/f\n@@ -1,2 +1,2 @@\n same\n same2\n")
+    hunks = diffparse.parse_unified_diff(diff)
+    assert hunks and not any(line[:1] in "+-" for line in hunks[0].lines)
+    _sm, dr, _rs = judge.classify_hunks(hunks, excluded_paths=set(),
+                                        reintroduced=lambda p, t: False)
+    assert len(dr) == 1
+
+
+def test_classify_hunks_any_plus_line_makes_smuggled():
+    # + 行出现在 hunk 任意位置（不只首行）都判 SMUGGLED
+    diff = ("diff --git a/f b/f\n@@ -1,2 +1,3 @@\n same\n+added\n later\n")
+    hunks = diffparse.parse_unified_diff(diff)
+    sm, dr, _rs = judge.classify_hunks(hunks, excluded_paths=set(),
+                                       reintroduced=lambda p, t: False)
+    assert len(sm) == 1 and len(dr) == 0
+
+
+def test_other_path_note_same_path_yields_no_note():
+    # 同路径同内容：by_content 命中但 path 相同 → 不产 note（note 只在"别的路径"）
+    side = judge.build_side_index([{"commit": "s1",
+                                    "diff_u0_text": "diff --git a/x.txt b/x.txt\n@@ -1 +1 @@\n-a\n+b\n",
+                                    "patch_id": None, "paths": ["x.txt"]}])
+    note, source = judge.other_path_note(
+        side, "diff --git a/x.txt b/x.txt\n@@ -1 +1 @@\n-a\n+b\n")
+    assert note is None and source is None
+
+
+def test_parity_side_index_empty_facts():
+    index = judge.build_side_index([])
+    assert index == {"by_patchid": {}, "by_content": {}}
+
+
+def test_parity_empty_paths_finding_id_uses_dash():
+    # 候选无路径时 api 以 "-" 作为 path 计算 finding_id（旧仓 findings_of 同口径）
+    subject = {"mode": "parity", "as_of": "2026-01-15", "side": [],
+               "candidates": [_cand("c1", pid=None, paths=[],
+                                    apply={"available": True, "reverse_check": False,
+                                           "forward_check": True})]}
+    records = [r for r in _evaluate(subject) if r.evidence.get("kind") == "PARITY_MISSING"]
+    assert len(records) == 1
+    assert records[0].evidence["finding_id"] == canonical.finding_id(
+        "c1", "-", "-", "-", "PARITY_MISSING")
+
+
+def test_ledger_multiple_reverts_entries_independent():
+    facts = {"r1": {"u0_patchid": "A"}, "deadbee": {"reversed_patch_id": "A", "u0_patchid": "ORG"},
+             "r2": {"u0_patchid": "B"}, "cafe567": {"reversed_patch_id": "B", "u0_patchid": "ORG2"}}
+    e1 = judge.ledger_entry("r1", "This reverts commit deadbee.", commit_facts=facts,
+                            later_facts=[], find_object_available=True)
+    e2 = judge.ledger_entry("r2", "This reverts commit cafe567.", commit_facts=facts,
+                            later_facts=[{"oid": "n9", "patch_id": "ORG2"}],
+                            find_object_available=True)
+    assert e1["status"] == "REVERTED_NO_SUCCESSOR"
+    assert e2["status"] == "REVERTED_THEN_REDONE" and e2["successor"] == "n9"
+
+
+def test_ledger_marker_case_sensitive():
+    # 正则逐字小写 "This reverts commit"：任何大小写变体都不匹配（不猜）
+    assert judge.extract_reverted_oids("This Reverts commit deadbee.") == []
+    assert judge.extract_reverted_oids("this reverts commit deadbee.") == []
+
+
+def test_ledger_revert_missing_patch_fact_is_unverified():
+    ent = judge.ledger_entry("r1", "This reverts commit deadbee.",
+                             commit_facts={"r1": {}, "deadbee": {"reversed_patch_id": "A"}},
+                             later_facts=[], find_object_available=True)
+    assert ent["verified"] is False and ent["status"] == "REVERT_UNVERIFIED"
+
+
+def test_fidelity_summary_merges_total_includes_octopus():
+    subject = _subject_fidelity([
+        _merge("a" * 40, ""),
+        _merge("b" * 40, "", parents=["1" * 40, "2" * 40, "3" * 40]),
+    ])
+    s = _summary(_evaluate(subject)).evidence["summary"]
+    assert s["merges_total"] == 2 and s["merges_scanned"] == 1 and s["skipped"] == 1
+
+
+def test_fidelity_octopus_not_in_report_merges():
+    subject = _subject_fidelity([_merge("b" * 40, "", parents=["1" * 40, "2" * 40, "3" * 40])])
+    records = _evaluate(subject)
+    report = _summary(records).evidence["summary"]
+    assert report["merges_scanned"] == 0
+    assert [r for r in records if r.rule_id == "mf-smuggled"] == []
+
+
+def test_warning_records_carry_kind_and_code():
+    payload = "a" * 40 + "\x00" + "2" * 40 + " " + "3" * 40 + "\n\ndiff --git a/other.txt b/other.txt\n@@ -1 +1 @@\n-x\n"
+    subject = _subject_fidelity([_merge("a" * 40, "", payload=payload)])
+    rec = [r for r in _evaluate(subject) if r.rule_id == "mf-warning-crosscheck"][0]
+    assert rec.verdict == WARN
+    assert rec.evidence["kind"] == "CROSSCHECK_MISMATCH"
+    assert rec.evidence["payload_paths_not_in_tree_diff"] == ["other.txt"]
+
+
+def test_report_digest_stable_across_patchid_mapping_order():
+    # patch_ids 映射不进化 report：不同插入顺序（同内容）→ 同 digest
+    probe = _drop_probe_sha()
+    s1 = _subject_fidelity([_merge("b" * 40, DROP_DIFF)], patch_ids={probe: "P"})
+    s2 = _subject_fidelity([_merge("b" * 40, DROP_DIFF)],
+                           patch_ids={"unrelated": "Q", probe: "P"})
+    assert _summary(_evaluate(s1)).evidence["report_digest"] == \
+        _summary(_evaluate(s2)).evidence["report_digest"]
+
+
+def test_finding_id_matches_documented_formula():
+    # 独立复算：sha1(merge_oid ‖ path ‖ old_range ‖ new_range ‖ kind)，分隔符 U+001F
+    import hashlib
+
+    expected = hashlib.sha1(
+        ("oid\x1fsrc/a.txt\x1f0,2\x1f-\x1fSMUGGLED").encode("utf-8")).hexdigest()
+    assert canonical.finding_id("oid", "src/a.txt", "0,2", "-", "SMUGGLED") == expected
 
