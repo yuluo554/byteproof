@@ -1,0 +1,23 @@
+{
+  "mode": "solve",
+  "level": {
+    "seed": "11952473959851858958",
+    "label": "2026-01-19",
+    "inputs": ["i0", "i1", "i2", "i3"],
+    "outputs": ["o0", "o1", "o2", "o3"],
+    "optimal": null,
+    "netlist": {
+      "inputs": ["i0", "i1", "i2", "i3"],
+      "outputs": ["o0", "o1", "o2", "o3"],
+      "gates": [
+        { "id": "g01", "type": "AND", "in": ["i0", "i1"] },
+        { "id": "g02", "type": "OR", "in": ["i0", "i1"] },
+        { "id": "g03", "type": "NOT", "in": ["g01"] },
+        { "id": "g04", "type": "AND", "in": ["g03", "i2"] },
+        { "id": "g05", "type": "OR", "in": ["g04", "i3"] },
+        { "id": "g06", "type": "AND", "in": ["g02", "i3"] }
+      ],
+      "outputsMap": { "o0": "g01", "o1": "g02", "o2": "g04", "o3": "g06" }
+    }
+  }
+}

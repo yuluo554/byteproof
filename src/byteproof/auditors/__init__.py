@@ -30,6 +30,7 @@ BUILTIN_MODULES: Tuple[str, ...] = (
     "browser_history_vault",
     "cert_ledger",
     "chart_integrity",
+    "circuit_detective",
     "config_drift",
     "contract_drift",
     "duplicate_docs",

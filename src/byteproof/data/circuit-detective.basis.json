@@ -1,0 +1,53 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "cd-draft-invalid",
+      "title": "提交草稿结构无效",
+      "source": "迁自 target-map ② 行 · 旧仓 editor.validateDraft / judge；出处：data/README.md §4.3 / K8",
+      "text": "提交前一次性列全全部问题：没摆零件、输出未接、引脚未接/接到不存在的信号、输出锥内绕成环。口径：只有「输出锥内」的零件参与校验与计分——玩家多摆的未使用零件既不惩罚也不卡提交，但不会被算进门数（countedGates 只看输出锥）。信号总数上限 16（4 输入 + 12 门，与短码位宽一致）。error 级：结构无效的提交不进入比对。"
+    },
+    {
+      "rule_id": "cd-level-generation",
+      "title": "关卡生成",
+      "source": "迁自 target-map ② 行 · 旧仓 generator.generateLevel；出处：data/README.md §4.2",
+      "text": "seed → xorshift128+（splitmix64 初始化）→ 随机网表 → 求解器复核 → 关卡 JSON。确定性纪律：同 seed 生成字节级相同的关卡（JSON 键序固定）。拒绝三类无用候选：网表不合法、恒等冗余门（AND(i,i)/OR(i,i)=i，隐藏实现里不该有玩家看不出的死结构）、真值表含 X；要求最优门数落在难度带（easy≤2 / normal≤4 / hard≤12）。64 次重抽内无合格候选 → 显式失败，不静默换 seed。info/error 级（失败记 error）。"
+    },
+    {
+      "rule_id": "cd-mismatch",
+      "title": "提交网表与隐藏网表真值表不匹配",
+      "source": "迁自 target-map ② 行 · 旧仓 sim.firstMismatch / judge；出处：data/README.md §4.3",
+      "text": "16 行全表逐输出比对（不抽样），报第一处不一致：哪一行开关组合、哪盏灯、应亮多少、实际多少。判定只调 sim 的全表比对，没有第二套「标准答案」。error 级（阻断）。"
+    },
+    {
+      "rule_id": "cd-probes-replay",
+      "title": "探测重算与回放一致性",
+      "source": "迁自 target-map ② 行 · 旧仓 judge.recomputeProbes / probesMatch / replay；出处：data/README.md §4.5",
+      "text": "探测序列重算：seed + 关卡 + 输入向量序列 → 灯的结果序列；只读关卡网表，不依赖 UI 状态，同一序列在任何实例上逐项相同。回放短码：版本 + seed + 探测序列 + 提交网表 + CRC16，Base64url 逐位编码，不含时间戳与机器信息。解码失败（篡改/截断/版本不兼容/非法字符）直接抛错（rc2），绝不「退而求其次」进普通关卡；observed 探测结果与重算不一致记 error。"
+    },
+    {
+      "rule_id": "cd-reveal-plan",
+      "title": "逐层点亮计划",
+      "source": "迁自 target-map ② 行 · 旧仓 reveal.buildRevealPlan；出处：data/README.md §4.4",
+      "text": "按「从输入侧到输出侧」的层级切开隐藏网表：直接吃输入信号的门为第 0 层，其余门的层 = 1 + 上游门的最大层；组合环成员单列到最后一层（不参与前向层级），保证层号严格递增；同层按门 id 升序（顺序固定，动画与断言都可复现）。info 级。"
+    },
+    {
+      "rule_id": "cd-settlement",
+      "title": "提交结算与最优门数口径",
+      "source": "迁自 target-map ② 行 · 旧仓 solver / judge.settlement；出处：data/README.md §4.3 / 决策 D14",
+      "text": "提交通过后给出门数与差值：门数按每个灯单独计（输出锥内按引用展开的门数之和，共用的门每个灯各算一次），与单输出公式复杂度口径对齐（countedGates ≥ optimal 恒成立，差值恒 ≥ 0）。最优门数 = NOT/AND/OR 门基下的公式复杂度精确 DP（16 位掩码分层展开），是「声明口径下的可证明最小值」。info 级（accepted 才有结算行）。"
+    },
+    {
+      "rule_id": "cd-sim-diagnostic",
+      "title": "仿真诊断（组合环/未稳定）",
+      "source": "迁自 target-map ② 行 · 旧仓 sim.simulate diagnostics；出处：data/README.md §4.1",
+      "text": "三值 unit-delay 仿真：纯整数运算，输入取上一 tick 的值；组合环成员恒为 X（诊断明示环成员）；超限未稳定按全 X 处理并写诊断。X 的传递语义：AND 见 0 得 0、OR 见 1 得 1、NOT(X)=X——不编造未知值的布尔结果。info 级。"
+    },
+    {
+      "rule_id": "cd-summary",
+      "title": "账本汇总",
+      "source": "迁自 target-map ② 行 · 旧仓判定「通过/不通过」的账本化",
+      "text": "按模式汇总阻断条数。旧仓是纯前端游戏（无 CLI 退出码）；「提交通过/不通过」映射为本账本 0/1：accepted 且探测回放一致 = 无阻断（rc0），结构无效/不稳定/有未知/真值表不匹配 = 存在阻断（rc1）。info 级。"
+    }
+  ]
+}

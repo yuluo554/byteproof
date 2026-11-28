@@ -1,0 +1,33 @@
+{
+  "version": "1",
+  "organ": "circuit-detective",
+  "modes": ["audit", "judge", "simulate", "generate", "replay", "solve"],
+  "default_mode": "judge",
+  "verdicts": {
+    "cd-draft-invalid": "error",
+    "cd-level-generation": "info",
+    "cd-mismatch": "error",
+    "cd-probes-replay": "error",
+    "cd-reveal-plan": "info",
+    "cd-settlement": "info",
+    "cd-sim-diagnostic": "info",
+    "cd-summary": "info"
+  },
+  "gate_types": ["NOT", "AND", "OR"],
+  "gate_arity": { "NOT": 1, "AND": 2, "OR": 2 },
+  "x_value": 2,
+  "difficulty_bands": { "easy": 2, "normal": 4, "hard": 12 },
+  "constants": {
+    "max_solver_gates": 12,
+    "max_draft_gates": 12,
+    "max_signals": 16,
+    "signal_bits": 4,
+    "record_version": 1,
+    "max_code_length": 64,
+    "max_redraws": 64,
+    "level_format": "circuit-detective/level",
+    "level_version": 1,
+    "grid": 32
+  },
+  "settlement_basis_label": "按每个灯单独计零件（共用的零件每个灯各算一次）"
+}
