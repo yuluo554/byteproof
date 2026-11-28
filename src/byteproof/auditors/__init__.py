@@ -43,6 +43,7 @@ BUILTIN_MODULES: Tuple[str, ...] = (
     "media_type_check",
     "merge_fidelity",
     "mojibake_forensics",
+    "sqltrace",
     "timeseries_anomaly",
     "version_audit",
 )

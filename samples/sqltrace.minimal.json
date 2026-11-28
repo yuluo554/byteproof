@@ -1,0 +1,318 @@
+{
+ "mode": "lineage",
+ "statements": [
+  {
+   "file": "src.sql",
+   "index": 0,
+   "statement_id": "src.sql#1",
+   "dialect": "postgres",
+   "sql_text": "INSERT INTO stage_w (id, x, w)\nSELECT id, x, SUM(x) OVER (PARTITION BY k) AS w FROM raw_w",
+   "ast": [
+    {
+     "t": "e",
+     "c": "Insert",
+     "args": {
+      "hint": null,
+      "is_function": {
+       "t": "lit",
+       "v": false
+      },
+      "this": {
+       "t": "e",
+       "c": "Schema",
+       "args": {
+        "this": {
+         "t": "e",
+         "c": "Table",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "stage_w"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "stage_w"
+          },
+          "db": null,
+          "catalog": null
+         },
+         "name": "stage_w"
+        },
+        "expressions": [
+         {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "id"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "id"
+         },
+         {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "x"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "x"
+         },
+         {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "w"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "w"
+         }
+        ]
+       }
+      },
+      "stored": {
+       "t": "lit",
+       "v": false
+      },
+      "by_name": {
+       "t": "lit",
+       "v": false
+      },
+      "exists": {
+       "t": "lit",
+       "v": false
+      },
+      "where": null,
+      "using": null,
+      "partition": {
+       "t": "lit",
+       "v": false
+      },
+      "settings": {
+       "t": "lit",
+       "v": false
+      },
+      "default": {
+       "t": "lit",
+       "v": false
+      },
+      "expression": {
+       "t": "e",
+       "c": "Select",
+       "args": {
+        "kind": null,
+        "hint": null,
+        "distinct": null,
+        "expressions": [
+         {
+          "t": "e",
+          "c": "Column",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "id"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "id"
+           }
+          },
+          "name": "id"
+         },
+         {
+          "t": "e",
+          "c": "Column",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "x"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "x"
+           }
+          },
+          "name": "x"
+         },
+         {
+          "t": "e",
+          "c": "Alias",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Window",
+            "args": {
+             "this": {
+              "t": "e",
+              "c": "Sum",
+              "args": {
+               "this": {
+                "t": "e",
+                "c": "Column",
+                "args": {
+                 "this": {
+                  "t": "e",
+                  "c": "Identifier",
+                  "args": {
+                   "this": {
+                    "t": "s",
+                    "v": "x"
+                   },
+                   "quoted": {
+                    "t": "lit",
+                    "v": false
+                   }
+                  },
+                  "name": "x"
+                 }
+                },
+                "name": "x"
+               }
+              }
+             },
+             "partition_by": [
+              {
+               "t": "e",
+               "c": "Column",
+               "args": {
+                "this": {
+                 "t": "e",
+                 "c": "Identifier",
+                 "args": {
+                  "this": {
+                   "t": "s",
+                   "v": "k"
+                  },
+                  "quoted": {
+                   "t": "lit",
+                   "v": false
+                  }
+                 },
+                 "name": "k"
+                }
+               },
+               "name": "k"
+              }
+             ],
+             "order": null,
+             "spec": null,
+             "alias": null,
+             "over": {
+              "t": "s",
+              "v": "OVER"
+             },
+             "first": null
+            }
+           },
+           "alias": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "w"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "w"
+           }
+          },
+          "alias": "w"
+         }
+        ],
+        "limit": null,
+        "exclude": null,
+        "operation_modifiers": null,
+        "from_": {
+         "t": "e",
+         "c": "From",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Table",
+           "args": {
+            "this": {
+             "t": "e",
+             "c": "Identifier",
+             "args": {
+              "this": {
+               "t": "s",
+               "v": "raw_w"
+              },
+              "quoted": {
+               "t": "lit",
+               "v": false
+              }
+             },
+             "name": "raw_w"
+            }
+           },
+           "name": "raw_w"
+          }
+         },
+         "name": "raw_w"
+        }
+       }
+      },
+      "conflict": null,
+      "returning": null,
+      "overwrite": {
+       "t": "lit",
+       "v": false
+      },
+      "alternative": null,
+      "ignore": {
+       "t": "lit",
+       "v": false
+      },
+      "source": {
+       "t": "lit",
+       "v": false
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

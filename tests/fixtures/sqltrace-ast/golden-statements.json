@@ -1,0 +1,2778 @@
+[
+ {
+  "file": "g1/corpus/src.sql",
+  "index": 0,
+  "statement_id": "g1/corpus/src.sql#0",
+  "sql_text": "CREATE TABLE raw_w (id int, x int, k int)",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Schema",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Table",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "raw_w"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "raw_w"
+         },
+         "db": null,
+         "catalog": null
+        },
+        "name": "raw_w"
+       },
+       "expressions": [
+        {
+         "t": "e",
+         "c": "ColumnDef",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "id"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "id"
+          },
+          "kind": {
+           "t": "e",
+           "c": "DataType",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "DType.INT"
+            },
+            "expressions": null,
+            "nested": {
+             "t": "lit",
+             "v": false
+            }
+           }
+          },
+          "constraints": [],
+          "position": null
+         },
+         "name": "id"
+        },
+        {
+         "t": "e",
+         "c": "ColumnDef",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "x"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "x"
+          },
+          "kind": {
+           "t": "e",
+           "c": "DataType",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "DType.INT"
+            },
+            "expressions": null,
+            "nested": {
+             "t": "lit",
+             "v": false
+            }
+           }
+          },
+          "constraints": [],
+          "position": null
+         },
+         "name": "x"
+        },
+        {
+         "t": "e",
+         "c": "ColumnDef",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "k"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "k"
+          },
+          "kind": {
+           "t": "e",
+           "c": "DataType",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "DType.INT"
+            },
+            "expressions": null,
+            "nested": {
+             "t": "lit",
+             "v": false
+            }
+           }
+          },
+          "constraints": [],
+          "position": null
+         },
+         "name": "k"
+        }
+       ]
+      }
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": null,
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ },
+ {
+  "file": "g1/corpus/src.sql",
+  "index": 1,
+  "statement_id": "g1/corpus/src.sql#1",
+  "sql_text": "INSERT INTO stage_w (id, x, w)\nSELECT id, x, SUM(x) OVER (PARTITION BY k) AS w FROM raw_w",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Insert",
+    "args": {
+     "hint": null,
+     "is_function": {
+      "t": "lit",
+      "v": false
+     },
+     "this": {
+      "t": "e",
+      "c": "Schema",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Table",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "stage_w"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "stage_w"
+         },
+         "db": null,
+         "catalog": null
+        },
+        "name": "stage_w"
+       },
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Identifier",
+         "args": {
+          "this": {
+           "t": "s",
+           "v": "id"
+          },
+          "quoted": {
+           "t": "lit",
+           "v": false
+          }
+         },
+         "name": "id"
+        },
+        {
+         "t": "e",
+         "c": "Identifier",
+         "args": {
+          "this": {
+           "t": "s",
+           "v": "x"
+          },
+          "quoted": {
+           "t": "lit",
+           "v": false
+          }
+         },
+         "name": "x"
+        },
+        {
+         "t": "e",
+         "c": "Identifier",
+         "args": {
+          "this": {
+           "t": "s",
+           "v": "w"
+          },
+          "quoted": {
+           "t": "lit",
+           "v": false
+          }
+         },
+         "name": "w"
+        }
+       ]
+      }
+     },
+     "stored": {
+      "t": "lit",
+      "v": false
+     },
+     "by_name": {
+      "t": "lit",
+      "v": false
+     },
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "where": null,
+     "using": null,
+     "partition": {
+      "t": "lit",
+      "v": false
+     },
+     "settings": {
+      "t": "lit",
+      "v": false
+     },
+     "default": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": {
+      "t": "e",
+      "c": "Select",
+      "args": {
+       "kind": null,
+       "hint": null,
+       "distinct": null,
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "id"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "id"
+          }
+         },
+         "name": "id"
+        },
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "x"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "x"
+          }
+         },
+         "name": "x"
+        },
+        {
+         "t": "e",
+         "c": "Alias",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Window",
+           "args": {
+            "this": {
+             "t": "e",
+             "c": "Sum",
+             "args": {
+              "this": {
+               "t": "e",
+               "c": "Column",
+               "args": {
+                "this": {
+                 "t": "e",
+                 "c": "Identifier",
+                 "args": {
+                  "this": {
+                   "t": "s",
+                   "v": "x"
+                  },
+                  "quoted": {
+                   "t": "lit",
+                   "v": false
+                  }
+                 },
+                 "name": "x"
+                }
+               },
+               "name": "x"
+              }
+             }
+            },
+            "partition_by": [
+             {
+              "t": "e",
+              "c": "Column",
+              "args": {
+               "this": {
+                "t": "e",
+                "c": "Identifier",
+                "args": {
+                 "this": {
+                  "t": "s",
+                  "v": "k"
+                 },
+                 "quoted": {
+                  "t": "lit",
+                  "v": false
+                 }
+                },
+                "name": "k"
+               }
+              },
+              "name": "k"
+             }
+            ],
+            "order": null,
+            "spec": null,
+            "alias": null,
+            "over": {
+             "t": "s",
+             "v": "OVER"
+            },
+            "first": null
+           }
+          },
+          "alias": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "w"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "w"
+          }
+         },
+         "alias": "w"
+        }
+       ],
+       "limit": null,
+       "exclude": null,
+       "operation_modifiers": null,
+       "from_": {
+        "t": "e",
+        "c": "From",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Table",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "raw_w"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "raw_w"
+           }
+          },
+          "name": "raw_w"
+         }
+        },
+        "name": "raw_w"
+       }
+      }
+     },
+     "conflict": null,
+     "returning": null,
+     "overwrite": {
+      "t": "lit",
+      "v": false
+     },
+     "alternative": null,
+     "ignore": {
+      "t": "lit",
+      "v": false
+     },
+     "source": {
+      "t": "lit",
+      "v": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "file": "g2/corpus/src.sql",
+  "index": 0,
+  "statement_id": "g2/corpus/src.sql#0",
+  "sql_text": "CREATE TABLE stage_star AS SELECT * FROM raw_unknown",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Table",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Identifier",
+        "args": {
+         "this": {
+          "t": "s",
+          "v": "stage_star"
+         },
+         "quoted": {
+          "t": "lit",
+          "v": false
+         }
+        },
+        "name": "stage_star"
+       },
+       "db": null,
+       "catalog": null
+      },
+      "name": "stage_star"
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": {
+      "t": "e",
+      "c": "Select",
+      "args": {
+       "kind": null,
+       "hint": null,
+       "distinct": null,
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Star",
+         "args": {
+          "ilike": null,
+          "except_": null,
+          "replace": null,
+          "rename": null
+         },
+         "name": "*"
+        }
+       ],
+       "limit": null,
+       "exclude": null,
+       "operation_modifiers": null,
+       "from_": {
+        "t": "e",
+        "c": "From",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Table",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "raw_unknown"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "raw_unknown"
+           }
+          },
+          "name": "raw_unknown"
+         }
+        },
+        "name": "raw_unknown"
+       }
+      }
+     },
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ },
+ {
+  "file": "g3/corpus/src.sql",
+  "index": 0,
+  "statement_id": "g3/corpus/src.sql#0",
+  "sql_text": "CREATE TABLE raw_g3 (a int, b int)",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Schema",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Table",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "raw_g3"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "raw_g3"
+         },
+         "db": null,
+         "catalog": null
+        },
+        "name": "raw_g3"
+       },
+       "expressions": [
+        {
+         "t": "e",
+         "c": "ColumnDef",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "a"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "a"
+          },
+          "kind": {
+           "t": "e",
+           "c": "DataType",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "DType.INT"
+            },
+            "expressions": null,
+            "nested": {
+             "t": "lit",
+             "v": false
+            }
+           }
+          },
+          "constraints": [],
+          "position": null
+         },
+         "name": "a"
+        },
+        {
+         "t": "e",
+         "c": "ColumnDef",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "b"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "b"
+          },
+          "kind": {
+           "t": "e",
+           "c": "DataType",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "DType.INT"
+            },
+            "expressions": null,
+            "nested": {
+             "t": "lit",
+             "v": false
+            }
+           }
+          },
+          "constraints": [],
+          "position": null
+         },
+         "name": "b"
+        }
+       ]
+      }
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": null,
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ },
+ {
+  "file": "g3/corpus/src.sql",
+  "index": 1,
+  "statement_id": "g3/corpus/src.sql#1",
+  "sql_text": "INSERT INTO stage_g3 (c2, c1) SELECT a, b FROM raw_g3",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Insert",
+    "args": {
+     "hint": null,
+     "is_function": {
+      "t": "lit",
+      "v": false
+     },
+     "this": {
+      "t": "e",
+      "c": "Schema",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Table",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "stage_g3"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "stage_g3"
+         },
+         "db": null,
+         "catalog": null
+        },
+        "name": "stage_g3"
+       },
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Identifier",
+         "args": {
+          "this": {
+           "t": "s",
+           "v": "c2"
+          },
+          "quoted": {
+           "t": "lit",
+           "v": false
+          }
+         },
+         "name": "c2"
+        },
+        {
+         "t": "e",
+         "c": "Identifier",
+         "args": {
+          "this": {
+           "t": "s",
+           "v": "c1"
+          },
+          "quoted": {
+           "t": "lit",
+           "v": false
+          }
+         },
+         "name": "c1"
+        }
+       ]
+      }
+     },
+     "stored": {
+      "t": "lit",
+      "v": false
+     },
+     "by_name": {
+      "t": "lit",
+      "v": false
+     },
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "where": null,
+     "using": null,
+     "partition": {
+      "t": "lit",
+      "v": false
+     },
+     "settings": {
+      "t": "lit",
+      "v": false
+     },
+     "default": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": {
+      "t": "e",
+      "c": "Select",
+      "args": {
+       "kind": null,
+       "hint": null,
+       "distinct": null,
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "a"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "a"
+          }
+         },
+         "name": "a"
+        },
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "b"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "b"
+          }
+         },
+         "name": "b"
+        }
+       ],
+       "limit": null,
+       "exclude": null,
+       "operation_modifiers": null,
+       "from_": {
+        "t": "e",
+        "c": "From",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Table",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "raw_g3"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "raw_g3"
+           }
+          },
+          "name": "raw_g3"
+         }
+        },
+        "name": "raw_g3"
+       }
+      }
+     },
+     "conflict": null,
+     "returning": null,
+     "overwrite": {
+      "t": "lit",
+      "v": false
+     },
+     "alternative": null,
+     "ignore": {
+      "t": "lit",
+      "v": false
+     },
+     "source": {
+      "t": "lit",
+      "v": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "file": "g4/corpus/a.sql",
+  "index": 0,
+  "statement_id": "g4/corpus/a.sql#0",
+  "sql_text": "CREATE TABLE raw_g4 (id int)",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Schema",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Table",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "raw_g4"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "raw_g4"
+         },
+         "db": null,
+         "catalog": null
+        },
+        "name": "raw_g4"
+       },
+       "expressions": [
+        {
+         "t": "e",
+         "c": "ColumnDef",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "id"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "id"
+          },
+          "kind": {
+           "t": "e",
+           "c": "DataType",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "DType.INT"
+            },
+            "expressions": null,
+            "nested": {
+             "t": "lit",
+             "v": false
+            }
+           }
+          },
+          "constraints": [],
+          "position": null
+         },
+         "name": "id"
+        }
+       ]
+      }
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": null,
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ },
+ {
+  "file": "g4/corpus/a.sql",
+  "index": 1,
+  "statement_id": "g4/corpus/a.sql#1",
+  "sql_text": "INSERT INTO stage_hot (id) SELECT id FROM raw_g4",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Insert",
+    "args": {
+     "hint": null,
+     "is_function": {
+      "t": "lit",
+      "v": false
+     },
+     "this": {
+      "t": "e",
+      "c": "Schema",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Table",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "stage_hot"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "stage_hot"
+         },
+         "db": null,
+         "catalog": null
+        },
+        "name": "stage_hot"
+       },
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Identifier",
+         "args": {
+          "this": {
+           "t": "s",
+           "v": "id"
+          },
+          "quoted": {
+           "t": "lit",
+           "v": false
+          }
+         },
+         "name": "id"
+        }
+       ]
+      }
+     },
+     "stored": {
+      "t": "lit",
+      "v": false
+     },
+     "by_name": {
+      "t": "lit",
+      "v": false
+     },
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "where": null,
+     "using": null,
+     "partition": {
+      "t": "lit",
+      "v": false
+     },
+     "settings": {
+      "t": "lit",
+      "v": false
+     },
+     "default": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": {
+      "t": "e",
+      "c": "Select",
+      "args": {
+       "kind": null,
+       "hint": null,
+       "distinct": null,
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "id"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "id"
+          }
+         },
+         "name": "id"
+        }
+       ],
+       "limit": null,
+       "exclude": null,
+       "operation_modifiers": null,
+       "from_": {
+        "t": "e",
+        "c": "From",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Table",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "raw_g4"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "raw_g4"
+           }
+          },
+          "name": "raw_g4"
+         }
+        },
+        "name": "raw_g4"
+       }
+      }
+     },
+     "conflict": null,
+     "returning": null,
+     "overwrite": {
+      "t": "lit",
+      "v": false
+     },
+     "alternative": null,
+     "ignore": {
+      "t": "lit",
+      "v": false
+     },
+     "source": {
+      "t": "lit",
+      "v": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "file": "g4/corpus/b.sql",
+  "index": 0,
+  "statement_id": "g4/corpus/b.sql#0",
+  "sql_text": "INSERT INTO stage_hot (id) SELECT id FROM raw_g4",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Insert",
+    "args": {
+     "hint": null,
+     "is_function": {
+      "t": "lit",
+      "v": false
+     },
+     "this": {
+      "t": "e",
+      "c": "Schema",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Table",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "stage_hot"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "stage_hot"
+         },
+         "db": null,
+         "catalog": null
+        },
+        "name": "stage_hot"
+       },
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Identifier",
+         "args": {
+          "this": {
+           "t": "s",
+           "v": "id"
+          },
+          "quoted": {
+           "t": "lit",
+           "v": false
+          }
+         },
+         "name": "id"
+        }
+       ]
+      }
+     },
+     "stored": {
+      "t": "lit",
+      "v": false
+     },
+     "by_name": {
+      "t": "lit",
+      "v": false
+     },
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "where": null,
+     "using": null,
+     "partition": {
+      "t": "lit",
+      "v": false
+     },
+     "settings": {
+      "t": "lit",
+      "v": false
+     },
+     "default": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": {
+      "t": "e",
+      "c": "Select",
+      "args": {
+       "kind": null,
+       "hint": null,
+       "distinct": null,
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "id"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "id"
+          }
+         },
+         "name": "id"
+        }
+       ],
+       "limit": null,
+       "exclude": null,
+       "operation_modifiers": null,
+       "from_": {
+        "t": "e",
+        "c": "From",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Table",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "raw_g4"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "raw_g4"
+           }
+          },
+          "name": "raw_g4"
+         }
+        },
+        "name": "raw_g4"
+       }
+      }
+     },
+     "conflict": null,
+     "returning": null,
+     "overwrite": {
+      "t": "lit",
+      "v": false
+     },
+     "alternative": null,
+     "ignore": {
+      "t": "lit",
+      "v": false
+     },
+     "source": {
+      "t": "lit",
+      "v": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "file": "g4/corpus/b.sql",
+  "index": 1,
+  "statement_id": "g4/corpus/b.sql#1",
+  "sql_text": "INSERT INTO raw_orphan (id) SELECT id FROM raw_g4",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Insert",
+    "args": {
+     "hint": null,
+     "is_function": {
+      "t": "lit",
+      "v": false
+     },
+     "this": {
+      "t": "e",
+      "c": "Schema",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Table",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "raw_orphan"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "raw_orphan"
+         },
+         "db": null,
+         "catalog": null
+        },
+        "name": "raw_orphan"
+       },
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Identifier",
+         "args": {
+          "this": {
+           "t": "s",
+           "v": "id"
+          },
+          "quoted": {
+           "t": "lit",
+           "v": false
+          }
+         },
+         "name": "id"
+        }
+       ]
+      }
+     },
+     "stored": {
+      "t": "lit",
+      "v": false
+     },
+     "by_name": {
+      "t": "lit",
+      "v": false
+     },
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "where": null,
+     "using": null,
+     "partition": {
+      "t": "lit",
+      "v": false
+     },
+     "settings": {
+      "t": "lit",
+      "v": false
+     },
+     "default": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": {
+      "t": "e",
+      "c": "Select",
+      "args": {
+       "kind": null,
+       "hint": null,
+       "distinct": null,
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "id"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "id"
+          }
+         },
+         "name": "id"
+        }
+       ],
+       "limit": null,
+       "exclude": null,
+       "operation_modifiers": null,
+       "from_": {
+        "t": "e",
+        "c": "From",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Table",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "raw_g4"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "raw_g4"
+           }
+          },
+          "name": "raw_g4"
+         }
+        },
+        "name": "raw_g4"
+       }
+      }
+     },
+     "conflict": null,
+     "returning": null,
+     "overwrite": {
+      "t": "lit",
+      "v": false
+     },
+     "alternative": null,
+     "ignore": {
+      "t": "lit",
+      "v": false
+     },
+     "source": {
+      "t": "lit",
+      "v": false
+     }
+    }
+   }
+  ]
+ },
+ {
+  "file": "g5/corpus/v1.sql",
+  "index": 0,
+  "statement_id": "g5/corpus/v1.sql#0",
+  "sql_text": "CREATE TABLE raw_src (nm text)",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Schema",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Table",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "raw_src"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "raw_src"
+         },
+         "db": null,
+         "catalog": null
+        },
+        "name": "raw_src"
+       },
+       "expressions": [
+        {
+         "t": "e",
+         "c": "ColumnDef",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "nm"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "nm"
+          },
+          "kind": {
+           "t": "e",
+           "c": "DataType",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "DType.TEXT"
+            },
+            "expressions": null,
+            "nested": {
+             "t": "lit",
+             "v": false
+            }
+           }
+          },
+          "constraints": [],
+          "position": null
+         },
+         "name": "nm"
+        }
+       ]
+      }
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": null,
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ },
+ {
+  "file": "g5/corpus_v2/v2.sql",
+  "index": 0,
+  "statement_id": "g5/corpus_v2/v2.sql#0",
+  "sql_text": "CREATE TABLE raw_src (nm text, cd text)",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Schema",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Table",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "raw_src"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "raw_src"
+         },
+         "db": null,
+         "catalog": null
+        },
+        "name": "raw_src"
+       },
+       "expressions": [
+        {
+         "t": "e",
+         "c": "ColumnDef",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "nm"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "nm"
+          },
+          "kind": {
+           "t": "e",
+           "c": "DataType",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "DType.TEXT"
+            },
+            "expressions": null,
+            "nested": {
+             "t": "lit",
+             "v": false
+            }
+           }
+          },
+          "constraints": [],
+          "position": null
+         },
+         "name": "nm"
+        },
+        {
+         "t": "e",
+         "c": "ColumnDef",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "cd"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "cd"
+          },
+          "kind": {
+           "t": "e",
+           "c": "DataType",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "DType.TEXT"
+            },
+            "expressions": null,
+            "nested": {
+             "t": "lit",
+             "v": false
+            }
+           }
+          },
+          "constraints": [],
+          "position": null
+         },
+         "name": "cd"
+        }
+       ]
+      }
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": null,
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ },
+ {
+  "file": "g5/corpus/v1.sql",
+  "index": 1,
+  "statement_id": "g5/corpus/v1.sql#1",
+  "sql_text": "CREATE TABLE mid1 AS SELECT nm FROM raw_src",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Table",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Identifier",
+        "args": {
+         "this": {
+          "t": "s",
+          "v": "mid1"
+         },
+         "quoted": {
+          "t": "lit",
+          "v": false
+         }
+        },
+        "name": "mid1"
+       },
+       "db": null,
+       "catalog": null
+      },
+      "name": "mid1"
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": {
+      "t": "e",
+      "c": "Select",
+      "args": {
+       "kind": null,
+       "hint": null,
+       "distinct": null,
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "nm"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "nm"
+          }
+         },
+         "name": "nm"
+        }
+       ],
+       "limit": null,
+       "exclude": null,
+       "operation_modifiers": null,
+       "from_": {
+        "t": "e",
+        "c": "From",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Table",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "raw_src"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "raw_src"
+           }
+          },
+          "name": "raw_src"
+         }
+        },
+        "name": "raw_src"
+       }
+      }
+     },
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ },
+ {
+  "file": "g5/corpus_v2/v2.sql",
+  "index": 1,
+  "statement_id": "g5/corpus_v2/v2.sql#1",
+  "sql_text": "CREATE TABLE raw_src2 (nm text, cd text)",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Schema",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Table",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Identifier",
+          "args": {
+           "this": {
+            "t": "s",
+            "v": "raw_src2"
+           },
+           "quoted": {
+            "t": "lit",
+            "v": false
+           }
+          },
+          "name": "raw_src2"
+         },
+         "db": null,
+         "catalog": null
+        },
+        "name": "raw_src2"
+       },
+       "expressions": [
+        {
+         "t": "e",
+         "c": "ColumnDef",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "nm"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "nm"
+          },
+          "kind": {
+           "t": "e",
+           "c": "DataType",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "DType.TEXT"
+            },
+            "expressions": null,
+            "nested": {
+             "t": "lit",
+             "v": false
+            }
+           }
+          },
+          "constraints": [],
+          "position": null
+         },
+         "name": "nm"
+        },
+        {
+         "t": "e",
+         "c": "ColumnDef",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "cd"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "cd"
+          },
+          "kind": {
+           "t": "e",
+           "c": "DataType",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "DType.TEXT"
+            },
+            "expressions": null,
+            "nested": {
+             "t": "lit",
+             "v": false
+            }
+           }
+          },
+          "constraints": [],
+          "position": null
+         },
+         "name": "cd"
+        }
+       ]
+      }
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": null,
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ },
+ {
+  "file": "g5/corpus_v2/v2.sql",
+  "index": 2,
+  "statement_id": "g5/corpus_v2/v2.sql#2",
+  "sql_text": "CREATE TABLE mid1 AS SELECT nm, cd FROM raw_src2",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Table",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Identifier",
+        "args": {
+         "this": {
+          "t": "s",
+          "v": "mid1"
+         },
+         "quoted": {
+          "t": "lit",
+          "v": false
+         }
+        },
+        "name": "mid1"
+       },
+       "db": null,
+       "catalog": null
+      },
+      "name": "mid1"
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": {
+      "t": "e",
+      "c": "Select",
+      "args": {
+       "kind": null,
+       "hint": null,
+       "distinct": null,
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "nm"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "nm"
+          }
+         },
+         "name": "nm"
+        },
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "cd"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "cd"
+          }
+         },
+         "name": "cd"
+        }
+       ],
+       "limit": null,
+       "exclude": null,
+       "operation_modifiers": null,
+       "from_": {
+        "t": "e",
+        "c": "From",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Table",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "raw_src2"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "raw_src2"
+           }
+          },
+          "name": "raw_src2"
+         }
+        },
+        "name": "raw_src2"
+       }
+      }
+     },
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ },
+ {
+  "file": "g5/corpus/v1.sql",
+  "index": 2,
+  "statement_id": "g5/corpus/v1.sql#2",
+  "sql_text": "CREATE TABLE mid2 AS SELECT nm FROM mid1",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Table",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Identifier",
+        "args": {
+         "this": {
+          "t": "s",
+          "v": "mid2"
+         },
+         "quoted": {
+          "t": "lit",
+          "v": false
+         }
+        },
+        "name": "mid2"
+       },
+       "db": null,
+       "catalog": null
+      },
+      "name": "mid2"
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": {
+      "t": "e",
+      "c": "Select",
+      "args": {
+       "kind": null,
+       "hint": null,
+       "distinct": null,
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "nm"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "nm"
+          }
+         },
+         "name": "nm"
+        }
+       ],
+       "limit": null,
+       "exclude": null,
+       "operation_modifiers": null,
+       "from_": {
+        "t": "e",
+        "c": "From",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Table",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "mid1"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "mid1"
+           }
+          },
+          "name": "mid1"
+         }
+        },
+        "name": "mid1"
+       }
+      }
+     },
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ },
+ {
+  "file": "g5/corpus_v2/v2.sql",
+  "index": 3,
+  "statement_id": "g5/corpus_v2/v2.sql#3",
+  "sql_text": "CREATE TABLE mid2 AS SELECT nm, cd FROM mid1",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Table",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Identifier",
+        "args": {
+         "this": {
+          "t": "s",
+          "v": "mid2"
+         },
+         "quoted": {
+          "t": "lit",
+          "v": false
+         }
+        },
+        "name": "mid2"
+       },
+       "db": null,
+       "catalog": null
+      },
+      "name": "mid2"
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": {
+      "t": "e",
+      "c": "Select",
+      "args": {
+       "kind": null,
+       "hint": null,
+       "distinct": null,
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "nm"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "nm"
+          }
+         },
+         "name": "nm"
+        },
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "cd"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "cd"
+          }
+         },
+         "name": "cd"
+        }
+       ],
+       "limit": null,
+       "exclude": null,
+       "operation_modifiers": null,
+       "from_": {
+        "t": "e",
+        "c": "From",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Table",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "mid1"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "mid1"
+           }
+          },
+          "name": "mid1"
+         }
+        },
+        "name": "mid1"
+       }
+      }
+     },
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ },
+ {
+  "file": "g5/corpus/v1.sql",
+  "index": 3,
+  "statement_id": "g5/corpus/v1.sql#3",
+  "sql_text": "CREATE TABLE leaf AS SELECT nm FROM mid2",
+  "dialect": "postgres",
+  "ast": [
+   {
+    "t": "e",
+    "c": "Create",
+    "args": {
+     "this": {
+      "t": "e",
+      "c": "Table",
+      "args": {
+       "this": {
+        "t": "e",
+        "c": "Identifier",
+        "args": {
+         "this": {
+          "t": "s",
+          "v": "leaf"
+         },
+         "quoted": {
+          "t": "lit",
+          "v": false
+         }
+        },
+        "name": "leaf"
+       },
+       "db": null,
+       "catalog": null
+      },
+      "name": "leaf"
+     },
+     "kind": {
+      "t": "s",
+      "v": "TABLE"
+     },
+     "replace": {
+      "t": "lit",
+      "v": false
+     },
+     "refresh": {
+      "t": "lit",
+      "v": false
+     },
+     "unique": {
+      "t": "lit",
+      "v": false
+     },
+     "expression": {
+      "t": "e",
+      "c": "Select",
+      "args": {
+       "kind": null,
+       "hint": null,
+       "distinct": null,
+       "expressions": [
+        {
+         "t": "e",
+         "c": "Column",
+         "args": {
+          "this": {
+           "t": "e",
+           "c": "Identifier",
+           "args": {
+            "this": {
+             "t": "s",
+             "v": "nm"
+            },
+            "quoted": {
+             "t": "lit",
+             "v": false
+            }
+           },
+           "name": "nm"
+          }
+         },
+         "name": "nm"
+        }
+       ],
+       "limit": null,
+       "exclude": null,
+       "operation_modifiers": null,
+       "from_": {
+        "t": "e",
+        "c": "From",
+        "args": {
+         "this": {
+          "t": "e",
+          "c": "Table",
+          "args": {
+           "this": {
+            "t": "e",
+            "c": "Identifier",
+            "args": {
+             "this": {
+              "t": "s",
+              "v": "mid2"
+             },
+             "quoted": {
+              "t": "lit",
+              "v": false
+             }
+            },
+            "name": "mid2"
+           }
+          },
+          "name": "mid2"
+         }
+        },
+        "name": "mid2"
+       }
+      }
+     },
+     "exists": {
+      "t": "lit",
+      "v": false
+     },
+     "properties": null,
+     "indexes": [],
+     "no_schema_binding": null,
+     "begin": null,
+     "clone": null,
+     "concurrently": {
+      "t": "lit",
+      "v": false
+     },
+     "clustered": null
+    }
+   }
+  ]
+ }
+]

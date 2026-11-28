@@ -1,0 +1,71 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "st-diag-approximate",
+      "title": "近似/降级诊断（零静默）",
+      "source": "迁自 10-20-sqltrace · fallback/core 诊断面；出处：data/README.md §四",
+      "text": "每条写语句有边或有诊断、任何静默丢弃都会让 lineage 以退出码 4 失败。降级档带机器可读 reason code（如 dialect_defaulted：无显式方言时默认 postgres，approximate=true——降级显式不静默）。approximate 诊断不影响边正确性：value 边精确率 100%（宁可 unknown 不得假边）。warn 级。"
+    },
+    {
+      "rule_id": "st-census-conflict",
+      "title": "多写冲突",
+      "source": "迁自 10-20-sqltrace · census 写入者普查；出处：data/README.md §四",
+      "text": "同一张表被多条语句写入（跨文件或同文件）→ 多写冲突：普查第 4 节显式列出冲突表与全部写入语句——读者据此判断哪条写路径是权威。warn 级。"
+    },
+    {
+      "rule_id": "st-census-orphan",
+      "title": "孤儿表（只读不写）",
+      "source": "迁自 10-20-sqltrace · census 写入者普查；出处：data/README.md §四",
+      "text": "语料内被读但从未被写的表 → 孤儿表：普查第 3 节显式列出（数据来源在语料之外——上游管道或外部系统）。info 级显式记录，不阻断。"
+    },
+    {
+      "rule_id": "st-census-writer",
+      "title": "写入者普查（每表被谁写过）",
+      "source": "迁自 10-20-sqltrace · census 写入者普查五节；出处：data/README.md §四",
+      "text": "普查五节 = writers / readers / orphans / conflicts / tables：每张表被谁写过、谁在读、孤儿表、多写冲突、全表清单。每张被写的表一条 info 级记录（语句 id 列表为证据）。"
+    },
+    {
+      "rule_id": "st-diff-added",
+      "title": "lineage 新增边（additive）",
+      "source": "迁自 10-20-sqltrace · diffgate；出处：data/README.md §四",
+      "text": "当前边集相对基线新增的边：additive 变更（新列进入下游）不阻断，info 级显式记录——diff 闸门只阻断破坏性变更。"
+    },
+    {
+      "rule_id": "st-diff-destructive",
+      "title": "破坏性 lineage 变更（边被丢）",
+      "source": "迁自 10-20-sqltrace · diffgate；出处：data/README.md §四",
+      "text": "基线里存在、当前语料不再产出的边 → destructive：下游列会失去来源（上游列改名/删除/过滤）。diff 闸门在 CI 里以退出码阻断破坏性变更；账本化为 error 级阻断记录（旧 rc1 面）。error 级。"
+    },
+    {
+      "rule_id": "st-edge-control",
+      "title": "控制边（control）",
+      "source": "迁自 10-20-sqltrace · core §4.1 窗口强制口径；出处：data/README.md §4.1",
+      "text": "窗口的 PARTITION BY / ORDER BY 参数 → control 边（w←k）：分区/排序键决定输出的分组与次序语义，不是被聚合的值。SUM(x) OVER (PARTITION BY k ORDER BY t) → (w,value,x) + (w,control,k) + (w,control,t)——修正 sqlglot lineage() 把分区键与值参数并列且不标类型的实测错误。info 级正向证据。"
+    },
+    {
+      "rule_id": "st-edge-unknown",
+      "title": "unknown 边（AST 定不了，带 reason）",
+      "source": "迁自 10-20-sqltrace · core §4.1 判定顺序；出处：data/README.md §4.1",
+      "text": "判定顺序（§4.1）：AST 定不了 → unknown + reason code，再分 value / control。星号引用（unknown_wildcard）、解析不到表的列（unknown_type）等一律 unknown + approximate=true，绝不猜边——value 边精确率 100% 的代价是 unknown 显式多。warn 级。"
+    },
+    {
+      "rule_id": "st-edge-value",
+      "title": "值边（value）",
+      "source": "迁自 10-20-sqltrace · core §4.1 分型；出处：data/README.md §4.1",
+      "text": "目标列的值来自源列：直接列引用、聚合函数参数（SUM(x) 的 x → value + aggregation 标注）、表达式参数。CTE/子查询按输出列逐层回溯到基表（source 落到最底层表.列，标注口径）。info 级正向证据（人工标注语料范围内精确率 100%）。"
+    },
+    {
+      "rule_id": "st-summary",
+      "title": "运行汇总",
+      "source": "账本化新增（同 va-summary 先例）",
+      "text": "每次运行输出一条 info 级汇总：mode、error/warn/info 计数与该模式的关键计数（lineage 的边/诊断数、census 五节计数、diff 的 dropped/added 计数）。"
+    },
+    {
+      "rule_id": "st-zero-silence",
+      "title": "零静默失败（unsupported/parse/no-source）",
+      "source": "迁自 10-20-sqltrace · 零静默门；出处：data/README.md §4.2",
+      "text": "写语句 = INSERT / CREATE TABLE|VIEW ... AS / MERGE / UPDATE / DELETE / TRUNCATE / COPY——后四类本期不做列级血缘，一律落 unsupported_write_statement 诊断（能力边界显式）；解析失败落 parse_error；无输出列落 no_source_columns。任何静默丢弃都会让 lineage 以退出码 4 失败——账本化为 error 级阻断记录（旧 rc4 面）。error 级。"
+    }
+  ]
+}

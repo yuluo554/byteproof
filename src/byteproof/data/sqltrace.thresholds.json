@@ -1,0 +1,19 @@
+{
+  "slug": "sqltrace",
+  "version": "1",
+  "source": "迁自 10-20-sqltrace · src/sqltrace/constants.py + 零静默纪律（运行期常量快照）",
+  "recursion_limit": 100,
+  "max_ast_nodes": 200000,
+  "edge_kinds": ["value", "control", "unknown"],
+  "unsupported_write_classes": ["Update", "Delete", "TruncateTable", "Copy", "Command", "Execute"],
+  "write_kinds": ["insert", "ctas", "merge"],
+  "reason_codes": ["dialect_defaulted", "unknown_wildcard", "unknown_type",
+                   "unsupported_write_statement", "parse_error", "recursion_limit",
+                   "no_source_columns", "multi_writer_conflict"],
+  "verdict_map": {
+    "error": ["st-zero-silence", "st-diff-destructive"],
+    "info": ["st-edge-value", "st-edge-control", "st-census-writer", "st-census-orphan", "st-diff-added", "st-summary"],
+    "warn": ["st-edge-unknown", "st-diag-approximate", "st-census-conflict"]
+  },
+  "exit_note": "旧仓退出码 0/1/2/3/4（0 无阻断 / 1 diff 破坏性变更 / 2 输入不合法 / 3 环境不满足 / 4 零静默失败）；账本化：unsupported/parse/no-source → error（旧 rc4 面）；diff destructive → error（旧 rc1 面）；unknown 边与 approximate 诊断 → warn；value/control 边 → info。"
+}

@@ -114,6 +114,7 @@ version-audit                    1          npm 版本约束账本：R1–R8 范
 depcheck-live                    1          已装依赖引用点账本：exports 六形态解析 + 引用点五判定态 + ESM/CJS 招牌判据 + 版本行为漂移
 http-semantics                   1          HTTP 语义判定账本：CORS check + 重定向逐 hop 仿真 + RFC 9111 新鲜度 + 前置条件优先级 + Vary 缓存键
 merge-fidelity                   1          Merge 保真度账本：机械树复算三分类（夹带/吞掉/冲突解）+ 跨分支三态对齐 + revert 校验与重放
+sqltrace                         1          SQL 血缘账本：值/控制双通道分型 + 窗口强制口径 + 写入者普查五节 + lineage diff 闸门 + 零静默诊断
 
 $ byteproof check no-such --input samples/timeseries-anomaly.minimal.json
 PackMissing: 未注册的器官：no-such          # 退出码 3
@@ -142,5 +143,6 @@ PackMissing: 未注册的器官：no-such          # 退出码 3
 | `depcheck-live` | 1 | [`depcheck-live.md`](depcheck-live.md) |
 | `http-semantics` | 1 | [`http-semantics.md`](http-semantics.md) |
 | `merge-fidelity` | 1 | [`merge-fidelity.md`](merge-fidelity.md) |
+| `sqltrace` | 1 | [`sqltrace.md`](sqltrace.md) |
 
 器官表按 `_workspace/target-map-20261125.tsv` 的 ②byteproof 行逐个补齐。
