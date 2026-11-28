@@ -33,6 +33,7 @@ BUILTIN_MODULES: Tuple[str, ...] = (
     "circuit_detective",
     "config_drift",
     "contract_drift",
+    "crsscope",
     "duplicate_docs",
     "fund_quarter_report",
     "image_oracle",

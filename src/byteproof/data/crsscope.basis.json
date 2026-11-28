@@ -1,0 +1,179 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "crs-check-finding",
+      "title": "检查项结果项（兜底规则）",
+      "source": "迁自 target-map ② 行 · 旧仓 report.Finding；出处：plan/03 开头",
+      "text": "所有模块的每条结论都长同一形状：check/status/reason/detail/evidence。检查项一项一责——每个检查只回答一件事，否则五条判据互相串扰（data/README.md §4.1 末条的验收即失效）。本规则承接未在 RULE_BY_CHECK 点名的检查项。"
+    },
+    {
+      "rule_id": "crs-decl-axis",
+      "title": "M1 轴序",
+      "source": "迁自 target-map ② 行 · 旧仓 decl._check_axis；出处：data/README.md §4.1",
+      "text": "只用可判定样本（两分量都在 ±180 内）；少于 5 个即 undecidable(insufficient_samples)，不得凭少量点下结论。第二分量越出 ±90 而第一分量在经度域 → 呈 (lat, lon)，报 conflict 并给 corrected_sample；第一分量越出纬度域 → consistent (lon, lat)；全部落在 ±90 内 → undecidable。conflict → error（阻断）。"
+    },
+    {
+      "rule_id": "crs-decl-extent",
+      "title": "M1 分布范围",
+      "source": "迁自 target-map ② 行 · 旧仓 decl._check_extent；出处：plan/01 M1 第 3 条",
+      "text": "外包框与声明 CRS 的定义域是否相容；判不出时必须给候选建议（undecidable + candidates），不得硬判。分量是不是 lon,lat 由 axis 项判（这里只按它的结论读数）。声明地理坐标系但无度域样本 → undecidable + 候选 3857；越出 ±180/±90 → conflict；3857 米域越出 WebMercator 全球范围 → conflict。"
+    },
+    {
+      "rule_id": "crs-decl-magnitude",
+      "title": "M1 量级",
+      "source": "迁自 target-map ② 行 · 旧仓 decl._check_magnitude；出处：data/README.md §4.1",
+      "text": "m = max(|a|, |b|)；m ≤ 180 为度域、m ≥ 1e6 为米域、其间为中间带。声明是度制（4326/4490/crs84）而 m > 180 → conflict/magnitude；声明 3857 时量级只报事实（单位矛盾归 unit、混用归 mixed）。无样本 → undecidable；无声明 → info。conflict → error。"
+    },
+    {
+      "rule_id": "crs-decl-mixed",
+      "title": "M1 混用",
+      "source": "迁自 target-map ② 行 · 旧仓 decl._check_mixed；出处：data/README.md §4.1 / §4.8",
+      "text": "同一批数据内同时出现度域与米域样本 → conflict/mixed（3857 与 4326 混用的静态可判形态）。conflict → error。"
+    },
+    {
+      "rule_id": "crs-decl-unit",
+      "title": "M1 单位",
+      "source": "迁自 target-map ② 行 · 旧仓 decl._check_unit；出处：data/README.md §4.1",
+      "text": "只对 --declared-crs 3857 生效：声明 3857（米）而有样本量级在度域 → conflict/unit。其余任何情况只出 info，不越责。conflict → error。"
+    },
+    {
+      "rule_id": "crs-geojson-axis",
+      "title": "M4 轴序提示",
+      "source": "迁自 target-map ② 行 · 旧仓 geojson._check_axis；出处：RFC 7946 §3.1.1",
+      "text": "第二分量越出 ±90 而第一分量在经度域 → 呈 (lat, lon)，RFC 7946 要求 (lon, lat)。级别 warning（分级而非拒绝——历史数据不该被 CI 判死）。"
+    },
+    {
+      "rule_id": "crs-geojson-bbox",
+      "title": "M4 bbox 成员",
+      "source": "迁自 target-map ② 行 · 旧仓 geojson._audit_bbox / _check_bbox；出处：RFC 7946 §7.1 / §5.2",
+      "text": "bbox 长度必须 4 或 6；顺序 [west, south, east, north]；与几何真实外包框一致。west > east 按跨 180° 解读（R4 明确合法，只出 info 不是错误）。不一致 → warning（含 check-geojson 不查的坐标一致性）。"
+    },
+    {
+      "rule_id": "crs-geojson-crs-member",
+      "title": "M4 crs 成员",
+      "source": "迁自 target-map ② 行 · 旧仓 geojson._check_crs_member；出处：RFC 7946 §4 与 Appendix B.1",
+      "text": "RFC 7946 已移除 crs 成员；声明它 → warning（§4 留了活口：双方同意另行指定 CRS 仍可加）。check-geojson 明写忽略 crs——本项把它翻出来。"
+    },
+    {
+      "rule_id": "crs-geojson-nesting",
+      "title": "M4 嵌套深度",
+      "source": "迁自 target-map ② 行 · 旧仓 geojson._check_nesting；出处：RFC 7946 §3.1",
+      "text": "GeometryCollection 最大嵌套深度与类型自洽；只做信息项。info 级。"
+    },
+    {
+      "rule_id": "crs-geojson-null-geometry",
+      "title": "M4 null geometry/properties",
+      "source": "迁自 target-map ② 行 · 旧仓 geojson._check_null_geometry；出处：RFC 7946 §3.2",
+      "text": "geometry: null / properties: null 是 RFC 7946 §3.2 明确合法的 unlocated feature——只出 info，不进结构错误（R6）。"
+    },
+    {
+      "rule_id": "crs-geojson-precision",
+      "title": "M4 坐标精度",
+      "source": "迁自 target-map ② 行 · 旧仓 geojson._check_precision；出处：data/README.md §4.6",
+      "text": "单分量十进制小数位 > 9（≈0.1 mm，对任何地表坐标无意义）→ warning。精度读 Decimal 十进制指数，不经过 float 往返（check-geojson 不查坐标精度——本项是补位之一）。"
+    },
+    {
+      "rule_id": "crs-geojson-ring-order",
+      "title": "M4 环方向（R1/R2）",
+      "source": "迁自 target-map ② 行 · 旧仓 geojson._audit_rings / _check_ring_order；出处：RFC 7946 §3.1.6",
+      "text": "右手法则：外环逆时针、洞顺时针（闭式 Shoelace）。违规级别由 R2 决定：R2 的容忍语义（parsers SHOULD NOT reject）在 → 默认 warning，报告不放弃；--strict-ring 是唯一升 error 的路径。环退化（Shoelace 为 0）→ 结构 error。"
+    },
+    {
+      "rule_id": "crs-residual",
+      "title": "M2 三段残差",
+      "source": "迁自 target-map ② 行 · 旧仓 detect._residual；出处：data/README.md §4.5 / 决策 ③④",
+      "text": "三段固定齐全：民间公式近似（不保证等价于未公开实现，只说在某实现假设下的残差）/ 厂商米级差异（不指定唯一真值）/ 边界两侧跳变（两库边界框不同是审计发现点，不是任何一方的 bug）。affected_points 按「该不确定性实际影响到几个点」计数。boundary_jump 有受影响点 → warn。"
+    },
+    {
+      "rule_id": "crs-structure-error",
+      "title": "M4 结构错误",
+      "source": "迁自 target-map ② 行 · 旧仓 geojson._issue / run；出处：data/README.md §4.6",
+      "text": "非法 JSON / 未知 type / 坐标对非数组或非数值 / bbox 长度不为 4/6 / 环退化等结构性问题逐条记录，级别固定 error（整体 InvalidInput → 旧 exit 4）。geometry: null 不在列（R6）。error → 阻断。"
+    },
+    {
+      "rule_id": "crs-summary",
+      "title": "账本汇总",
+      "source": "迁自 target-map ② 行 · 旧仓 errors.outcome_code 的账本化",
+      "text": "按模式汇总阻断与提示条数。旧仓退出码全序 2→3→4→5→1→0：conflict/error → 1；undecidable（灰区）→ 5。本账本 conflict/error → error（rc1）；undecidable → warn（灰区不阻断，语义在 evidence；旧 rc5 → rc0 已登记口径差）；warning 是「合法但值得提示」的固定级别，刻意不进默认命中（分级而非拒绝）。info 级。"
+    },
+    {
+      "rule_id": "crs-tiles-axis-flip",
+      "title": "M5 y 轴翻转",
+      "source": "迁自 target-map ② 行 · 旧仓 tiles._audit_group / _check_axis_flip；出处：data/README.md §4.7",
+      "text": "同一 z / 同一 x 下 y 与 2^z-1-y 并存且指向同一 bbox → XYZ 与 TMS 混用（静态可判，无需底图）。mercantile 没有 tms 形参，y 轴翻转被抹平——本项把它翻出来。conflict → error。"
+    },
+    {
+      "rule_id": "crs-tiles-mixed",
+      "title": "M5 3857/4326 混用",
+      "source": "迁自 target-map ② 行 · 旧仓 tiles._check_mixed；出处：data/README.md §4.1",
+      "text": "点集内度域与米域并存 → conflict（3857 与 4326 混用）。输入为 z/x/y 瓦片编号时本项不适用（info）。conflict → error。"
+    },
+    {
+      "rule_id": "crs-tiles-wrap",
+      "title": "M5 wrap 显式声明",
+      "source": "迁自 target-map ② 行 · 旧仓 tiles._check_wrap；出处：data/README.md §4.7",
+      "text": "跨日界线的 x 环绕（0 与 2^z-1 并存 / x 越界 / bbox west > east）必须显式记录 wrap: true；缺失 → conflict。未出现环绕 → consistent。conflict → error。"
+    },
+    {
+      "rule_id": "crs-tiles-y-range",
+      "title": "M5 y 越界",
+      "source": "迁自 target-map ② 行 · 旧仓 tiles._check_y_range；出处：data/README.md §4.7",
+      "text": "y 必须落在 [0, 2^z - 1]；单点即判（不需要成对证据）。error → 阻断。"
+    },
+    {
+      "rule_id": "crs-tiles-zoom-bbox",
+      "title": "M5 zoom↔bbox 嵌套",
+      "source": "迁自 target-map ② 行 · 旧仓 tiles._check_zoom_bbox；出处：data/README.md §4.7",
+      "text": "z+1 的每个瓦片的父瓦片 (x//2, y//2) 必须出现在 z 的集合里，否则覆盖不单调 → conflict。conflict → error。"
+    },
+    {
+      "rule_id": "crs-xdiff-boundary-table",
+      "title": "M3 两库边界结论表",
+      "source": "迁自 target-map ② 行 · 旧仓 xdiff._boundary_table；出处：data/README.md §1.3",
+      "text": "coordTransform_py 开区间 / gcoord 闭区间对同一坐标可能给出不同的 out_of_china 结论——分歧点 → warning（审计发现点，不是任何一方的 bug，决策 ④）。warning → warn。"
+    },
+    {
+      "rule_id": "crs-xdiff-implementations",
+      "title": "M3 参与实现",
+      "source": "迁自 target-map ② 行 · 旧仓 xdiff；出处：data/README.md §1.5",
+      "text": "三个本地重实现（coordTransform_py 一步线性 + 开区间 / gcoord 定点迭代 1e-6 + 闭区间 / proj4js_webmercator 解析逆）；输入被读作 --target 指定的坐标系，每个实现把它转成 WGS84（唯一可比的公共参照系）。不覆盖该 target 的实现不参与——把不适用者塞进来只会造出虚假差分。info 级。"
+    },
+    {
+      "rule_id": "crs-xdiff-jumps",
+      "title": "M3 边界跳变点",
+      "source": "迁自 target-map ② 行 · 旧仓 xdiff._jumps；出处：plan/03 §三",
+      "text": "两库对「是否偏移」结论相反的点 = out_of_china 边界内外跳变点。只计数并说明，不判定谁对。info 级。"
+    },
+    {
+      "rule_id": "crs-xdiff-not-converged",
+      "title": "M3 迭代未收敛",
+      "source": "迁自 target-map ② 行 · 旧仓 xdiff not_converged；出处：题面 §M3 纪律",
+      "text": "gcoord 定点迭代超 100 次上限未收敛（容差 1e-6°）→ undecidable：这些点的差分不可信，按灰区处理，不得静默返回一个看起来对的值。undecidable → warn。"
+    },
+    {
+      "rule_id": "crs-xdiff-pairwise",
+      "title": "M3 两两差分",
+      "source": "迁自 target-map ② 行 · 旧仓 xdiff pairwise；出处：data/README.md §4.4",
+      "text": "WGS84 输出之间 haversine 两两差分：median/max/p95（米，保留 0.1 m），max 附所在坐标。info 级。"
+    },
+    {
+      "rule_id": "crs-detect-winner",
+      "title": "M2 假设评分与置信",
+      "source": "迁自 target-map ② 行 · 旧仓 detect._evaluate / _rank / _confidence；出处：data/README.md §4.2",
+      "text": "三假设（WGS84/GCJ02/BD09）各自整批逆变换后按掩膜落水率评分：score = (1-落水率) - 0.25×边界带点数 - 0.30×声明冲突；排序 score 降序、同分按假设名字典序。灰区优先：可判定点 < 30 / unknown+coastal 占比 > 0.8 / 并列第一 → undecidable 不硬判；边界带压置信上限到 medium。落水率判的是逆变换后的落点；unknown 与海岸带不计入分母。info 级。"
+    },
+    {
+      "rule_id": "crs-gray-zone",
+      "title": "灰区（不可判定）",
+      "source": "迁自 target-map ② 行 · 旧仓 detect 灰区 / errors.Undecidable；出处：data/README.md §4.8",
+      "text": "可判定点不足 / 并列第一 / 覆盖率过差 / 迭代未收敛 / 掩膜分辨率不足都是灰区——「没查」不等于「查了没问题」，但不硬判。旧仓 exit 5 与 1 严格区分；本账本 undecidable → warn（不阻断，语义在 evidence；rc5→rc0 已登记口径差）。"
+    },
+    {
+      "rule_id": "crs-module-verdict",
+      "title": "模块判定汇总",
+      "source": "迁自 target-map ② 行 · 旧仓各模块 verdict；出处：plan/03",
+      "text": "每个模块给出一句判定汇总（声明与内容一致/不一致/不可判定；结构自洽/有提示/结构错误），随 evidence 带声明来源（CLI/file/file-unrecognised/none）与样本分档。info 级。"
+    }
+  ]
+}

@@ -34,6 +34,7 @@ barcode-preflight            1          条码印前账本：GS1 校验/语义 +
 bookmark-doctor              1          收藏夹体检账本：三态失效判定（规则优先+保守冲突+锚点硬门）+ URL 规范化去重 + 未访问画像分档
 browser-history-vault        1          浏览器历史档案账本：隐私门禁（私密排除/敏感打码）+ 会话切分 + 覆盖缺口 + 遗忘宝藏四条件 + 主题聚类 + 字 n-gram 检索
 circuit-detective             1          黑盒电路账本：三值 unit-delay 仿真 + NOT/AND/OR 精确 DP 最少门求解 + 种子确定性关卡 + 全表比对判定 + CRC16 回放短码
+crsscope                      1          空间参考账本：声明-内容一致性五项 + GCJ-02/BD-09 假设评分与三段残差 + 跨实现差分 + RFC 7946 结构七项 + 瓦片轴序五项
 cert-ledger                  1          证书台账缺陷账本：去重配对 + 过期/强度/权限/孤儿/重复 + 容器信号 + 基线差异
 chart-integrity              1          图表工件缺陷账本：九条反误导规则 + 逐值溯源 + 样本量门禁 + 误差棒来源
 config-drift                 1          配置差异账本：值族归一 + 六类影响分类 + semver 子类 + gate 门禁
@@ -59,6 +60,7 @@ version-audit                1          npm 版本约束账本：R1–R8 范围�
 | `bookmark-doctor` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/bookmark-doctor.md)） |
 | `browser-history-vault` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/browser-history-vault.md)） |
 | `circuit-detective` | 迁自 target-map ② 行（Node/mjs 源） | 已迁入 v1（[文档](docs/circuit-detective.md)） |
+| `crsscope` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/crsscope.md)） |
 | `cert-ledger` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/cert-ledger.md)） |
 | `chart-integrity` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/chart-integrity.md)） |
 | `config-drift` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/config-drift.md)） |
@@ -71,7 +73,7 @@ version-audit                1          npm 版本约束账本：R1–R8 范围�
 | `mojibake-forensics` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/mojibake-forensics.md)） |
 | `timeseries-anomaly` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/timeseries-anomaly.md)） |
 | `version-audit` | 迁自 target-map ② 行（Node/mjs 源） | 已迁入 v1（[文档](docs/version-audit.md)） |
-| — | 其余 9 个 auditor | 待迁入 |
+| — | 其余 8 个 auditor | 待迁入 |
 
 跑一次审计（工件 = 时序长表解析后的 JSON；规则包随包分发，不需要额外参数）：
 
