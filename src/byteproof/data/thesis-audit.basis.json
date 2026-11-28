@@ -1,0 +1,221 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "taw-ref-card",
+      "title": "参考文献卡校验",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/cards.py",
+      "text": "卡片缺必填键/类型非法 → 逐条报；doc 对象（图/表/公式）同法校验。warn 级。"
+    },
+    {
+      "rule_id": "taw-ref-field-required",
+      "title": "必填字段缺失",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refcheck.py",
+      "text": "按条目类型（期刊/会议/专著/学位论文/标准/电子资源）要求其必填字段：缺一即一条 error，位置 card:<id>/<field>。"
+    },
+    {
+      "rule_id": "taw-ref-type-marker",
+      "title": "文献类型标记",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refcheck.py",
+      "text": "GB/T 7714 文献类型标识（[J]/[M]/[C]/[D]/[S]/[EB/OL]）必须与条目类型一致；未标或标错即 error（可从 raw 块推断有效类型）。"
+    },
+    {
+      "rule_id": "taw-ref-author-threshold",
+      "title": "作者阈值（et al./等）",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refcheck.py",
+      "text": "作者数超过阈值（默认 3）时必须用 et al./等 截断；未截断或截断错误即 error。"
+    },
+    {
+      "rule_id": "taw-ref-page-range",
+      "title": "页码区间",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refcheck.py",
+      "text": "页码必须为合法区间/单页（起止可解析、起 <= 止）；缺页码或越界即 error。"
+    },
+    {
+      "rule_id": "taw-ref-citation-style",
+      "title": "引用体例",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refcheck.py",
+      "text": "序数制与著者-出版年制不得混用；与规则集声明的体例不一致即 warn。"
+    },
+    {
+      "rule_id": "taw-ref-standard-currency",
+      "title": "标准时效",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refcheck.py",
+      "text": "引用已废止/被替代的标准（替换表命中）即 warn，并给出替代标准号。"
+    },
+    {
+      "rule_id": "taw-ref-consistency",
+      "title": "正文与卡片一致性",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refcheck.py",
+      "text": "正文写到的年份/作者/标题与卡片不一致即 error（作者姓与年份都核）。"
+    },
+    {
+      "rule_id": "taw-ref-punct",
+      "title": "标点体例",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refcheck.py",
+      "text": "GB/T 7714 的标点分隔与全半角体例不符即 warn。"
+    },
+    {
+      "rule_id": "taw-cite-marker",
+      "title": "引用标记未定义",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refcite.py",
+      "text": "正文出现 [n] / (著者, 年) 标记但卡片里查不到对应条目即 error；位置 marker:<doc>@<pos>。"
+    },
+    {
+      "rule_id": "taw-cite-uncited",
+      "title": "条目未被引用",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refcite.py",
+      "text": "卡片存在但正文从未引用 → warn（不静默：可能是漏引或该删）。"
+    },
+    {
+      "rule_id": "taw-cite-order",
+      "title": "首次引用次序",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refcite.py",
+      "text": "序数制要求首次引用按 1..n 递增；乱序即 warn。"
+    },
+    {
+      "rule_id": "taw-dedup-pair",
+      "title": "重复条目",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refdedup.py",
+      "text": "标题归一 + DOI 归一同源，或编辑距离 <= 阈值且字段无冲突 → 重复对，warn。"
+    },
+    {
+      "rule_id": "taw-dedup-merge-conflict",
+      "title": "重复合并冲突",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refdedup.py",
+      "text": "同一簇内同一字段出现不同非空值 → 不能自动合并，error（列出冲突字段）。"
+    },
+    {
+      "rule_id": "taw-fake-signal",
+      "title": "伪造信号",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/reffake.py",
+      "text": "DOI 前缀不在已知出版前缀表 / ISBN 校验位错或出版社区间不符 / 不可能组合 / 自引即 error。"
+    },
+    {
+      "rule_id": "taw-fake-health",
+      "title": "文献健康分",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/reffake.py",
+      "text": "按信号加权算 0..100 健康分并分档；只作 info 汇总（不单独阻断）。"
+    },
+    {
+      "rule_id": "taw-rec-hint",
+      "title": "推荐（BM25）",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/refrec.py",
+      "text": "对给定句子检索卡片（BM25，k1/b 默认），给出 top_k 与分数；只作 info。"
+    },
+    {
+      "rule_id": "taw-lib-tamper",
+      "title": "文献库篡改",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/reflib.py",
+      "text": "manifest 指纹（逐条 fingerprint + 整册）与现有卡片不一致即 error；缺条目/多条目/字段改动都要报。"
+    },
+    {
+      "rule_id": "taw-review-cluster",
+      "title": "综述聚类",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/reviewcl.py",
+      "text": "TF-IDF 余弦相似度 >= 阈值聚成一簇；输出簇与主题词；info。"
+    },
+    {
+      "rule_id": "taw-review-gap",
+      "title": "研究缺口（年代）",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/reviewcl.py",
+      "text": "近 N 年（默认 3）无新文献的主题 → 缺口；info。"
+    },
+    {
+      "rule_id": "taw-aigc-band",
+      "title": "AIGC 分档",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/aigccheck.py",
+      "text": "按句长变异系数/模板连接词/总结套话/并列结构算风险分，落低/中/高三档；中高档 warn。"
+    },
+    {
+      "rule_id": "taw-aigc-dist",
+      "title": "AIGC 分布",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/aigccheck.py",
+      "text": "段落分档分布（低/中/高条数）汇总；info。"
+    },
+    {
+      "rule_id": "taw-struct-heading",
+      "title": "标题层级",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/structcheck.py",
+      "text": "标题层级跳级（1→3）或首标题不是一级即 error。"
+    },
+    {
+      "rule_id": "taw-struct-abstract",
+      "title": "摘要要素",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/structcheck.py",
+      "text": "摘要缺要素（目的/方法/结果/结论）或缺关键词即 error。"
+    },
+    {
+      "rule_id": "taw-struct-chapter",
+      "title": "章节结构",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/structcheck.py",
+      "text": "章节类别（绪论/方法/实验/结论）缺失或摘要与结论回声重叠过低 → warn。"
+    },
+    {
+      "rule_id": "taw-term-hit",
+      "title": "术语用法",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/termnum.py",
+      "text": "术语表命中（首次出现未给全称/缩写、同义混用）即 warn；豁免样式（标题/图表题）不报。"
+    },
+    {
+      "rule_id": "taw-term-stray",
+      "title": "术语粘连空格",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/termnum.py",
+      "text": "中英混排多余空格/缺空格（术语边界）即 warn。"
+    },
+    {
+      "rule_id": "taw-term-number",
+      "title": "数字用法",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/termnum.py",
+      "text": "数字使用口径（阿拉伯数字/汉字数字、量词、范围号）不符即 warn。"
+    },
+    {
+      "rule_id": "taw-term-heat",
+      "title": "术语热区",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/termnum.py",
+      "text": "按段落统计术语命中密度，给热区；info。"
+    },
+    {
+      "rule_id": "taw-fig-xref",
+      "title": "图表交叉引用",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/figref.py",
+      "text": "正文引用 图n/表n/式(n) 但对象不存在 → error；对象存在但从未引用 → warn。"
+    },
+    {
+      "rule_id": "taw-fig-gap",
+      "title": "图表编号缺口",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/figref.py",
+      "text": "同类对象编号不连续（缺号）即 warn；重号即 error。"
+    },
+    {
+      "rule_id": "taw-fig-renumber",
+      "title": "图表重编号",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/figref.py",
+      "text": "按出现序给出重编号映射与编辑矩阵（只作 info，不自动改文档）。"
+    },
+    {
+      "rule_id": "taw-school-style",
+      "title": "学校样式",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/schoolfmt.py",
+      "text": "样式名/字号/行距/对齐等与学校规则不符即 error（规则 op/tolerance 求值）。"
+    },
+    {
+      "rule_id": "taw-school-format",
+      "title": "版式参数",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/schoolfmt.py",
+      "text": "页边距/纸张/页眉页脚/页码等版式参数与规则不符即 error；容忍度 tol 内视为合规。"
+    },
+    {
+      "rule_id": "taw-rng-determinism",
+      "title": "确定性 RNG",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/rng.py",
+      "text": "SplitMix64 同种子同序列；跨进程/跨平台一致，禁 random 模块。info。"
+    },
+    {
+      "rule_id": "taw-summary",
+      "title": "论文审计汇总",
+      "source": "迁自 10-7-thesis-audit-workbench · src/taw/engine.py summarize",
+      "text": "账本汇总：记录条数、阻断条数与按规则计数。info。"
+    }
+  ]
+}

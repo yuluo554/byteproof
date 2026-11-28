@@ -54,6 +54,7 @@ sqltrace                     1          SQL 血缘账本：值/控制双通道�
 subset-audit                 1          字体子集产物账本：覆盖三分类（缺源/丢产物）+ GSUB/GPOS 三元组与连字差分 + name 存活与 OS/2 位域过度声明
 subtitle-preflight           1          字幕体检账本：时序 T01–T12（含 fps 漂移拟合）+ 可读性 R01–R07 + 卫生 S01–S10 + 编码回退 + 可逆修复白名单
 testdeck                     1          测试历史账本：JUnit 原因码/降级 + 四类分型（精确有理数）+ p50/p95 回归三态 + 两次 run diff 三类 + 失败优先树 + 门禁
+thesis-audit                 1          论文审计账本：参考文献八条格式规则 + 引用对账 + 去重与伪造信号 + AIGC 分档 + 结构/术语/图表/学校格式 + 确定性 RNG
 ```
 
 契约（唯一入口 / 缺陷账本 / 退出码）见 [`docs/byteproof.md`](docs/byteproof.md)。
@@ -87,6 +88,7 @@ testdeck                     1          测试历史账本：JUnit 原因码/降
 | `subset-audit` | 迁自 target-map ② 行（fontTools 读取留输入层；license-gate 不迁） | 已迁入 v1（[文档](docs/subset-audit.md)） |
 | `subtitle-preflight` | 迁自 target-map ② 行（Node/mjs 源；SRT/VTT/ASS 解析留输入层，报告渲染留宿主） | 已迁入 v1（[文档](docs/subtitle-preflight.md)） |
 | `testdeck` | 迁自 target-map ② 行（SQLite 读写留输入层；CLI/TUI/导出留宿主） | 已迁入 v1（[文档](docs/testdeck.md)） |
+| `thesis-audit` | 迁自 target-map ② 行（docx 读取/GUI/CLI 留输入层与宿主） | 已迁入 v1（[文档](docs/thesis-audit.md)） |
 | — | ② 全部 23 个 auditor 迁入完成 | — |
 
 跑一次审计（工件 = 时序长表解析后的 JSON；规则包随包分发，不需要额外参数）：

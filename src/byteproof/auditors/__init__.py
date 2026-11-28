@@ -47,6 +47,7 @@ BUILTIN_MODULES: Tuple[str, ...] = (
     "subset_audit",
     "subtitle_preflight",
     "testdeck",
+    "thesis_audit",
     "timeseries_anomaly",
     "version_audit",
 )

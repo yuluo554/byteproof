@@ -1,0 +1,79 @@
+{
+ "mode": "dedup",
+ "cards": [
+  {
+   "card_id": "ref-000003",
+   "entry_type": "M",
+   "authors": [
+    {
+     "family": "SMITH",
+     "given": "J",
+     "raw": "SMITH J"
+    }
+   ],
+   "title": "Synthetic Data Methods",
+   "source": {
+    "container": null,
+    "year": "2022",
+    "volume": null,
+    "issue": null,
+    "pages": "33-45",
+    "publisher": "Fake Academic Press",
+    "city": "New York",
+    "edition": null,
+    "report_no": null
+   },
+   "identifiers": {
+    "doi": null,
+    "isbn": null,
+    "url": null
+   },
+   "evidence": {
+    "src": "refs_table.txt",
+    "ordinal": 3,
+    "label": "3",
+    "raw": "SMITH J. Synthetic Data Methods[M]. New York: Fake Academic Press, 2022: 33-45."
+   },
+   "confidence": 1.0,
+   "flags": []
+  },
+  {
+   "card_id": "ref-000004",
+   "entry_type": "M",
+   "authors": [
+    {
+     "family": "SMITH",
+     "given": "J",
+     "raw": "SMITH J"
+    }
+   ],
+   "title": "Synthetic Data Methods",
+   "source": {
+    "container": null,
+    "year": "2022",
+    "volume": null,
+    "issue": null,
+    "pages": "33-45",
+    "publisher": "Fake Academic Press",
+    "city": "New York",
+    "edition": null,
+    "report_no": null
+   },
+   "identifiers": {
+    "doi": null,
+    "isbn": null,
+    "url": null
+   },
+   "evidence": {
+    "src": "refs_table.txt",
+    "ordinal": 4,
+    "label": "4",
+    "raw": "SMITH J. Synthetic Data Methods[M]. New York: Fake Academic Press, 2022: 33-45."
+   },
+   "confidence": 0.98,
+   "flags": [
+    "space_collapsed"
+   ]
+  }
+ ]
+}
