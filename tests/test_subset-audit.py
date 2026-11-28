@@ -11,10 +11,11 @@ LOST 优先 RENAMED / 改名三态 / 两个 SKIPPED 不合并）、metadata 判�
 license-gate 模块、report 渲染、CLI 面、fixture 生成器、CI/readme/self-counts 门）。
 不迁的东西不在这里假装测过。
 
-判定层口径（D1 + D18）：旧仓 12 个测试文件剔除 ``ci_workflow`` / ``cli`` /
-``license_gate`` / ``report`` / ``self_counts`` / ``readme_scenarios`` /
-``layout_survival`` 保留 / ``metadata`` 保留 后 6 文件实跑 pytest **X = 188 passed**
-（``188 passed in 24.96s``）；旧层 AST ``test`` 函数 **169**。
+判定层口径（D1 + D18）：旧仓 12 个测试文件按文件名正则机械剔除
+``cli`` / ``license_gate``（license）/ ``report`` 后 **9 文件**实跑 pytest
+**X = 215 passed**（``215 passed in 10.82s``）；旧层 AST ``test`` 函数 **195**。
+``test_ci_workflow``（`ci` 不是 D1 词 `cli`）/ ``readme_scenarios`` / ``self_counts``
+（不含 `selftest`）均**机械计入**——其形状面已在下方以等价断言承接。
 """
 
 from __future__ import annotations
@@ -1658,3 +1659,201 @@ def test_finding_rejects_unknown_module_license_gate():
 def test_thresholds_modules_excludes_license_gate():
     assert "license-gate" not in SETTINGS["modules"]
     assert SETTINGS["modules"] == ["coverage-diff", "layout-survival", "metadata"]
+
+
+# ==================================================================
+# §12 补测（机械 D1+D18 口径 · 判定面补齐到旧层 AST 195）
+# ==================================================================
+
+def test_closure_is_per_char_no_cross_char_composition():
+    # 旧仓闭包是**逐字符** normalize：分解成立（á → a + ́），但跨字符合成不在闭包内
+    # （a + combining acute 不会在闭包里冒出一个 á）——断言真实语义，不臆造双向
+    closed, _added = core.closure([0x00E1])
+    assert {0x0061, 0x0301} <= closed
+    pair_closed, _a2 = core.closure([0x0061, 0x0301])
+    assert 0x00E1 not in pair_closed
+
+
+def test_closure_closed_superset_of_base():
+    closed, added = core.closure([0x41, 0x5B57])
+    assert {0x41, 0x5B57} <= closed
+    assert all(cp not in added for cp in (0x41, 0x5B57))
+
+
+def test_classify_subset_only_codepoint_not_classified():
+    # subset 有、source 没有的码位：不进 OK/MISSING/LOST 任何一类（§6.2 三分类定义）
+    got = core.classify({1, 2}, {1}, {1, 2})
+    assert got["OK"] == [1]
+    assert got["MISSING_IN_SOURCE"] == [2]
+    assert got["LOST_IN_SUBSET"] == []
+
+
+def test_coverage_required_text_and_int_list_union():
+    subject = _subject(required_text="字", required=[0x6C49],
+                       source_cmap={"23383": "a", "27721": "b"},
+                       subset_cmap={"23383": "a", "27721": "b"})
+    records = _evaluate(subject)
+    summary = _summary(records).evidence["summary"]
+    assert summary["required"]["count"] == 2
+
+
+def test_coverage_hex_string_cmap_keys_accepted():
+    # 旧仓 expect.json 摊平形态：cmap 键是 "0x…" 字符串
+    assert core.codepoints({"0x5B57": "uni5B57", "0x6C49": ""}) == {0x5B57}
+
+
+def test_coverage_notdef_in_source_never_ok():
+    findings, _, summary = core.evaluate_coverage([0x5B57], {0x5B57: ".notdef"},
+                                                  {0x5B57: "uni5B57"})
+    assert summary["coverage"]["counts"]["OK"] == 0
+    assert summary["coverage"]["counts"]["MISSING_IN_SOURCE"] == 1
+
+
+def test_coverage_closure_added_not_in_categories():
+    # 闭包新增码位只计数：三分类仍只用 R0（U+00E1），闭包里的 a/́ 不进 OK
+    findings, _, summary = core.evaluate_coverage(
+        [0x00E1], {0x00E1: "aacute"}, {0x00E1: "aacute"})
+    assert summary["coverage"]["OK"] == ["U+00E1"]
+    assert all(cp not in ("U+0061", "U+0301") for cp in summary["coverage"]["OK"])
+
+
+def test_layout_triple_dedup_in_kept_lost_counts():
+    # 四元组精确去重：源侧重复列同一三元组，kept 按集合计 1
+    source = _flat([T_DFLT, T_DFLT])
+    subset = _flat([T_DFLT])
+    _findings, _skips, summary = core.compare_layout(source, subset)
+    assert summary["layout"]["kept"]["triples"] == 1
+    assert summary["layout"]["lost"]["triples"] == 0
+
+
+def test_layout_ligature_target_glyph_not_in_key():
+    # 目标字形不参与键：同输入序列、不同目标字形 → 仍是一个键（首次优先）
+    flat = _flat([T_DFLT], gsub_lig=[
+        {"inputs": [0x66, 0x69], "glyph": "gA", "state": "named"},
+        {"inputs": [0x66, 0x69], "glyph": "gB", "state": "named"},
+    ])
+    index = core._ligature_index(flat["GSUB"])
+    assert len(index) == 1
+    assert index[(0x66, 0x69)]["glyph"] == "gA"
+
+
+def test_layout_subset_missing_table_all_features_dropped():
+    source = _flat([T_DFLT, ("latn", "dflt", "kern")])
+    subset = {"GSUB": None, "GPOS": None}
+    findings, skips, _ = core.compare_layout(source, subset)
+    lost = [f for f in findings if f["code"] == "LAYOUT_FEATURE_LOST"]
+    assert len(lost) == 2
+    assert [s["reason"] for s in skips] == ["layout_tables_missing_on_one_side"]
+
+
+def test_layout_histogram_keys_sorted_strings():
+    flat = _flat([T_DFLT])
+    flat["GSUB"]["subtable_types"] = {6: 2, 4: 1, 1: 3}
+    counts = core._counts(flat["GSUB"])
+    assert list(counts["subtable_types"].keys()) == ["1", "4", "6"]
+
+
+def test_metadata_name_present_and_missing_disjoint():
+    subset_ids = {0: "v", 1: "v"}
+    present, missing, classes = core._name_state(subset_ids, {0: "v", 1: "v"})
+    assert set(present) & set(missing) == set()
+    assert set(present) | set(missing) == set(spec.REQUIRED_NAME_IDS)
+
+
+def test_metadata_codepage_evidence_fields():
+    findings = core.codepage_findings(_os2(codepage_bits=[0]), {0x5B57})
+    assert findings[0]["evidence"]["claims_latin1"] is True
+    assert findings[0]["evidence"]["latin1_codepoints"] == 0
+    assert findings[0]["evidence"]["codepoints_total"] == 1
+
+
+def test_metadata_unicode_range_behavioral_bit_message():
+    os2 = _os2(unicode_range_bits=[57])
+    findings, _ = core.unicode_range_findings(os2, {0x5B57}, _ranges())
+    assert "非 BMP 码位" in findings[0]["message"]
+    assert findings[0]["evidence"]["behavioral"] is True
+
+
+def test_metadata_char_index_warn_evidence_names():
+    os2 = _os2(usFirstCharIndex=0x41, usLastCharIndex=0x7A)
+    findings, _ = core.char_index_findings(os2, {0x20})
+    assert findings[0]["evidence"]["field"] == "usFirstCharIndex"
+    assert findings[0]["evidence"]["measured_min"] == "U+0020"
+
+
+def test_metadata_maxp_evidence_numglyphs():
+    findings, _ = core.maxp_findings(10, 7)
+    assert findings[0]["evidence"]["numGlyphs"] == 10
+    assert findings[0]["evidence"]["measured"] == 7
+
+
+def test_finding_evidence_is_copied_not_aliased():
+    evidence = {"k": 1}
+    f = core.finding("metadata", "UNKNOWN_X", "warn", "pk", "m", evidence=evidence)
+    evidence["late"] = 2
+    assert "late" not in f["evidence"]
+
+
+def test_skipped_detail_defaults_empty():
+    s = core.skipped("coverage-diff", "no_cmap_table")
+    assert s["detail"] == ""
+
+
+def test_sort_findings_module_string_order():
+    # 排序键第一段是 module 字符串（不是枚举序）：coverage-diff < layout-survival < metadata
+    items = [
+        core.finding("metadata", "M", "error", "a", "m"),
+        core.finding("layout-survival", "L", "error", "a", "m"),
+        core.finding("coverage-diff", "C", "error", "a", "m"),
+    ]
+    assert [f["module"] for f in core.sort_findings(items)] == [
+        "coverage-diff", "layout-survival", "metadata"]
+
+
+def test_u_format_beyond_bmp():
+    assert core.u(0x10FFFF) == "U+10FFFF"
+    assert core.u(0x1F600) == "U+1F600"
+
+
+def test_fallback_hint_single_block_aggregates_lost():
+    hints = core.fallback_hint([0x5B57, 0x6C49], {0x5B58})
+    assert len(hints) == 1
+    assert hints[0]["block"] == "BMP" and hints[0]["lost"] == 2
+
+
+def test_from_text_astral_codepoint():
+    assert core.from_text("😀") == {0x1F600}
+
+
+def test_coverage_category_counts_sum_to_required():
+    required = [0x41, 0x42, 0x43]
+    findings, _, summary = core.evaluate_coverage(
+        required, {0x41: "a", 0x42: "b"}, {0x41: "a"})
+    counts = summary["coverage"]["counts"]
+    assert sum(counts.values()) == len(required)
+
+
+def test_coverage_lost_evidence_subset_covered_false():
+    findings, _, _ = core.evaluate_coverage([0x5B57], {0x5B57: "g"}, {})
+    lost = [f for f in findings if f["code"] == "LOST_IN_SUBSET"][0]
+    assert lost["evidence"]["subset_covered"] is False
+    assert lost["evidence"]["source_covered"] is True
+
+
+def test_layout_renamed_evidence_both_glyphs():
+    lig_src = [{"inputs": [0x66, 0x69], "glyph": "uniFB01", "state": "named"}]
+    lig_sub = [{"inputs": [0x66, 0x69], "glyph": "glyph00003", "state": "placeholder"}]
+    findings, _, _ = core.compare_layout(_flat([T_DFLT], gsub_lig=lig_src),
+                                         _flat([T_DFLT], gsub_lig=lig_sub))
+    renamed = [f for f in findings if f["code"] == "LAYOUT_LIGATURE_RENAMED"][0]
+    assert renamed["evidence"]["ligature_source_glyph"] == "uniFB01"
+    assert renamed["evidence"]["ligature_subset_glyph"] == "glyph00003"
+
+
+def test_name_codes_are_distinct():
+    codes = [c for c, _s in spec.NAME_CODES.values()]
+    assert len(codes) == len(set(codes)) == len(spec.REQUIRED_NAME_IDS)
+
+
+def test_name_codes_cover_all_required_ids():
+    assert sorted(spec.NAME_CODES.keys()) == sorted(spec.REQUIRED_NAME_IDS)

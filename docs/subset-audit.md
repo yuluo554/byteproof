@@ -68,51 +68,56 @@ NOTDEF_NAMES / skip 理由词表 / verdict_map——与模块常量逐项相等�
 
 | # | 判据 | 实测 | 结论 |
 |---|---|---|---|
-| 1 | 新仓该器官实跑用例数 ≥ X | 旧仓判定层 6 文件实跑 **X = 188**（`188 passed in 24.96s`）/ 新仓实跑 **324 passed** | ✅ 过（324 ≥ 188） |
+| 1 | 新仓该器官实跑用例数 ≥ X | 旧仓判定层 **9 文件**实跑 **X = 215**（`215 passed in 10.82s`）/ 新仓实跑 **351 passed** | ✅ 过（351 ≥ 215） |
 | 2 | README 示例命令 rc 相同 | 旧 `coverage-diff out/source.ttf --subset out/subset.ttf --text 汉字abc` rc **1**（2 条 LOST error：U+5B57/U+6C49 均 BMP；summary counts 3/0/2、blocks BMP 5）→ 新同场景 IR rc **1**（lost records U+5B57/U+6C49 blocks BMP/BMP、OK 3 码位、counts 3/0/2 逐项一致） | ✅ 过（1=1；判定内容逐项一致） |
-| 3 | 测试文件数 / 测试函数数 | 口径乙：文件数**按域计** → 新 **1 文件** / 旧 6 文件；函数数**按条计** → 新 **169**（AST `test_`）/ 旧 **169**（AST `test`） | ✅ 过（169 ≥ 169） |
+| 3 | 测试文件数 / 测试函数数 | 口径乙：文件数**按域计** → 新 **1 文件** / 旧 **9 文件**；函数数**按条计** → 新 **196**（AST `test_`）/ 旧 **195**（AST `test`） | ✅ 过（196 ≥ 195） |
 | 4 | `pip wheel` 后 `data/` 进包 | `%TEMP%` 暂存树构建；`subset-audit.basis.json`（22 条）+ `.thresholds.json` 均在包内；解包 `list` = **23 器官**、样例 `check` rc **1**（丢字场景本就阻断） | ✅ 过 |
 
 ### 6.1 判据 1 的实跑命令与输出原文（来源仓只读）
 
 ```
 cd <来源仓>
-PYTHONPATH=src py -3.12 -m pytest tests/test_core.py tests/test_coverage_diff.py \
-  tests/test_cross_channel.py tests/test_fixtures.py tests/test_layout_survival.py \
-  tests/test_metadata.py -o addopts="" -q -p no:cacheprovider
+PYTHONPATH=src py -3.12 -m pytest tests/test_ci_workflow.py tests/test_core.py \
+  tests/test_coverage_diff.py tests/test_cross_channel.py tests/test_fixtures.py \
+  tests/test_layout_survival.py tests/test_metadata.py tests/test_readme_scenarios.py \
+  tests/test_self_counts.py -o addopts="" -q -p no:cacheprovider
 ```
 
 输出原文（py 3.12.10）：
 
 ```
-188 passed in 24.96s
+215 passed in 10.82s
 ```
 
-> D1+D18 机械剔除：`test_ci_workflow.py`（ci）→ 修正为**保留 ci 词不匹配**——ci_workflow
-> 不含排除词（保留 6 文件实跑口径）；`test_cli.py`（cli）/ `test_license_gate.py`（license）/
-> `test_report.py`（report）/ `test_self_counts.py`（selftest）/ `test_readme_scenarios.py`
-> / `test_metadata.py` **保留**（metadata 不含排除词）等，机械筛后 12 − 6 = 6 文件。
+> **D1+D18 机械口径（9 文件）**：旧仓共 12 个测试文件，按文件名正则
+> （`cli|gui|packaging|audit|desensit|guard|bench|infra|export|version|license|generat|docs?_|health|release|selftest|smoke|parse|report|input|output|web|panel`）
+> 剔除 **3** 件：`test_cli.py`（cli）/ `test_license_gate.py`（**license**）/
+> `test_report.py`（report）→ **12 − 3 = 9 文件**进分母。
+> `test_ci_workflow.py`（`ci` **不是** D1 词 `cli`）/ `test_readme_scenarios.py` /
+> `test_self_counts.py`（不含 `selftest`）**均机械计入**——其形状面（workflow 文本、
+> README 场景真值、自计数一致性）已以等价断言承接（§6.2）。
 > 夹具为临时合成字体（fontTools FontBuilder，pytest tmp_path），不落盘不入仓；
 > `tools/gen_fixtures.py` 现场生成 6 fixture（数据目录 gitignore，来源仓
 > `git status --porcelain` 全程 **0 行**，HEAD `bd727e7` 与队列一致）。
-> 旧层 AST `test` 函数 169（core 43 / coverage_diff 22 / cross_channel 7 / fixtures 15 /
-> layout_survival 45 / metadata 37——以 ast 计数为准）。
+> 旧层 AST `test` 函数 **195**（12 文件中 9 文件的 ast 计数）。
 
-### 6.2 D1+D18 逐文件处置表（判定层 6 文件 / 旧层 169 函数）
+### 6.2 D1+D18 逐文件处置表（判定层 9 文件 / 旧层 195 函数）
 
 | 旧仓测试文件 | 处置 | 由哪条产品门接管 / 舍弃理由 |
 |---|---|---|
+| `test_ci_workflow.py` | **已迁（形状面）** | workflow 文本门折算为"产品 CI 五腿"事实（本仓 CI 承载）；器官内不复制 YAML 断言。 |
 | `test_core.py`（cmapset + canonical 共享层） | **已迁（判定全）** | 三分类 / glyph0 剔除 / 分区计数 / 闭包 / 回退链建议 / 格式化 / finding 构造与排序；§1 + §2。 |
 | `test_coverage_diff.py` | **已迁（判定全）** | 每码位 finding / strict_source / evidence 实测 / 闭包只计数 / 两条 cmap 失败路径不合并；§3。 |
-| `test_layout_survival.py` | **已迁（判定面）** | 三元组差集 / 连字码位差分 / 改名三态 / 两个 SKIPPED 不合并 / raw/naive/kept 分母不同；fontTools 读取折算为摊平事实（§4）。 |
-| `test_metadata.py` | **已迁（判定面）** | name 三分类 / 码页 bit0 / 位域过度声明 / maxp / 首末码位哨兵；§5。 |
 | `test_cross_channel.py` | **已迁（一致性面）** | 跨 fontTools 版本判定一致性的账本等价物 = 同输入 N 次运行逐字节一致 + evidence 无环境字段（§8）；oracle 文件/双解释器子进程是旧仓工具面，不迁。 |
 | `test_fixtures.py` | **已迁（形状面）** | fixture 的 expect 真值结构（三分类 + LOST 码位）由 §3/§6 的同场景 IR 对账承担；合成器本体（gen_fixtures）不迁。 |
+| `test_layout_survival.py` | **已迁（判定面）** | 三元组差集 / 连字码位差分 / 改名三态 / 两个 SKIPPED 不合并 / raw/naive/kept 分母不同；fontTools 读取折算为摊平事实（§4）。 |
+| `test_metadata.py` | **已迁（判定面）** | name 三分类 / 码页 bit0 / 位域过度声明 / maxp / 首末码位哨兵；§5。 |
+| `test_readme_scenarios.py` | **已迁（形状面）** | README 场景回放的真值已由判据 2 同场景对账承担（§6.1）；器官内不复制 README 文本断言。 |
+| `test_self_counts.py` | **已迁（形状面）** | 自计数一致性折算为"summary 计数 == 记录集合"断言（§6/§11）；门本体属旧仓文档装订。 |
 
-**D1+D18 机械剔除**：`test_cli.py`（cli，CLI 参数面宿主承担）/ `test_license_gate.py`
-（license，模块整体不迁）/ `test_report.py`（report，渲染面）/ `test_self_counts.py`
-（selftest，自计数门）/ `test_readme_scenarios.py`（README 场景回放——真值已由判据 2
-同场景对账承担）/ `test_ci_workflow.py`（ci workflow 文本门，产品 CI 承担）。
+**D1+D18 机械剔除（3 件，从 12 文件到 9 文件）**：`test_cli.py`（cli，CLI 参数面宿主承担）/
+`test_license_gate.py`（**license**，模块整体不迁——`core.finding` 对该 module 显式
+ValueError）/ `test_report.py`（report，渲染面）。
 
 ### 6.3 判据 4 的进包清单
 
