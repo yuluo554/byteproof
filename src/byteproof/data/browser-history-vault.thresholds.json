@@ -1,0 +1,36 @@
+{
+  "version": "1",
+  "organ": "browser-history-vault",
+  "modes": ["audit", "normalize", "report", "search", "cluster"],
+  "default_mode": "audit",
+  "verdicts": {
+    "bh-coverage-gap": "info",
+    "bh-forgotten-treasure": "info",
+    "bh-normalize-duplicate": "info",
+    "bh-privacy-private-excluded": "info",
+    "bh-privacy-sensitive-masked": "info",
+    "bh-research-path": "info",
+    "bh-search-hit": "info",
+    "bh-session-stats": "info",
+    "bh-summary": "info",
+    "bh-topic-cluster": "info"
+  },
+  "canonical_fields": ["url", "title", "host", "visit_time_us", "source_browser", "source_profile", "transition", "visit_duration_us"],
+  "canonical_sort_fields": ["visit_time_us", "url", "source_browser", "source_profile"],
+  "known_browsers": ["chrome", "edge"],
+  "weekday_starts": ["monday", "sunday"],
+  "search_order_keys": ["visit_time_desc"],
+  "privacy_classes": {
+    "private": "完全排除（输出零出现，连统计都不进）",
+    "sensitive": "保留统计，仅打码呈现",
+    "public": "原样呈现（小写）"
+  },
+  "forgotten_conditions": [
+    "last_visit_days_ago_strictly_greater_than_threshold",
+    "visits_at_least_min_visits",
+    "distinct_local_days_at_least_min",
+    "host_not_private_or_sensitive"
+  ],
+  "session_split_rule": "相邻间隔严格大于配置间隔才切分（恰好等于不切分）；按来源分组",
+  "epoch": "1601-01-01 UTC（Chromium），全项目唯一定义点"
+}

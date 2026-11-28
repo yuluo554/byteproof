@@ -1,0 +1,26 @@
+{
+  "mode": "audit",
+  "rows": [
+    { "visit_id": 1, "url": "https://docs.example.test/guide", "title": "使用指南", "host": "docs.example.test", "visit_time_us": 1340101200000000, "source_browser": "chrome", "source_profile": "Default", "transition": 805306368, "visit_duration_us": 30000000 },
+    { "visit_id": 2, "url": "https://docs.example.test/api", "title": "API 参考", "host": "docs.example.test", "visit_time_us": 1340101500000000, "source_browser": "chrome", "source_profile": "Default", "transition": 805306368, "visit_duration_us": 120000000 },
+    { "visit_id": 3, "url": "https://vault.example.test/article", "title": "深度文章", "host": "vault.example.test", "visit_time_us": 1340201200000000, "source_browser": "chrome", "source_profile": "Default", "transition": 805306368, "visit_duration_us": 600000000 }
+  ],
+  "options": {
+    "timezone_utc_offset_minutes": 480,
+    "session_gap_minutes": 30,
+    "report_top_n": 5,
+    "weekday_start": "monday",
+    "today_local_date": "2026-01-01",
+    "forgotten_days_threshold": 30,
+    "forgotten_min_visits": 2,
+    "forgotten_min_distinct_days": 2,
+    "cluster_min_df": 2,
+    "cluster_max_features": 20,
+    "cluster_top_terms": 3,
+    "cluster_similarity_threshold": 0.6,
+    "random_seed": 0,
+    "search_ngram_n": 2,
+    "privacy": { "private_domains": ["private.example.test"], "sensitive_domains": ["secret.example.test"] },
+    "search": { "text": "指南" }
+  }
+}

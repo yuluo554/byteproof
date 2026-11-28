@@ -27,6 +27,7 @@ BUILTIN_MODULES: Tuple[str, ...] = (
     "artifact_drift",
     "barcode_preflight",
     "bookmark_doctor",
+    "browser_history_vault",
     "cert_ledger",
     "chart_integrity",
     "config_drift",

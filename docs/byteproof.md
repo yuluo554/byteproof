@@ -96,6 +96,7 @@ $ byteproof list
 artifact-drift                   1          构建产物差异账本：结构对齐 + T1–T12 归因 + 残留字节 + 最小原因集
 barcode-preflight                1          条码印前账本：GS1 校验/语义 + 符号可行性 + 静区/放大率/DPI/条高/颜色 + 阈值三态
 bookmark-doctor                  1          收藏夹体检账本：三态失效判定（规则优先+保守冲突+锚点硬门）+ URL 规范化去重 + 未访问画像分档
+browser-history-vault            1          浏览器历史档案账本：隐私门禁（私密排除/敏感打码）+ 会话切分 + 覆盖缺口 + 遗忘宝藏四条件 + 主题聚类 + 字 n-gram 检索
 cert-ledger                      1          证书台账缺陷账本：去重配对 + 过期/强度/权限/孤儿/重复 + 容器信号 + 基线差异
 chart-integrity                  1          图表工件缺陷账本：九条反误导规则 + 逐值溯源 + 样本量门禁 + 误差棒来源
 config-drift                     1          配置差异账本：值族归一 + 六类影响分类 + semver 子类 + gate 门禁
@@ -118,6 +119,7 @@ PackMissing: 未注册的器官：no-such          # 退出码 3
 | `artifact-drift` | 1 | [`artifact-drift.md`](artifact-drift.md) |
 | `barcode-preflight` | 1 | [`barcode-preflight.md`](barcode-preflight.md) |
 | `bookmark-doctor` | 1 | [`bookmark-doctor.md`](bookmark-doctor.md) |
+| `browser-history-vault` | 1 | [`browser-history-vault.md`](browser-history-vault.md) |
 | `cert-ledger` | 1 | [`cert-ledger.md`](cert-ledger.md) |
 | `chart-integrity` | 1 | [`chart-integrity.md`](chart-integrity.md) |
 | `config-drift` | 1 | [`config-drift.md`](config-drift.md) |

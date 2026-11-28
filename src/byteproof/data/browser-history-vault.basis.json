@@ -1,0 +1,65 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "bh-coverage-gap",
+      "title": "归档覆盖缺口与区间提示",
+      "source": "迁自 target-map ② 行 · 旧仓 insight.coverage_block；出处：plan/04 模块② / K25",
+      "text": "覆盖区间回答「档案本身覆盖了哪些天」，与「某条记录是否可展示」是两件事：私密记录也在归档库里，同样计入覆盖（否则报告会谎称那几天没有数据）。覆盖区间按口径时区下的本地日统计（含首尾）；连续无数据的本地日合并为缺口区间；不足 90 天时给出「浏览器默认只保留约 90 天历史，越早归档越完整」提示。本工具不做任何补齐或插值：缺口如实列出。info 级。"
+    },
+    {
+      "rule_id": "bh-forgotten-treasure",
+      "title": "遗忘的宝藏命中",
+      "source": "迁自 target-map ② 行 · 旧仓 insight.forgotten_block；出处：plan/04 模块⑤ / K14",
+      "text": "四条件（与参照实现逐字一致）：①最后访问距「今天」的天数严格大于 days_threshold ②总访问次数 ≥ min_visits ③跨越的本地日历日数 ≥ min_distinct_days ④主机不在私密/敏感清单。命中项按距今越久越靠前、同天按 URL 升序，每项带 visit_id 供下钻。无数据 → not_assessed（『没查』不等于『查了没问题』，K27）。命中项主机必然公开（结构护栏再断言一次，违反即当场红）。info 级。"
+    },
+    {
+      "rule_id": "bh-normalize-duplicate",
+      "title": "重复去重键确定性保留",
+      "source": "迁自 target-map ② 行 · 旧仓 normalizer.normalize_rows；出处：plan/03 §3 / K10",
+      "text": "规范化排序键 = visit 去重键（visit_time_us, url, source_browser, source_profile）。真实浏览器库确实会出现同一去重键的多条 visit：硬报错会让归档真实数据不可用，静默丢弃又让「到底存了哪一条」说不清——所以是确定性保留规范序第一条 + 显式计数，两者都要。行缺字段即拒绝（K20）。info 级。"
+    },
+    {
+      "rule_id": "bh-privacy-private-excluded",
+      "title": "私密主机完全排除",
+      "source": "迁自 target-map ② 行 · 旧仓 privacy.classify_host / keep_visible；出处：plan/04 §0 / K7 / K26",
+      "text": "私密（private）= 完全排除——输出零出现，连统计都不进（归档也不落库）。匹配语义 = host == 项 或 host 以「.」+项结尾（子域一并命中），不是子串匹配。逐主机给出排除记录数与不可逆指纹（sha256 前 8 位，同输入永远同输出）。info 级：门禁动作必须可见。"
+    },
+    {
+      "rule_id": "bh-privacy-sensitive-masked",
+      "title": "敏感主机保留统计只打码",
+      "source": "迁自 target-map ② 行 · 旧仓 privacy.mask_host / display_host / redact_text；出处：plan/04 模块⑤ / K26",
+      "text": "敏感（sensitive）= 保留统计，仅打码呈现（归档保留，展示层掩码）。掩码保留最后两段其余替换 ***；原主机名不得从 URL/标题漏出去（判据是「原主机名零出现」，不是「域名列被掩码了」）。私密主机走到输出面 = 门禁被绕过，当场报错而不是顺手返回掩码。info 级。"
+    },
+    {
+      "rule_id": "bh-research-path",
+      "title": "研究路径（会话跳转序列）",
+      "source": "迁自 target-map ② 行 · 旧仓 cluster.research_paths；出处：plan/04 模块④",
+      "text": "按会话切分（唯一生产实现，K13）产出跳转序列；每步携带 visit_id（「每个聚合数字必须可解析引用」落到会话上就是它），M4 研究路径靠它下钻。会话序号由显式排序键决定，不由遍历顺序决定。info 级。"
+    },
+    {
+      "rule_id": "bh-search-hit",
+      "title": "检索命中",
+      "source": "迁自 target-map ② 行 · 旧仓 search.run_search；出处：plan/04 模块②",
+      "text": "检索面 = 标题 ∪ URL（任一命中即命中）；中文走字 n-gram 包含匹配（逐字符滑窗不做词切分；长度不足 n 取整串）。过滤 = 域名（含子域）+ 时间范围（下界大于上界是输入错误不是「没有结果」）+ 分页在同一排序键下稳定可复现（-visit_time_us, visit_id）。命中记录的 URL/标题都过 redact_text，原主机名零出现。匹配总数与本次返回两轴计数都给出。info 级。"
+    },
+    {
+      "rule_id": "bh-session-stats",
+      "title": "会话切分统计",
+      "source": "迁自 target-map ② 行 · 旧仓 sessions.split_sessions；出处：plan/04 模块③ / K13",
+      "text": "模块③④共用唯一实现（模块④禁止第二份）。按 (source_browser, source_profile) 分组——不同来源永不并成一个会话；组内按 (visit_time_us, url) 升序（次键与存储过程无关）；相邻间隔严格大于配置间隔才切分（恰好等于不切）；会话按 (start_us, source, profile) 排序后从 1 编 session_id。info 级。"
+    },
+    {
+      "rule_id": "bh-summary",
+      "title": "账本汇总",
+      "source": "迁自 target-map ② 行 · 旧仓 CLI 退出码口径的账本化",
+      "text": "按模式汇总记录数、可见数与私密排除数。旧仓五个功能命令完成即 rc0（洞察是辅助参考，不阻断）→ 本账本全部规则 info 级，rc 恒 0（无阻断）；语义与阈值写进 evidence。info 级。"
+    },
+    {
+      "rule_id": "bh-topic-cluster",
+      "title": "主题聚类簇",
+      "source": "迁自 target-map ② 行 · 旧仓 cluster.cluster_topics；出处：plan/04 模块④ / K15",
+      "text": "词族分组 + 高同现合并：先按 df 筛词（df 是文档频率 = 含该词的 URL 条目数，不是记录数），再合并成员集高度重叠的词族——Jaccard ≥ 阈值且一方包含另一方（只按 Jaccard 会链式吞并整库，「主题聚类」退化成「一个大桶」）。同分同序靠显式次排序键（权重降序 + 词面升序）；与私密/敏感主机同形的词不进词表（零出现判据是主机身份）；保留词必须每一个都落进某个簇（自检护栏）。域名 token = 站点名 + 完整主机（不按点全拆，注册后缀会把主题变成大桶）。info 级。"
+    }
+  ]
+}
