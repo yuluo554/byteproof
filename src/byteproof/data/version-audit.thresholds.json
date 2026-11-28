@@ -1,0 +1,60 @@
+{
+  "version": "1",
+  "organ": "version-audit",
+  "modes": ["audit", "range-lint", "lock-manifest", "dedupe", "conflict"],
+  "default_mode": "audit",
+  "default_severity": {
+    "R1": "warning",
+    "R2": "warning",
+    "R3": "info",
+    "R4": "warning",
+    "R5": "error",
+    "R6": "warning",
+    "R7": "info",
+    "R8": "info",
+    "manifest-not-satisfied": "error",
+    "missing-from-lock": "error",
+    "manifest-changed-unsynced": "error",
+    "lock-extra-undeclared": "warning",
+    "lock-outdated": "warning",
+    "CONVERGIBLE": "info",
+    "NOT_CONVERGIBLE": "error",
+    "REQUIRES_OVERRIDE": "warning",
+    "peer-conflict": "error",
+    "version-conflict": "error"
+  },
+  "verdicts": {
+    "va-convergible": "info",
+    "va-lock-entry-no-version": "info",
+    "va-lock-extra-undeclared": "warn",
+    "va-lock-outdated": "warn",
+    "va-manifest-changed-unsynced": "error",
+    "va-manifest-not-satisfied": "error",
+    "va-missing-from-lock": "error",
+    "va-not-convergible": "error",
+    "va-peer-conflict": "error",
+    "va-r1-unbounded": "warn",
+    "va-r2-wildcard": "warn",
+    "va-r3-zero-shrink": "info",
+    "va-r4-prerelease-unreachable": "warn",
+    "va-r5-empty-intersection": "error",
+    "va-r6-branch-redundant": "warn",
+    "va-r7-build-metadata": "info",
+    "va-r8-bare-version": "info",
+    "va-requires-override": "warn",
+    "va-summary": "info",
+    "va-version-conflict": "error"
+  },
+  "policy": {
+    "max_requesters": 12,
+    "enable_r8": false,
+    "strict": false,
+    "ignore_peer": false,
+    "prefer": null
+  },
+  "prefer_choices": ["latest", "min-change"],
+  "mus": {
+    "degraded_reason": "requesters > max",
+    "fallback_reason": "fallback: full set"
+  }
+}

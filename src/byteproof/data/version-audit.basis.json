@@ -1,0 +1,125 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "va-convergible",
+      "title": "重复版本可收敛",
+      "source": "迁自 10-27-versionaudit · M3 dedupe-feasibility；出处：data/README.md §7.1 / plan/03 M3",
+      "text": "同一被依赖包存在多个已锁定版本时，若某个已锁定版本对全部请求者范围 satisfies 实算全真，则判定 CONVERGIBLE。判据是实际候选版本逐一实算，不是「区间非空」——预发布可达性不是纯区间性质。可行目标必须完整列出（全部满足全体的锁定版本都在），每条带逐请求者的证明。"
+    },
+    {
+      "rule_id": "va-lock-entry-no-version",
+      "title": "锁条目无 version 字段（无法判定）",
+      "source": "迁自 10-27-versionaudit · M2 lock-manifest（台账 A23）；出处：npm 11.12.1 实测",
+      "text": "npm 会写出两类无版本条目：{\"resolved\":\"../lib\",\"link\":true} 与 {\"optional\": true}。这两种情形 satisfies(null, range) 恒为 false，直接判「不满足」等于把「无法判定」说成「判定为错」。本规则记 info 降级并写明原因，不计入阻断。真实 npm 锁上 npm ci 对两者都 PASS。"
+    },
+    {
+      "rule_id": "va-lock-extra-undeclared",
+      "title": "锁中条目在声明图不可达",
+      "source": "迁自 10-27-versionaudit · M2 lock-manifest；出处：plan/01 §3.2（与 npm 的 extraneous 区分）",
+      "text": "判据 = 声明图可达性（不依赖 node_modules 是否存在）。跳过三类：根条目、树外路径条目（不以 node_modules/ 开头，如链接目标体 ../lib）、link:true 的链接条目（版本在目标里）。旧仓台账 A24：对含 file: 依赖的真实锁，按路径段猜包名会误报。warning 级。"
+    },
+    {
+      "rule_id": "va-lock-outdated",
+      "title": "锁中版本落后于声明下界（--strict 才判）",
+      "source": "迁自 10-27-versionaudit · M2 lock-manifest（--strict 开关）；出处：plan/01 §3.6",
+      "text": "仅当 options.strict 开启：锁中版本 ≠ 声明下界所指最小版本时记 lock-outdated。默认档不判——「过期」与「有意 override」无法从工件推断，默认档是策略不是事实。warning 级。器官不迁 --fail-on 开关：warning 在本产品账本里恒不阻断（已登记口径差）。"
+    },
+    {
+      "rule_id": "va-manifest-changed-unsynced",
+      "title": "根声明与锁的根条目不一致",
+      "source": "迁自 10-27-versionaudit · M2 lock-manifest（台账 A22）；出处：npm 11.12.1 实测",
+      "text": "最接近 npm ci 的基线对照：lock 根条目的各声明键 vs manifest，逐类对比同一类键（dependencies↔dependencies、optionalDependencies↔…），不做跨类合并——实测 npm 的根条目四类键各写各的，旧实现按「optional 被并进 dependencies」比对会在任何带 optionalDependencies 的真实锁上误报。dev 不参与比对（实测 npm ci 在增减/修改 dev 依赖时均 PASS）。error 级。"
+    },
+    {
+      "rule_id": "va-manifest-not-satisfied",
+      "title": "锁中版本不满足声明范围",
+      "source": "迁自 10-27-versionaudit · M2 lock-manifest；出处：plan/03 M2（对 npm ci 的补位）",
+      "text": "每条声明边（含传递依赖）：锁中解析版本 satisfies 声明范围为假时记 error。finding 必须带 declaring_package / declared_range / locked_version / requester_path——npm ci 只给目标版本，范围与来源都没有。声明的是 dist-tag（latest，validRange 为 null）时不做满足性判定，交给 R2。锁条目无 version 字段记降级不记错（见 va-lock-entry-no-version）。"
+    },
+    {
+      "rule_id": "va-missing-from-lock",
+      "title": "声明了但锁里没有",
+      "source": "迁自 10-27-versionaudit · M2 lock-manifest；出处：plan/03 M2",
+      "text": "声明边在锁里解析不到对应条目（从请求者目录向上逐级查找 node_modules/<name>，最近者胜）时记 error；optionalDependencies 的缺失不算错。finding 带完整请求者路径（<root> › a@1.0.0 形态）。error 级。"
+    },
+    {
+      "rule_id": "va-not-convergible",
+      "title": "重复版本不可收敛",
+      "source": "迁自 10-27-versionaudit · M3 dedupe-feasibility；出处：data/README.md §7.1–§7.2 / plan/03 M3",
+      "text": "无任何已锁定版本满足全部请求者且 MUS 与全量请求者等大时判 NOT_CONVERGIBLE。必须给出 MUS 并保证两条可机械校验的性质：① M 无解；② 移除任一元素后有解。reason 两态不许合并陈述：区间非空但无候选 → no-locked-candidate；区间本身为空 → empty-intersection。error 级。"
+    },
+    {
+      "rule_id": "va-peer-conflict",
+      "title": "peer 声明与实际提供者不匹配",
+      "source": "迁自 10-27-versionaudit · M4 conflict-explain；出处：plan/03 M4 / data/README.md §3.5",
+      "text": "包的 peerDependencies 声明与树中实际提供者不满足时记 peer-conflict；树中无提供者时按 UNMET peer 记（computedBy=absence）。minimalSet 是冲突双方（请求者 + 提供者），不是全树。options.ignore_peer 只把严重度降为 info 且仍被报告（降级不等于不报）。error 级。"
+    },
+    {
+      "rule_id": "va-r1-unbounded",
+      "title": "R1 无上界",
+      "source": "迁自 10-27-versionaudit · M1 range-lint；出处：plan/03 M1 R1",
+      "text": "展开结果里有 >= 或 > 且没有任何 < 上界时命中（>=x 无上界）。以 validRange 展开结果为准，不看字面。finding 带 expandedRange 证据串。默认 warning 级——宽范围不阻断，但影响可复现性。"
+    },
+    {
+      "rule_id": "va-r2-wildcard",
+      "title": "R2 宽范围/非范围",
+      "source": "迁自 10-27-versionaudit · M1 range-lint；出处：plan/03 M1 R2",
+      "text": "*、空串、x、latest 四种形态命中。latest 必须判为「非范围」（npm dist-tag，validRange 为 null）而不是「宽范围」，且非范围时其余基于展开的规则不再适用（避免噪声）。默认 warning 级。"
+    },
+    {
+      "rule_id": "va-r3-zero-shrink",
+      "title": "R3 0.x 语义收窄",
+      "source": "迁自 10-27-versionaudit · M2 补齐；出处：plan/03 M1 R3（M2 修 R3 ^0.0 族崩溃）",
+      "text": "^0.x.y / ^0.0.y / ~0.x.y 的语义收窄：判据 = raw 以 ^/~ 起头、主版本为 0，且展开后的上界被收窄到 0.x 内的小步进（hi=[0,m,0] minor 步进或 hi=[0,0,p] patch 步进）。只看上界——下界缺省不影响「上界被收窄」这一事实（^0.0 族展开无下界，旧实现拆下界会崩）。不收窄的反例：^1.2.3、^0、~0（上界 <1.0.0-0，整个 0.x 都可取）。默认 info 级。"
+    },
+    {
+      "rule_id": "va-r4-prerelease-unreachable",
+      "title": "R4 预发布可达性",
+      "source": "迁自 10-27-versionaudit · M2 补齐；出处：plan/03 M1 R4 / 台账 A8-A9",
+      "text": "要求给出目标版本（来自锁中的预发布条目）才能判。目标预发布版本不满足声明范围时命中，且必须区分两态：目标三元组相同但预发布不可达（prerelease-unreachable）与目标根本不在候选集（target-not-in-candidate）。声明本身带预发布下界时同三元组目标可达。默认 warning 级。"
+    },
+    {
+      "rule_id": "va-r5-empty-intersection",
+      "title": "R5 空交集",
+      "source": "迁自 10-27-versionaudit · M1 range-lint；出处：plan/03 M1 R5 / 台账 A11/A18/A21",
+      "text": "范围展开后无任何可满足版本（区间为空）时命中。端点开闭性决定一切：>=1.0.0 <1.0.0、>1.0.0 <=1.0.0 空；>=1.0.0 <=1.0.0 是非空单点（satisfies 实测 true）；精确比较器与排除侧并存的形态（1.0.0 <1.0.0 / 1.0.0 >1.0.0 / >1.0.0 1.0.0）也空——判空只看两侧开闭，与「精确」无关。error 级（本规则是默认档唯一 error 级的 M1 规则）。"
+    },
+    {
+      "rule_id": "va-r6-branch-redundant",
+      "title": "R6 分支冗余/被包含",
+      "source": "迁自 10-27-versionaudit · M2 补齐；出处：plan/03 M1 R6",
+      "text": "|| 分支冗余/被包含：必须按原始字符串切分支（不能按展开结果切——* || ^1.0.0 会被库折叠成单分支），展开结果只用于 subset 判定。后者被前者包含、或整支被包含均命中。默认 warning 级。"
+    },
+    {
+      "rule_id": "va-r7-build-metadata",
+      "title": "R7 build metadata 假精度",
+      "source": "迁自 10-27-versionaudit · M1 range-lint；出处：plan/03 M1 R7 / 台账 A10",
+      "text": "范围含 +build metadata 且剥离后 validRange 相同时命中：build metadata 不参与比较，写出它造成假精度。剥离后展开结果不同（含一方为 null）则不命中。默认 info 级。"
+    },
+    {
+      "rule_id": "va-r8-bare-version",
+      "title": "R8 裸版本跨生态误用（默认关闭）",
+      "source": "迁自 10-27-versionaudit · M2 补齐；出处：plan/03 M1 R8 / data/README.md §2 同形异义表",
+      "text": "裸三位版本在 npm 里是精确锁定，同样的字符在 Cargo 里是 caret 语义——这是跨生态同形异义，无法从文件推断作者意图，因此默认关闭（options.enable_r8 显式开启才报），报出时为 info 级并写明两种语义。"
+    },
+    {
+      "rule_id": "va-requires-override",
+      "title": "重复版本需放宽才能收敛",
+      "source": "迁自 10-27-versionaudit · M3 dedupe-feasibility；出处：data/README.md §7.2 / plan/03 M3",
+      "text": "MUS 严格小于全量请求者时判 REQUIRES_OVERRIDE：放宽 minimalConflictSet 中的声明即可收敛。建议必须标为 suggestion（nature=suggestion）——本工具不替用户决定改哪一条。同基数多个 MUS 时平局全返回（minimalConflictSets），不随机取一个。warning 级。"
+    },
+    {
+      "rule_id": "va-summary",
+      "title": "账本汇总",
+      "source": "迁自 10-27-versionaudit · cli/exit.mjs（退出码聚合的账本化）",
+      "text": "按模式汇总 error/warn/info 计数与阻断条数。旧仓默认 --fail-on=error：仅 warning 不改变退出码；本产品账本 warn 恒不阻断，语义与默认档对齐（--fail-on 开关不迁，已登记口径差）。info 级。"
+    },
+    {
+      "rule_id": "va-version-conflict",
+      "title": "同名多声明互相冲突且无已锁定解",
+      "source": "迁自 10-27-versionaudit · M4 conflict-explain；出处：plan/03 M4 / plan/01 §3.4",
+      "text": "同一被依赖包的多条声明互相冲突且无任何已锁定版本可同时满足时记 version-conflict。minimalSet 必须是**最小**冲突集（复用 M3 的 MUS 内核），且满足可机械校验的两条性质：M 无解 + 移除任一元素后有解；降级路径也必须满足——降级的只是「基数最小/平局全列」，不是「是不是真冲突」。error 级。"
+    }
+  ]
+}

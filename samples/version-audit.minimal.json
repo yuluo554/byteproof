@@ -1,0 +1,32 @@
+{
+  "mode": "audit",
+  "manifest": {
+    "name": "demo-app",
+    "deps": {
+      "dependencies": {
+        "semver": "^7.8.5",
+        "left-pad": "^1.3.0"
+      },
+      "devDependencies": {},
+      "optionalDependencies": {},
+      "peerDependencies": {}
+    },
+    "overrides": {},
+    "resolutions": {}
+  },
+  "lock": {
+    "lockfile_version": 3,
+    "packages": [
+      { "path": "node_modules/semver", "name": "semver", "version": "7.8.5" },
+      {
+        "path": "node_modules/left-pad",
+        "name": "left-pad",
+        "version": "1.3.0",
+        "deps": { "ms": "2.0.0" }
+      },
+      { "path": "node_modules/ms", "name": "ms", "version": "2.0.0" }
+    ],
+    "root_manifest_deps": { "semver": "^7.8.5", "left-pad": "^1.3.0" },
+    "root_optional_deps": {}
+  }
+}

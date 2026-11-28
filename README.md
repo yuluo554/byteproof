@@ -42,6 +42,7 @@ media-trace                  1          MP4 时间轴账本：结构自洽 + 时
 media-type-check             1          MIME 工件缺陷账本：头宽/编码字/传输编码/容器/归属五域的条款一致性
 mojibake-forensics           1          乱码尸检账本：有界候选 + 每步字节证明 + 不可逆判死 + 字节工件诊断 + 语料门禁
 timeseries-anomaly           1          时序工件缺陷账本：时间轴完整性 + 采样形状 + 四个确定性检测器命中段
+version-audit                1          npm 版本约束账本：R1–R8 范围语义 + 锁/manifest 双向不一致 + 收敛可行性三态 MUS + 冲突最小集
 ```
 
 契约（唯一入口 / 缺陷账本 / 退出码）见 [`docs/byteproof.md`](docs/byteproof.md)。
@@ -63,7 +64,8 @@ timeseries-anomaly           1          时序工件缺陷账本：时间轴完�
 | `media-type-check` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/media-type-check.md)） |
 | `mojibake-forensics` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/mojibake-forensics.md)） |
 | `timeseries-anomaly` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/timeseries-anomaly.md)） |
-| — | 其余 13 个 auditor | 待迁入 |
+| `version-audit` | 迁自 target-map ② 行（Node/mjs 源） | 已迁入 v1（[文档](docs/version-audit.md)） |
+| — | 其余 12 个 auditor | 待迁入 |
 
 跑一次审计（工件 = 时序长表解析后的 JSON；规则包随包分发，不需要额外参数）：
 

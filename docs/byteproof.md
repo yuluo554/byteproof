@@ -106,6 +106,7 @@ media-trace                      1          MP4 时间轴账本：结构自洽 +
 media-type-check                 1          MIME 工件缺陷账本：头宽/编码字/传输编码/容器/归属五域的条款一致性
 mojibake-forensics               1          乱码尸检账本：有界候选 + 每步字节证明 + 不可逆判死 + 字节工件诊断 + 语料门禁
 timeseries-anomaly               1          时序工件缺陷账本：时间轴完整性 + 采样形状 + 四个确定性检测器命中段
+version-audit                    1          npm 版本约束账本：R1–R8 范围语义 + 锁/manifest 双向不一致 + 收敛可行性三态 MUS + 冲突最小集
 
 $ byteproof check no-such --input samples/timeseries-anomaly.minimal.json
 PackMissing: 未注册的器官：no-such          # 退出码 3
@@ -126,5 +127,6 @@ PackMissing: 未注册的器官：no-such          # 退出码 3
 | `media-type-check` | 1 | [`media-type-check.md`](media-type-check.md) |
 | `mojibake-forensics` | 1 | [`mojibake-forensics.md`](mojibake-forensics.md) |
 | `timeseries-anomaly` | 1 | [`timeseries-anomaly.md`](timeseries-anomaly.md) |
+| `version-audit` | 1 | [`version-audit.md`](version-audit.md) |
 
 器官表按 `_workspace/target-map-20261125.tsv` 的 ②byteproof 行逐个补齐。
