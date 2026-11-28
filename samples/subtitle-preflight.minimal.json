@@ -1,0 +1,39 @@
+{
+ "mode": "all",
+ "cues": [
+  {
+   "startMs": 0,
+   "endMs": 2000,
+   "textLines": [
+    "你好world"
+   ],
+   "sourceLine": 2,
+   "timeLine": 2,
+   "endLine": 3,
+   "format": "srt",
+   "index": 1,
+   "textLineNumbers": [
+    3
+   ]
+  },
+  {
+   "startMs": 1990,
+   "endMs": 4000,
+   "textLines": [
+    "这样也很好。"
+   ],
+   "sourceLine": 6,
+   "timeLine": 6,
+   "endLine": 7,
+   "format": "srt",
+   "index": 2,
+   "textLineNumbers": [
+    7
+   ]
+  }
+ ],
+ "declared": {
+  "declaredFps": 23.976
+ },
+ "text": "1\n00:00:00,000 --> 00:00:02,000\n你好world\n\n2\n00:00:01,990 --> 00:00:04,000\n这样也很好。"
+}

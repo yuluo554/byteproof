@@ -1,0 +1,251 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "timing.overlap",
+      "title": "重叠（T01）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "next.start < cur.end 即报 overlap（timing.overlapTolerance = 0，不做容差）。error 级。"
+    },
+    {
+      "rule_id": "timing.zero-duration",
+      "title": "零时长（T02）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "end == start 即报 zero-duration。error 级。"
+    },
+    {
+      "rule_id": "timing.negative-duration",
+      "title": "负时长（T03）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "end < start 即报 negative-duration（与 zero-duration 互斥，先判负）。error 级。"
+    },
+    {
+      "rule_id": "timing.gap-too-small",
+      "title": "间隔过小（T04）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "不重叠时 0 <= gap < timing.gapMin 即报 gap-too-small；重叠时不重复报 gap。error 级。"
+    },
+    {
+      "rule_id": "timing.non-monotonic",
+      "title": "起点倒退（T05）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "本条起点相对上一条倒退（start < prev.start）即报 non-monotonic。error 级。"
+    },
+    {
+      "rule_id": "timing.duplicate-cue",
+      "title": "重复 cue（T06）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "起止时间与文本行完全相同即报 duplicate-cue；时间相同但文本不同不报。warn 级。"
+    },
+    {
+      "rule_id": "timing.negative-start",
+      "title": "负起点（T07）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "startMs < 0 即报 negative-start。error 级。"
+    },
+    {
+      "rule_id": "timing.past-media-end",
+      "title": "超出媒体时长（T08）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "末条 end 超过声明的媒体时长即报 past-media-end；未声明时长时进 skipped（media_duration_unknown），不报。error 级。"
+    },
+    {
+      "rule_id": "timing.unparsable-timecode",
+      "title": "不可解析时间码（T09）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.2",
+      "text": "时间码无法解析由解析层产生诊断、规则层透传为 unparsable-timecode（账本按 line 定位）。error 级。"
+    },
+    {
+      "rule_id": "timing.file-order-mismatch",
+      "title": "文件顺序与时间顺序不一致（T10）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "整段只报一条，指向首个起点倒退位置。warn 级。"
+    },
+    {
+      "rule_id": "timing.timecode-precision",
+      "title": "时间码精度（T12）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.2",
+      "text": "解析层记录 parse.timecode-precision 诊断（亚毫秒 / 小时位溢出 / 毫秒位非 3 位），规则层转 finding。warn 级。"
+    },
+    {
+      "rule_id": "timing.fps-drift",
+      "title": "整段等比漂移（T11）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.5",
+      "text": "|scale − 1| × 时间跨度 > drift.residualMaxMs 且拟合残差中位数 <= drift.gridToleranceMs（确实落在声明帧栅格上）才报；样本取最长干净连续段，少于 drift.minSamples 条或未声明帧率即 skipped。warn 级。"
+    },
+    {
+      "rule_id": "readability.cps",
+      "title": "阅读速度（R01）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.2",
+      "text": "charsMilli / duration_ms > 该档 cps 上限（zh 9 / en 17 / ja 9）即报；档位按 cue 内主导文字类别判定（全角为主 zh / 假名过半 ja / 半角为主 en）。error 级。"
+    },
+    {
+      "rule_id": "readability.line-length",
+      "title": "行长（R02）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.3",
+      "text": "最长行千分字符宽度超过该档上限（全角 16×1000 / 半角 42×500）即报。error 级。"
+    },
+    {
+      "rule_id": "readability.too-many-lines",
+      "title": "行数（R03）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.3",
+      "text": "可见行数超过 line.maxLines（2）即报。error 级。"
+    },
+    {
+      "rule_id": "readability.too-few-chars",
+      "title": "可见字符下限（R04）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.3",
+      "text": "可见字符总宽低于 line.minChars × 1000 即报。error 级。"
+    },
+    {
+      "rule_id": "readability.duration-short",
+      "title": "时长下限（R05）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "显示时长低于 duration.min（800 ms）即报。warn 级。"
+    },
+    {
+      "rule_id": "readability.duration-long",
+      "title": "时长上限（R06）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "显示时长超过 duration.max（7000 ms）即报。warn 级。"
+    },
+    {
+      "rule_id": "readability.repeated-text",
+      "title": "相邻重复文本（R07）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.4",
+      "text": "相邻 cue 文本相同但时间不同即报。warn 级。"
+    },
+    {
+      "rule_id": "hygiene.cjk-latin-spacing",
+      "title": "CJK 与拉丁间距（S01）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.6",
+      "text": "CJK 与拉丁/数字直接相邻且该拉丁词不在白名单即报（返回命中的拉丁词）。warn 级。"
+    },
+    {
+      "rule_id": "hygiene.punctuation-width",
+      "title": "标点宽度（S02）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.6",
+      "text": "中文语境出现半角 , . ! ? : ;，或英文语境出现全角标点即报；数字与省略号与白名单缩写不报。warn 级。"
+    },
+    {
+      "rule_id": "hygiene.trailing-punctuation",
+      "title": "行尾句号（S03）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.6",
+      "text": "行尾为 。 或 . 即报（问号、感叹号不属口径范围）；省略号与白名单缩写不报。warn 级。"
+    },
+    {
+      "rule_id": "hygiene.unclosed-tag",
+      "title": "未闭合标签（S04）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.6",
+      "text": "<i>/<b>/<u> 未闭合或交叉嵌套即报；自闭合 <i/> 不报。error 级。"
+    },
+    {
+      "rule_id": "hygiene.ass-override-residue",
+      "title": "ASS 覆写残留（S05）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.6",
+      "text": "非 ASS 输出含 {\\...} 覆写块或花括号未闭合即报。error 级。"
+    },
+    {
+      "rule_id": "hygiene.placeholder-residue",
+      "title": "占位符残留（S06）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.6",
+      "text": "残留 %s / %1$s / {0} / {name} 即报；单字母数学表达式 {x} 不报。error 级。"
+    },
+    {
+      "rule_id": "hygiene.font-tag-residue",
+      "title": "font 标签残留（S07）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.6",
+      "text": "残留 <font ...> 内联样式即报。error 级。"
+    },
+    {
+      "rule_id": "hygiene.sdh-marker",
+      "title": "SDH 标记残留（S08）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.6",
+      "text": "[music] / （笑声）一类 / 音符 ♪ 即报；整条以 ♪ 起止的歌词语境不报。error 级。"
+    },
+    {
+      "rule_id": "hygiene.all-caps",
+      "title": "全大写（S09）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.6",
+      "text": "全大写且可见长度 >= hygiene.allCapsMinLength（20 半角字符）即报；白名单词不报。warn 级。"
+    },
+    {
+      "rule_id": "hygiene.repeated-punctuation",
+      "title": "标点连重（S10）",
+      "source": "迁自 10-19-subtitle-preflight · data/README.md §4.6",
+      "text": "同类标点连续 >= hygiene.repeatPunctMin（3）次即报。warn 级。"
+    },
+    {
+      "rule_id": "decode.invalid-utf8",
+      "title": "UTF-8 BOM 与内容不符",
+      "source": "迁自 10-19-subtitle-preflight · core/decode.js",
+      "text": "带 UTF-8 BOM 但严格解码失败 → 按替换字符解码并显式上报（不得静默）。warn 级。"
+    },
+    {
+      "rule_id": "decode.invalid-utf16",
+      "title": "UTF-16 解码失败",
+      "source": "迁自 10-19-subtitle-preflight · core/decode.js",
+      "text": "带 UTF-16LE/BE BOM 但严格解码失败 → 降级并按替换字符解码，显式上报。warn 级。"
+    },
+    {
+      "rule_id": "decode.gbk-fallback",
+      "title": "GBK 回退",
+      "source": "迁自 10-19-subtitle-preflight · core/decode.js",
+      "text": "无 BOM 且 UTF-8 严格失败、GBK 严格成功 → 标 encoding=gbk、fallback=true 并显式上报（回退不得静默）。warn 级。"
+    },
+    {
+      "rule_id": "decode.lossy",
+      "title": "有损解码",
+      "source": "迁自 10-19-subtitle-preflight · core/decode.js",
+      "text": "UTF-8 与 GBK 均严格失败 → 按替换字符解码，lossy=true 并显式上报。error 级（有损即阻断判定可信度）。"
+    },
+    {
+      "rule_id": "decode.mixed-eol",
+      "title": "混合换行",
+      "source": "迁自 10-19-subtitle-preflight · core/decode.js",
+      "text": "同一文件混用 CRLF/CR/LF → 统一为 LF 并显式上报；单一换行形态不报。info 级。"
+    },
+    {
+      "rule_id": "fix.trim-overlap",
+      "title": "去重叠（缩短前条 end）",
+      "source": "迁自 10-19-subtitle-preflight · core/fix.js §5.2",
+      "text": "把前一条 end 缩到 后一条 start − timing.gapMin，使 overlap 与 gap-too-small 同时消失；护栏：缩短后时长 > 0 且 >= duration.min，否则不修。info 级。"
+    },
+    {
+      "rule_id": "fix.fill-gap",
+      "title": "补间隔（缩短前条 end）",
+      "source": "迁自 10-19-subtitle-preflight · core/fix.js §5.2",
+      "text": "间隔过小时同样缩到 后一条 start − timing.gapMin（只缩前条，不动后条）；护栏同上。info 级。"
+    },
+    {
+      "rule_id": "fix.strip-trailing-space",
+      "title": "删行尾空白",
+      "source": "迁自 10-19-subtitle-preflight · core/fix.js §5.2",
+      "text": "只删行尾空格/制表符；整行只剩空白时不动（避免改变块结构）。排在闭合标签之前。info 级。"
+    },
+    {
+      "rule_id": "fix.close-tag",
+      "title": "补闭合标签",
+      "source": "迁自 10-19-subtitle-preflight · core/fix.js §5.2",
+      "text": "只追加 </i>/</b>/</u> 闭合标签，不新增样式；交叉嵌套不可修（不产记录）。info 级。"
+    },
+    {
+      "rule_id": "fix.renumber-index",
+      "title": "SRT 序号重编",
+      "source": "迁自 10-19-subtitle-preflight · core/fix.js §5.2",
+      "text": "按时间序重排块并连续编号；保守前提（全 SRT / 块不重叠 / 无块外非空行 / 序号行齐）任一不满足即整条跳过；只记真的变了的块。info 级。"
+    },
+    {
+      "rule_id": "sp-skipped",
+      "title": "未执行项（显式不静默）",
+      "source": "迁自 10-19-subtitle-preflight · core/pipeline.js",
+      "text": "规则/修复未执行时必须产出 skipped 记录（媒体时长未知、帧率未知、样本不足、容差内、不落帧栅格、修复应用/无可修项），不许静默返回空。info 级。"
+    },
+    {
+      "rule_id": "sp-summary",
+      "title": "体检汇总",
+      "source": "迁自 10-19-subtitle-preflight · core/report.js summary",
+      "text": "报告 summary（total / bySeverity / byRule / whitelist）与 capabilities 折算为一条 info 记录：白名单命中次数必须可见，计数必须与记录集合自洽。info 级。"
+    }
+  ]
+}

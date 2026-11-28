@@ -45,6 +45,7 @@ BUILTIN_MODULES: Tuple[str, ...] = (
     "mojibake_forensics",
     "sqltrace",
     "subset_audit",
+    "subtitle_preflight",
     "timeseries_anomaly",
     "version_audit",
 )

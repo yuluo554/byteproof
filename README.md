@@ -52,6 +52,7 @@ http-semantics               1          HTTP 语义判定账本：CORS check + �
 merge-fidelity               1          Merge 保真度账本：机械树复算三分类（夹带/吞掉/冲突解）+ 跨分支三态对齐 + revert 校验与重放
 sqltrace                     1          SQL 血缘账本：值/控制双通道分型 + 窗口强制口径 + 写入者普查五节 + lineage diff 闸门 + 零静默诊断
 subset-audit                 1          字体子集产物账本：覆盖三分类（缺源/丢产物）+ GSUB/GPOS 三元组与连字差分 + name 存活与 OS/2 位域过度声明
+subtitle-preflight           1          字幕体检账本：时序 T01–T12（含 fps 漂移拟合）+ 可读性 R01–R07 + 卫生 S01–S10 + 编码回退 + 可逆修复白名单
 ```
 
 契约（唯一入口 / 缺陷账本 / 退出码）见 [`docs/byteproof.md`](docs/byteproof.md)。
@@ -83,6 +84,7 @@ subset-audit                 1          字体子集产物账本：覆盖三分�
 | `merge-fidelity` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/merge-fidelity.md)） |
 | `sqltrace` | 迁自 target-map ② 行（sqlglot 解析留输入层） | 已迁入 v1（[文档](docs/sqltrace.md)） |
 | `subset-audit` | 迁自 target-map ② 行（fontTools 读取留输入层；license-gate 不迁） | 已迁入 v1（[文档](docs/subset-audit.md)） |
+| `subtitle-preflight` | 迁自 target-map ② 行（Node/mjs 源；SRT/VTT/ASS 解析留输入层，报告渲染留宿主） | 已迁入 v1（[文档](docs/subtitle-preflight.md)） |
 | — | ② 全部 23 个 auditor 迁入完成 | — |
 
 跑一次审计（工件 = 时序长表解析后的 JSON；规则包随包分发，不需要额外参数）：
