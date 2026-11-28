@@ -1,0 +1,95 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "mf-dropped",
+      "title": "静默吞掉（DROPPED）",
+      "source": "迁自 10-19-merge-fidelity · fidelity.classify_hunks；出处：data/README.md §4.3",
+      "text": "tree diff（git diff -U0 机械树 记录树，方向已定）中只含 - 行、且该删除未被后续提交重新引入（重引入判定 = 合成反向新增探针的 git patch-id 与后续提交同路径 -U0 patch-id 相等）的 hunk，判 DROPPED：解冲突时选错一侧、或手工删掉本应保留的内容。方向唯一——按『哪个 diff 命令产生的』分类会把同一处改动同时报成两类（旧仓实测踩到）。error 级（gate 的 fail-on 事故类）。"
+    },
+    {
+      "rule_id": "mf-parity-missing",
+      "title": "跨分支漏搬（PARITY_MISSING）",
+      "source": "迁自 10-19-merge-fidelity · parity._evaluate；出处：data/README.md §4.4",
+      "text": "候选提交（git rev-list --cherry-pick --right-only A...B）在 A 侧判为缺失：-U0 patch-id 不等，且 A 侧 worktree 上 git apply --check（-U3）成功——补丁能干净落下说明内容不存在，判 MISSING。三态优先级固定：patchid 相等 → PRESENT(patchid)；apply --reverse --check 成功 → PRESENT(apply)；apply --check 成功 → MISSING；皆失败 → MODIFIED。worktree 挂 A（源侧）不是 B：候选来自 B，挂 B 会让反向检查恒成功、三态退化。error 级。"
+    },
+    {
+      "rule_id": "mf-parity-modified",
+      "title": "跨分支改写（PARITY_MODIFIED）",
+      "source": "迁自 10-19-merge-fidelity · parity._evaluate；出处：data/README.md §4.4",
+      "text": "候选提交在 A 侧既不等 patch-id、两个 apply 检查都失败 → MODIFIED(basis=apply, note=partial_or_context_conflict)：内容以改写形态存在。--no-apply-fallback 时 patch-id 不等只能记 MODIFIED(basis=patchid)——不猜 MISSING：判『是否存在』需要 apply 检查这个证据。error 级。"
+    },
+    {
+      "rule_id": "mf-patchid-unbound",
+      "title": "patch-id 探针未绑定（器官新增口径）",
+      "source": "迁自 10-19-merge-fidelity · gitobj.patch_id 的输入层化；出处：docs/merge-fidelity.md §7.2",
+      "text": "器官不做 git 子进程：重引入探针文本（合成反向新增 diff）的 patch-id 由输入层预计算并按 sha256(逐字节文本) 绑定。器官对自己合成的文本重算 sha256 查表，查不到绑定 = 输入层没为这条文本供证 → 记 warn 并保守地『不判重引入』（该删除仍进 DROPPED）——与旧仓空 diff patch_id=None 的保守路径同向：缺证不能排除吞掉。warn 级。"
+    },
+    {
+      "rule_id": "mf-resolution",
+      "title": "冲突解（RESOLUTION，显式记录）",
+      "source": "迁自 10-19-merge-fidelity · fidelity.classify_hunks；出处：data/README.md §4.3",
+      "text": "hunk 含 <<<<<<< / ======= / >>>>>>> 冲突标记 → RESOLUTION：这是真实的解冲突改动，不是夹带也不是吞掉。默认不计入 wanted（--show-resolution 才显示），不参与 fail-on。账本 info 级显式记录，不阻断。"
+    },
+    {
+      "rule_id": "mf-revert-unverified",
+      "title": "revert 未证实（REVERT_UNVERIFIED，判不了）",
+      "source": "迁自 10-19-merge-fidelity · ledger._entry；出处：data/README.md §四",
+      "text": "两种形态同态异因（unavailable 区分）：①正文声称的回滚与实际 diff 对不上——revert 的 -U0 patch-id ≠ 被回滚提交取反后的 -U0 patch-id，verified=false，不猜意图也不算 successor；②--find-object 不可用（git < 2.16）导致重放判不了——verified=true 但 unavailable=git_too_old，『没 successor』是一个断言，缺证不能下。warn 级：判不了不是确证事故，但也不许静默。"
+    },
+    {
+      "rule_id": "mf-reverted-no-successor",
+      "title": "回滚后未重做（REVERTED_NO_SUCCESSOR，显式结论）",
+      "source": "迁自 10-19-merge-fidelity · ledger._entry；出处：data/README.md §四",
+      "text": "revert 经反向 patch-id 校验为真（verified=true），且 revert 之后的提交里没有 -U0 patch-id 与原改动相等的 successor → 该改动回滚后确实未再落地。旧仓 gate 的 fail-on 不含 ledger 三态（事故类是 fidelity 的 SMUGGLED/DROPPED），账本 info 级显式记录，不阻断。"
+    },
+    {
+      "rule_id": "mf-reverted-then-redone",
+      "title": "回滚后被重做（REVERTED_THEN_REDONE，显式结论）",
+      "source": "迁自 10-19-merge-fidelity · ledger._entry；出处：data/README.md §四",
+      "text": "revert 校验为真，且后续存在 -U0 patch-id 与原改动相等的 successor（git log --find-object 只作候选筛选，结论口径以 patch-id 相等为准）→ REVERTED_THEN_REDONE(successor_oid=…)。账本 info 级显式记录，不阻断。"
+    },
+    {
+      "rule_id": "mf-smuggled",
+      "title": "夹带（SMUGGLED，evil merge）",
+      "source": "迁自 10-19-merge-fidelity · fidelity.classify_hunks；出处：data/README.md §4.3",
+      "text": "tree diff（git diff -U0 机械树 记录树）中含 + 行且无冲突标记的 hunk：解冲突时顺手塞进了与冲突无关的改动。每条 finding 内容寻址：id = sha1(merge_oid ‖ path ‖ old_range ‖ new_range ‖ kind)，分隔符 U+001F，不含提交时间/主机/绝对路径——同一 finding 任何机器重算相同。error 级（gate 的 fail-on 事故类）。"
+    },
+    {
+      "rule_id": "mf-skip-custom-driver",
+      "title": "自定义 merge driver 命中（SKIPPED，不进分母）",
+      "source": "迁自 10-19-merge-fidelity · fidelity._custom_driver_paths；出处：data/README.md §4.2",
+      "text": ".gitattributes 的 merge= 属性命中自定义 driver（text/binary/union/ours 是 git 自带，其余自定义）或 -merge 的路径：其 diff 不可机械复算，输出 SKIPPED(reason=custom_driver) 显式记账，不进 blob_fidelity 分母、不影响退出码。模式匹配是简化口径（*.ext / 顶层名 / dir/** / /精确路径），宁可比 git 保守（少命中 → 少 SKIPPED），不做近似分析。info 级显式记录。"
+    },
+    {
+      "rule_id": "mf-skip-octopus",
+      "title": "octopus merge（父提交数 >2，SKIPPED）",
+      "source": "迁自 10-19-merge-fidelity · fidelity.scan；出处：data/README.md §4.2",
+      "text": "父提交数 >2 的 merge 不做机械复算（merge-tree 面向双亲），只输出题面口径要求的 reason 字段，不进 blob_fidelity 分母、不影响退出码。用父提交数判定，不解析 stderr。info 级显式记录。"
+    },
+    {
+      "rule_id": "mf-warning-cherry-count",
+      "title": "cherry 候选数交叉核对不一致",
+      "source": "迁自 10-19-merge-fidelity · parity._crosscheck；出处：data/README.md §4.4",
+      "text": "git cherry -v A B 与 rev-list --cherry-pick --right-only 的候选数量不一致 → warnings 记一条，不改判定、不失败——两条命令的 cherry 判定口径可能因 git 版本不同而分叉，如实暴露比静默取其一好。warn 级。"
+    },
+    {
+      "rule_id": "mf-warning-crosscheck",
+      "title": "remerge payload 与 tree diff 交叉核对不一致",
+      "source": "迁自 10-19-merge-fidelity · fidelity.scan；出处：data/README.md §4.3",
+      "text": "remerge payload 里的 hunk 路径不在 tree diff 路径集合内（且非 SKIPPED）→ CROSSCHECK_MISMATCH 警告：两条 git 视角对不上，如实暴露不改判定。warn 级。"
+    },
+    {
+      "rule_id": "mf-summary",
+      "title": "运行汇总",
+      "source": "迁自 10-19-merge-fidelity · fidelity.scan 汇总结构；账本化新增（同 va-summary 先例）",
+      "text": "每次运行输出一条 info 级汇总：mode、error/warn/info 计数与该模块的报告摘要（fidelity 的 merges/counts/skipped、parity 的三态计数与 patch_parity、ledger 的 reverts 条数）与报告 digest（sha256 规范 JSON，口径与旧仓 canonical.with_digest 逐字节同构）。"
+    },
+    {
+      "rule_id": "mf-parity-present",
+      "title": "跨分支已对齐（PRESENT，正面结论）",
+      "source": "迁自 10-19-merge-fidelity · parity._evaluate；出处：data/README.md §4.4",
+      "text": "候选在 A 侧已存在（patchid 相等或 apply --reverse --check 成功）——不是事故，旧仓不入 findings；账本 info 级显式记录（含 equivalent_source 指向 A 侧最早到达者），不阻断。note 只提示不改判定：content_equivalent_at_other_path（同内容落在别的路径）时路径参与 patch-id，候选仍按三态判。"
+    }
+  ]
+}

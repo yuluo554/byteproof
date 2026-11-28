@@ -1,0 +1,29 @@
+{
+  "slug": "merge-fidelity",
+  "version": "1",
+  "source": "迁自 10-19-merge-fidelity · gate.FAIL_ON_KINDS + canonical 冻结参数 + errors 退出码（运行期常量快照）",
+  "canonical_kwargs": {
+    "ensure_ascii": false,
+    "sort_keys": true,
+    "separators": [",", ":"],
+    "allow_nan": false
+  },
+  "digest_algorithm": "sha256",
+  "digest_field": "digest",
+  "finding_id_algorithm": "sha1",
+  "id_separator": "US(0x1f)",
+  "fail_on_kinds": {
+    "smuggled": ["SMUGGLED"],
+    "dropped": ["DROPPED"],
+    "any": ["SMUGGLED", "DROPPED"]
+  },
+  "default_kinds": ["SMUGGLED", "DROPPED"],
+  "builtin_merge_drivers": ["text", "binary", "union", "ours"],
+  "modes": ["fidelity", "parity", "ledger"],
+  "verdict_map": {
+    "error": ["mf-smuggled", "mf-dropped", "mf-parity-missing", "mf-parity-modified"],
+    "info": ["mf-resolution", "mf-parity-present", "mf-reverted-then-redone", "mf-reverted-no-successor", "mf-skip-octopus", "mf-skip-custom-driver", "mf-summary"],
+    "warn": ["mf-revert-unverified", "mf-warning-crosscheck", "mf-warning-cherry-count", "mf-patchid-unbound"]
+  },
+  "exit_note": "旧仓退出码 0/1/2/3（0 无事故 / 1 有事故 / 2 用法错误 / 3 环境不满足）；账本化：SMUGGLED/DROPPED/PARITY_MISSING/PARITY_MODIFIED → error（旧 rc1 面）；RESOLUTION/跳过/THEN_REDONE/NO_SUCCESSOR → info；UNVERIFIED/交叉核对不一致/patch-id 探针未绑定 → warn。SHA-1 仅用于旧仓内容寻址 finding ID（标识口径，非安全原语）；报告完整性 digest 用 SHA-256。"
+}
