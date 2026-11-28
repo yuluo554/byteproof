@@ -1321,10 +1321,13 @@ def test_cli_list_includes_http_semantics():
     assert SLUG in [p.slug for p in all_packs()]
 
 
-def test_builtin_modules_sorted_and_count_20():
+def test_builtin_modules_sorted_and_includes_http_semantics():
+    # 计数不写死（器官数随批次增长）：接线清单与注册表一一对应
     assert "http_semantics" in BUILTIN_MODULES
     assert list(BUILTIN_MODULES) == sorted(BUILTIN_MODULES)
-    assert len(BUILTIN_MODULES) == 20
+    load_builtin()
+    from byteproof.core.registry import all_packs
+    assert len(BUILTIN_MODULES) == len(all_packs())
 
 
 def test_pack_registered_contract_fields():

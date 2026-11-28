@@ -1845,10 +1845,13 @@ def test_declared_non_string_ranges_ignored():
 
 
 def test_builtin_modules_includes_depcheck_live_sorted():
-    # BUILTIN_MODULES 用下划线模块名（depcheck_live ↔ slug depcheck-live）
+    # BUILTIN_MODULES 用下划线模块名（depcheck_live ↔ slug depcheck-live）；
+    # 计数不写死（器官数随批次增长）：接线清单与注册表一一对应
     assert "depcheck_live" in BUILTIN_MODULES
     assert list(BUILTIN_MODULES) == sorted(BUILTIN_MODULES), "BUILTIN_MODULES 必须保持字典序"
-    assert len(BUILTIN_MODULES) == 19
+    load_builtin()
+    from byteproof.core.registry import all_packs
+    assert len(BUILTIN_MODULES) == len(all_packs())
 
 
 def test_pack_registered_with_contract_fields():
