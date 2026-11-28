@@ -112,6 +112,7 @@ mojibake-forensics               1          乱码尸检账本：有界候选 + 
 timeseries-anomaly               1          时序工件缺陷账本：时间轴完整性 + 采样形状 + 四个确定性检测器命中段
 version-audit                    1          npm 版本约束账本：R1–R8 范围语义 + 锁/manifest 双向不一致 + 收敛可行性三态 MUS + 冲突最小集
 depcheck-live                    1          已装依赖引用点账本：exports 六形态解析 + 引用点五判定态 + ESM/CJS 招牌判据 + 版本行为漂移
+http-semantics                   1          HTTP 语义判定账本：CORS check + 重定向逐 hop 仿真 + RFC 9111 新鲜度 + 前置条件优先级 + Vary 缓存键
 
 $ byteproof check no-such --input samples/timeseries-anomaly.minimal.json
 PackMissing: 未注册的器官：no-such          # 退出码 3
@@ -138,5 +139,6 @@ PackMissing: 未注册的器官：no-such          # 退出码 3
 | `timeseries-anomaly` | 1 | [`timeseries-anomaly.md`](timeseries-anomaly.md) |
 | `version-audit` | 1 | [`version-audit.md`](version-audit.md) |
 | `depcheck-live` | 1 | [`depcheck-live.md`](depcheck-live.md) |
+| `http-semantics` | 1 | [`http-semantics.md`](http-semantics.md) |
 
 器官表按 `_workspace/target-map-20261125.tsv` 的 ②byteproof 行逐个补齐。

@@ -1,0 +1,14 @@
+{
+  "mode": "cache_evaluate",
+  "arguments": {
+    "now": "2026-01-01T00:00:30Z",
+    "response_headers": {
+      "Cache-Control": "max-age=60",
+      "Date": "Thu, 01 Jan 2026 00:00:00 GMT"
+    },
+    "stored": {
+      "stored_at": "2026-01-01T00:00:10Z",
+      "age": "10"
+    }
+  }
+}

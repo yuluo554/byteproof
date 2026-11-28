@@ -37,6 +37,7 @@ BUILTIN_MODULES: Tuple[str, ...] = (
     "depcheck_live",
     "duplicate_docs",
     "fund_quarter_report",
+    "http_semantics",
     "image_oracle",
     "media_trace",
     "media_type_check",

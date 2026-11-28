@@ -48,6 +48,7 @@ mojibake-forensics           1          乱码尸检账本：有界候选 + 每�
 timeseries-anomaly           1          时序工件缺陷账本：时间轴完整性 + 采样形状 + 四个确定性检测器命中段
 version-audit                1          npm 版本约束账本：R1–R8 范围语义 + 锁/manifest 双向不一致 + 收敛可行性三态 MUS + 冲突最小集
 depcheck-live                1          已装依赖引用点账本：exports 六形态解析 + 引用点五判定态 + ESM/CJS 招牌判据 + 版本行为漂移
+http-semantics               1          HTTP 语义判定账本：CORS check + 重定向逐 hop 仿真 + RFC 9111 新鲜度 + 前置条件优先级 + Vary 缓存键
 ```
 
 契约（唯一入口 / 缺陷账本 / 退出码）见 [`docs/byteproof.md`](docs/byteproof.md)。
@@ -75,7 +76,8 @@ depcheck-live                1          已装依赖引用点账本：exports �
 | `timeseries-anomaly` | 迁自 target-map ② 行 | 已迁入 v1（[文档](docs/timeseries-anomaly.md)） |
 | `version-audit` | 迁自 target-map ② 行（Node/mjs 源） | 已迁入 v1（[文档](docs/version-audit.md)） |
 | `depcheck-live` | 迁自 target-map ② 行（Node/mjs 源） | 已迁入 v1（[文档](docs/depcheck-live.md)） |
-| — | 其余 4 个 auditor | 待迁入 |
+| `http-semantics` | 迁自 target-map ② 行（MCP 壳留旧仓，只迁判定） | 已迁入 v1（[文档](docs/http-semantics.md)） |
+| — | 其余 3 个 auditor | 待迁入 |
 
 跑一次审计（工件 = 时序长表解析后的 JSON；规则包随包分发，不需要额外参数）：
 

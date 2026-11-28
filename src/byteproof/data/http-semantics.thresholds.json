@@ -1,0 +1,227 @@
+{
+  "slug": "http-semantics",
+  "version": "1",
+  "source": "迁自 10-19-http-semantics-mcp · src/http_semantics_mcp/rules.py CATALOG + spec.py（运行期常量快照）",
+  "severity": {
+    "CACHE_AGE_EXCEEDS_LIFETIME": "decisive",
+    "CACHE_EXPIRES_IN_PAST": "decisive",
+    "CACHE_HEURISTIC_FRESHNESS": "informational",
+    "CACHE_INVALID_AGE": "informational",
+    "CACHE_INVALID_MAX_AGE": "informational",
+    "CACHE_MAX_AGE_ZERO": "informational",
+    "CACHE_MUST_REVALIDATE_STALE": "decisive",
+    "CACHE_NO_CACHE": "decisive",
+    "CACHE_NO_STORE": "decisive",
+    "CACHE_STALE_WHILE_REVALIDATE": "decisive",
+    "COND_IF_MATCH_FAILED": "decisive",
+    "COND_IF_MODIFIED_SINCE_NOT_MODIFIED": "decisive",
+    "COND_IF_NONE_MATCH_MATCHED": "decisive",
+    "COND_IF_UNMODIFIED_SINCE_FAILED": "decisive",
+    "COND_IGNORED_INVALID_DATE": "informational",
+    "COND_WEAK_COMPARISON_USED": "informational",
+    "CORS_DISALLOWED_HEADER_NOT_EXPOSED": "decisive",
+    "CORS_MISSING_ALLOW_CREDENTIALS": "decisive",
+    "CORS_MISSING_ALLOW_HEADERS": "decisive",
+    "CORS_MISSING_ALLOW_METHODS": "decisive",
+    "CORS_MISSING_ALLOW_ORIGIN": "decisive",
+    "CORS_MODE_OPAQUE": "informational",
+    "CORS_NULL_ORIGIN": "informational",
+    "CORS_ORIGIN_MISMATCH": "decisive",
+    "CORS_PREFLIGHT_REQUIRED": "decisive",
+    "CORS_REDIRECT_NOT_SAME_ORIGIN": "decisive",
+    "CORS_WILDCARD_WITH_CREDENTIALS": "decisive",
+    "VARY_DUPLICATE_FIELD": "informational",
+    "VARY_FIELD_MISMATCH": "decisive",
+    "VARY_FIELD_MISSING": "decisive",
+    "VARY_STAR_NEVER_MATCHES": "decisive"
+  },
+  "spec_ref": {
+    "CACHE_AGE_EXCEEDS_LIFETIME": [
+      "RFC9111 §4.2",
+      "RFC9111 §4.2.3"
+    ],
+    "CACHE_EXPIRES_IN_PAST": [
+      "RFC9111 §5.3"
+    ],
+    "CACHE_HEURISTIC_FRESHNESS": [
+      "RFC9111 §4.2.2"
+    ],
+    "CACHE_INVALID_AGE": [
+      "RFC9111 §5.1"
+    ],
+    "CACHE_INVALID_MAX_AGE": [
+      "RFC9111 §4.2.1"
+    ],
+    "CACHE_MAX_AGE_ZERO": [
+      "RFC9111 §4.2.1",
+      "RFC9111 §5.2.2.1"
+    ],
+    "CACHE_MUST_REVALIDATE_STALE": [
+      "RFC9111 §4.2.4",
+      "RFC9111 §5.2.2.2"
+    ],
+    "CACHE_NO_CACHE": [
+      "RFC9111 §5.2.2.4"
+    ],
+    "CACHE_NO_STORE": [
+      "RFC9111 §5.2.2.5"
+    ],
+    "CACHE_STALE_WHILE_REVALIDATE": [
+      "RFC5861 §3"
+    ],
+    "COND_IF_MATCH_FAILED": [
+      "RFC9110 §13.1.1",
+      "RFC9110 §13.2.2"
+    ],
+    "COND_IF_MODIFIED_SINCE_NOT_MODIFIED": [
+      "RFC9110 §13.1.3",
+      "RFC9110 §13.2.2"
+    ],
+    "COND_IF_NONE_MATCH_MATCHED": [
+      "RFC9110 §13.1.2",
+      "RFC9110 §13.2.2"
+    ],
+    "COND_IF_UNMODIFIED_SINCE_FAILED": [
+      "RFC9110 §13.1.4",
+      "RFC9110 §13.2.2"
+    ],
+    "COND_IGNORED_INVALID_DATE": [
+      "RFC9110 §13.1.3"
+    ],
+    "COND_WEAK_COMPARISON_USED": [
+      "RFC9110 §13.1.2",
+      "RFC9110 §8.8.3.2"
+    ],
+    "CORS_DISALLOWED_HEADER_NOT_EXPOSED": [
+      "Fetch §CORS-preflight fetch"
+    ],
+    "CORS_MISSING_ALLOW_CREDENTIALS": [
+      "Fetch §CORS check"
+    ],
+    "CORS_MISSING_ALLOW_HEADERS": [
+      "Fetch §CORS-preflight fetch"
+    ],
+    "CORS_MISSING_ALLOW_METHODS": [
+      "Fetch §CORS-preflight fetch"
+    ],
+    "CORS_MISSING_ALLOW_ORIGIN": [
+      "Fetch §CORS check"
+    ],
+    "CORS_MODE_OPAQUE": [
+      "Fetch §CORS protocol",
+      "Fetch §HTTP fetch"
+    ],
+    "CORS_NULL_ORIGIN": [
+      "Fetch §CORS check",
+      "Fetch §CORS protocol and credentials"
+    ],
+    "CORS_ORIGIN_MISMATCH": [
+      "Fetch §CORS check"
+    ],
+    "CORS_PREFLIGHT_REQUIRED": [
+      "Fetch §CORS protocol",
+      "Fetch §CORS-preflight fetch"
+    ],
+    "CORS_REDIRECT_NOT_SAME_ORIGIN": [
+      "Fetch §CORS protocol",
+      "Fetch §HTTP-redirect fetch"
+    ],
+    "CORS_WILDCARD_WITH_CREDENTIALS": [
+      "Fetch §CORS check",
+      "Fetch §CORS protocol and credentials"
+    ],
+    "VARY_DUPLICATE_FIELD": [
+      "RFC9111 §4.1"
+    ],
+    "VARY_FIELD_MISMATCH": [
+      "RFC9111 §4.1"
+    ],
+    "VARY_FIELD_MISSING": [
+      "RFC9111 §4.1"
+    ],
+    "VARY_STAR_NEVER_MATCHES": [
+      "RFC9111 §4.1"
+    ]
+  },
+  "vary_normalization": {
+    "default": {
+      "case_sensitive": true,
+      "fold_whitespace": true,
+      "sort_comma_segments": false,
+      "trim": true
+    },
+    "fields": {
+      "accept": {
+        "case_sensitive": false,
+        "fold_whitespace": true,
+        "sort_comma_segments": true,
+        "trim": true
+      },
+      "accept-encoding": {
+        "case_sensitive": false,
+        "fold_whitespace": true,
+        "sort_comma_segments": true,
+        "trim": true
+      },
+      "accept-language": {
+        "case_sensitive": false,
+        "fold_whitespace": true,
+        "sort_comma_segments": true,
+        "trim": true
+      },
+      "user-agent": {
+        "case_sensitive": true,
+        "fold_whitespace": false,
+        "sort_comma_segments": false,
+        "trim": true
+      }
+    }
+  },
+  "preflight_cache_key": {
+    "algorithm": "sha256",
+    "canonical_url": "scheme://host[:port]",
+    "hex_prefix": 16,
+    "input": "origin + \"\\n\" + canonical_url"
+  },
+  "error_codes": [
+    "INVALID_HEADER_NAME",
+    "INVALID_HEADER_VALUE",
+    "INVALID_INPUT",
+    "INVALID_TIME_FORMAT",
+    "UNSUPPORTED_METHOD"
+  ],
+  "notes_keys": [
+    "allow_credentials_null_origin",
+    "max_age_capped_by_client",
+    "wildcard_with_credentials"
+  ],
+  "final_types": {
+    "cors": "cors",
+    "no-cors": "opaque",
+    "same-origin": "basic"
+  },
+  "redirect_statuses": [
+    301,
+    302,
+    303,
+    307,
+    308
+  ],
+  "modes": [
+    "cors",
+    "no-cors",
+    "same-origin"
+  ],
+  "methods": [
+    "GET",
+    "HEAD",
+    "POST",
+    "PUT",
+    "DELETE",
+    "PATCH",
+    "OPTIONS",
+    "CONNECT",
+    "TRACE"
+  ],
+  "exit_note": "旧 MCP 工具面恒 rc0（caller mistake 渲染为 isError 结构化结果）；账本化：decisive finding → error 阻断 rc1，informational → info，caller mistake → rc2（口径差登记）"
+}
