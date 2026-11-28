@@ -46,6 +46,7 @@ BUILTIN_MODULES: Tuple[str, ...] = (
     "sqltrace",
     "subset_audit",
     "subtitle_preflight",
+    "testdeck",
     "timeseries_anomaly",
     "version_audit",
 )

@@ -1,0 +1,103 @@
+{
+ "mode": "views",
+ "run_id": 2,
+ "window": 20,
+ "facts": {
+  "runs": [
+   {
+    "run_id": 1,
+    "branch": "main",
+    "commit_sha": "",
+    "ci_run_id": "1",
+    "started_at": "2026-10-19T00:00:00Z",
+    "framework": "pytest",
+    "source_path": "r1/junit.xml"
+   },
+   {
+    "run_id": 2,
+    "branch": "main",
+    "commit_sha": "",
+    "ci_run_id": "2",
+    "started_at": "2026-10-19T01:00:00Z",
+    "framework": "pytest",
+    "source_path": "r2/junit.xml"
+   }
+  ],
+  "suites": [
+   {
+    "suite_id": 1,
+    "run_id": 1,
+    "name": "pytest",
+    "source_path": "r1/junit.xml",
+    "time_ms": 3000,
+    "tests": 2,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+   },
+   {
+    "suite_id": 2,
+    "run_id": 2,
+    "name": "pytest",
+    "source_path": "r2/junit.xml",
+    "time_ms": 4200,
+    "tests": 2,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0
+   }
+  ],
+  "cases": [
+   {
+    "case_id": 1,
+    "suite_name": "pytest",
+    "classname": "tests.test_a",
+    "name": "test_slow"
+   },
+   {
+    "case_id": 2,
+    "suite_name": "pytest",
+    "classname": "tests.test_a",
+    "name": "test_new_bad"
+   }
+  ],
+  "occurrences": [
+   {
+    "run_id": 1,
+    "case_id": 1,
+    "status": "pass",
+    "time_ms": 900,
+    "failure_type": "",
+    "failure_message": "",
+    "stack_first_line": ""
+   },
+   {
+    "run_id": 1,
+    "case_id": 2,
+    "status": "pass",
+    "time_ms": 100,
+    "failure_type": "",
+    "failure_message": "",
+    "stack_first_line": ""
+   },
+   {
+    "run_id": 2,
+    "case_id": 1,
+    "status": "pass",
+    "time_ms": 1400,
+    "failure_type": "",
+    "failure_message": "",
+    "stack_first_line": ""
+   },
+   {
+    "run_id": 2,
+    "case_id": 2,
+    "status": "fail",
+    "time_ms": 120,
+    "failure_type": "AssertionError",
+    "failure_message": "boom",
+    "stack_first_line": "=== RUN"
+   }
+  ]
+ }
+}

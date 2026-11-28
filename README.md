@@ -53,6 +53,7 @@ merge-fidelity               1          Merge 保真度账本：机械树复算�
 sqltrace                     1          SQL 血缘账本：值/控制双通道分型 + 窗口强制口径 + 写入者普查五节 + lineage diff 闸门 + 零静默诊断
 subset-audit                 1          字体子集产物账本：覆盖三分类（缺源/丢产物）+ GSUB/GPOS 三元组与连字差分 + name 存活与 OS/2 位域过度声明
 subtitle-preflight           1          字幕体检账本：时序 T01–T12（含 fps 漂移拟合）+ 可读性 R01–R07 + 卫生 S01–S10 + 编码回退 + 可逆修复白名单
+testdeck                     1          测试历史账本：JUnit 原因码/降级 + 四类分型（精确有理数）+ p50/p95 回归三态 + 两次 run diff 三类 + 失败优先树 + 门禁
 ```
 
 契约（唯一入口 / 缺陷账本 / 退出码）见 [`docs/byteproof.md`](docs/byteproof.md)。
@@ -85,6 +86,7 @@ subtitle-preflight           1          字幕体检账本：时序 T01–T12（
 | `sqltrace` | 迁自 target-map ② 行（sqlglot 解析留输入层） | 已迁入 v1（[文档](docs/sqltrace.md)） |
 | `subset-audit` | 迁自 target-map ② 行（fontTools 读取留输入层；license-gate 不迁） | 已迁入 v1（[文档](docs/subset-audit.md)） |
 | `subtitle-preflight` | 迁自 target-map ② 行（Node/mjs 源；SRT/VTT/ASS 解析留输入层，报告渲染留宿主） | 已迁入 v1（[文档](docs/subtitle-preflight.md)） |
+| `testdeck` | 迁自 target-map ② 行（SQLite 读写留输入层；CLI/TUI/导出留宿主） | 已迁入 v1（[文档](docs/testdeck.md)） |
 | — | ② 全部 23 个 auditor 迁入完成 | — |
 
 跑一次审计（工件 = 时序长表解析后的 JSON；规则包随包分发，不需要额外参数）：

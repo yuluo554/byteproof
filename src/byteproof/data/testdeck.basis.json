@@ -1,0 +1,119 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "td-junit-file-reason",
+      "title": "文件级原因码（不静默）",
+      "source": "迁自 10-19-testdeck · src/testdeck/junit.py",
+      "text": "坏文件不静默、不中断整批：bad_xml / bad_encoding / no_testsuite / unreadable 四个原因码，逐文件记录并继续；原因码顺序固定（摘要稳定）。error 级（该文件没有入库）。"
+    },
+    {
+      "rule_id": "td-junit-degraded",
+      "title": "单项降级（不整文件报废）",
+      "source": "迁自 10-19-testdeck · src/testdeck/junit.py",
+      "text": "bad_time（耗时非法 → 记 None，不补 0）/ missing_name（无 name → 该用例不落库但仍计入 suite 元素重数）/ started_at_missing / bad_commit（非 40 位十六进制 → 记空串）。warn 级显式。"
+    },
+    {
+      "rule_id": "td-junit-framework",
+      "title": "框架识别三态（不猜）",
+      "source": "迁自 10-19-testdeck · src/testdeck/framework.py",
+      "text": "线索优先级：suite/根 name → testsuite 一级 properties（go.version）→ 文件名；判不出写 unknown——宁可第三态也不猜（猜会污染统计）。info 级。"
+    },
+    {
+      "rule_id": "td-flaky-label",
+      "title": "flaky 四类分型",
+      "source": "迁自 10-19-testdeck · src/testdeck/flaky.py",
+      "text": "分母只含 pass/fail（skip/missing 不进分母、不制造 transition）；fail_rate==1 → broken；==0 → stable；0.05<=fail_rate<=0.95 且 transitions>=min_transitions → flaky；其余 → watch。窗口 run 数 < min_runs_for_flaky 或零计数样本 → 一律 watch（不得判 stable）。info 级。"
+    },
+    {
+      "rule_id": "td-flaky-summary",
+      "title": "分型计数",
+      "source": "迁自 10-19-testdeck · src/testdeck/flaky.py",
+      "text": "按分型计数（键集合来自规则包登记的标签 + 兜底标签）；summary 的 flaky/broken 与本计数同一份判定结果（不是两套）。info 级。"
+    },
+    {
+      "rule_id": "td-slow-regression",
+      "title": "回归三态",
+      "source": "迁自 10-19-testdeck · src/testdeck/slow.py",
+      "text": "curr/base >= regression_ratio 且 curr-base >= regression_delta_ms（两处边界都计入）→ True；任一侧无样本 → missing_window；base==0 → undefined_base；None 是判不了，不是无回归（不得静默放行）。info 级。"
+    },
+    {
+      "rule_id": "td-slow-sample-label",
+      "title": "样本量降级两条",
+      "source": "迁自 10-19-testdeck · src/testdeck/slow.py",
+      "text": "总样本 0 → insufficient_history；总样本 1 → single_sample（p50==p95，比不出趋势）；样本够多但回归窗口任一侧无样本 → insufficient_history；其余不标。warn 级显式。"
+    },
+    {
+      "rule_id": "td-slow-summary",
+      "title": "慢测试与回归摘要",
+      "source": "迁自 10-19-testdeck · src/testdeck/slow.py",
+      "text": "slow_ms 来自规则包：本 run 有耗时声明且 >= slow_ms 的用例数；回归清单只收 True（None 不进清单）。info 级。"
+    },
+    {
+      "rule_id": "td-diff-class",
+      "title": "diff 三类 + 兜底桶",
+      "source": "迁自 10-19-testdeck · src/testdeck/diff.py",
+      "text": "after==fail 且 before!=fail → new-failures；before==fail 且 after==pass → fixed；两侧都 fail → still-failing；其余 → unchanged。缺行（None）不等于任何状态：fail→缺 落 unchanged（没有 pass 就没有修好了的证据）。info 级。"
+    },
+    {
+      "rule_id": "td-diff-summary",
+      "title": "diff 计数",
+      "source": "迁自 10-19-testdeck · src/testdeck/diff.py",
+      "text": "固定顺序 new-failures → fixed → still-failing → unchanged；--fail-on new-failures 读的就是 new-failures 计数 > 0。info 级。"
+    },
+    {
+      "rule_id": "td-ingest-report",
+      "title": "ingest 摘要（机读行）",
+      "source": "迁自 10-19-testdeck · src/testdeck/ingest.py",
+      "text": "ingest: files= runs= cases= occurrences= skipped= framework=；runs 按 (branch, commit_sha, ci_run_id) 分组，三元组只从 XML 自己声明处读，读不到写空串（不拿路径凑身份）；framework 记该 run 覆盖的框架集合（字典序逗号连接）。info 级。"
+    },
+    {
+      "rule_id": "td-ingest-missing",
+      "title": "缺失入参",
+      "source": "迁自 10-19-testdeck · src/testdeck/ingest.py",
+      "text": "路径不存在 → 退出码 2（用法错误），不静默当作空批次。error 级。"
+    },
+    {
+      "rule_id": "td-tree-order",
+      "title": "失败优先树",
+      "source": "迁自 10-19-testdeck · src/testdeck/queries.py",
+      "text": "suite → class → case 三层各自失败优先；suite 组内按 suite_id（XML 出现序）升序——不按名字；同层其余按字典序。排序单点，TUI 与导出共用。info 级。"
+    },
+    {
+      "rule_id": "td-view-summary",
+      "title": "summary 六字段",
+      "source": "迁自 10-19-testdeck · src/testdeck/queries.py",
+      "text": "total/fail/skip 由行集合直出；flaky/broken 由分型填（与矩阵同一窗口）；slow 由 slow_ms 判定填。None 不是 0：没得数时不猜，字段序来自规则包。info 级。"
+    },
+    {
+      "rule_id": "td-gate",
+      "title": "门禁退出码",
+      "source": "迁自 10-19-testdeck · src/testdeck/exit_codes.py",
+      "text": "0 达标 / 1 门禁触发 / 2 用法错误 / 3 依赖缺失；--fail-on flaky|new-failures|regressions 命中即退出码 1。error 级（命中即阻断）。"
+    },
+    {
+      "rule_id": "td-view-degrade",
+      "title": "呈现降级两条",
+      "source": "迁自 10-19-testdeck · src/testdeck/tui/view.py",
+      "text": "终端宽度 < view.min_width_single_column → 单栏；NO_COLOR（按键存在与否，不看取值）/ 非 tty / TERM=dumb / 无真彩 → mono（结构保留、只是没有颜色）。info 级。"
+    },
+    {
+      "rule_id": "td-keys-single-source",
+      "title": "键位表单点",
+      "source": "迁自 10-19-testdeck · src/testdeck/keys.py",
+      "text": "BINDINGS（动作→键）/ KEYS（展示顺序）/ description_for 三处共用一份；键位字面量在别处只有路径分隔符与状态字形两种合法用途。info 级。"
+    },
+    {
+      "rule_id": "td-store-upsert",
+      "title": "入库幂等（同身份不新增行）",
+      "source": "迁自 10-19-testdeck · src/testdeck/db.py",
+      "text": "run 身份 (branch, commit_sha, ci_run_id) 与用例身份 (suite_name, classname, name) 唯一：重复 ingest 同身份 → 同一行 id 不新增；同 (run, case) 覆盖旧 occurrence；未知值写空串（NULL 在唯一索引里彼此不等，会绕过 upsert）。info 级。"
+    },
+    {
+      "rule_id": "td-summary",
+      "title": "账本汇总",
+      "source": "迁自 10-19-testdeck · src/testdeck/queries.py",
+      "text": "账本汇总：记录条数、阻断条数与各模式关键计数（文件/run/用例/occurrence/分型/回归/diff）。info 级。"
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "$comment": "spec 的规则包 / 阈值 / 键位 / 状态快照（旧仓 src/testdeck/rules/*.json 逐键对应）；代码是唯一可读来源，tests 双向断言。",
+  "flaky": {
+    "min_fail_rate": "0.05",
+    "max_fail_rate": "0.95",
+    "min_transitions": 3,
+    "min_runs_for_flaky": 2,
+    "fallback_label": "watch",
+    "labels": {
+      "broken": "fail_rate == 1",
+      "stable": "fail_rate == 0",
+      "flaky": "min_fail_rate <= fail_rate <= max_fail_rate and transitions >= min_transitions",
+      "watch": "otherwise"
+    }
+  },
+  "slow": {
+    "slow_ms": 1000,
+    "regression_ratio": "1.2",
+    "regression_delta_ms": 200,
+    "waterfall_width": 40,
+    "p50": "0.50",
+    "p95": "0.95",
+    "index_formula": "(n - 1) * p"
+  },
+  "view": {
+    "sparkline_runs": 20,
+    "min_width_single_column": 80,
+    "summary_fields": [
+      "total",
+      "fail",
+      "skip",
+      "flaky",
+      "broken",
+      "slow"
+    ],
+    "tree_sort": "fail_first_then_suite_order_then_lexical",
+    "formats": [
+      "md",
+      "json"
+    ],
+    "fail_on": [
+      "flaky",
+      "new-failures",
+      "regressions"
+    ],
+    "json_indent": 2,
+    "json_ensure_ascii": false,
+    "write_generated_at": false
+  },
+  "statuses": [
+    "pass",
+    "fail",
+    "skip",
+    "missing"
+  ],
+  "counted_statuses": [
+    "pass",
+    "fail"
+  ],
+  "status_glyphs": {
+    "pass": "·",
+    "fail": "✗",
+    "skip": "-",
+    "missing": "?"
+  },
+  "exit_codes": {
+    "ok": 0,
+    "gate_triggered": 1,
+    "usage": 2,
+    "dependency": 3,
+    "not_ready": 4
+  },
+  "reasons": [
+    "bad_xml",
+    "bad_encoding",
+    "no_testsuite",
+    "unreadable"
+  ],
+  "degraded_reasons": [
+    "bad_time",
+    "missing_name",
+    "started_at_missing",
+    "bad_commit"
+  ],
+  "count_fields": [
+    "tests",
+    "failures",
+    "errors",
+    "skipped"
+  ],
+  "frameworks": [
+    "pytest",
+    "gotestsum",
+    "playwright"
+  ],
+  "class_order": [
+    "new-failures",
+    "fixed",
+    "still-failing",
+    "unchanged"
+  ],
+  "keys": [
+    [
+      "j",
+      "下一项（down）"
+    ],
+    [
+      "k",
+      "上一项（up）"
+    ],
+    [
+      "g",
+      "跳到首（first）"
+    ],
+    [
+      "G",
+      "跳到尾（last）"
+    ],
+    [
+      "Enter",
+      "展开 / 进入详情（enter）"
+    ],
+    [
+      "F",
+      "flaky 矩阵"
+    ],
+    [
+      "S",
+      "慢测试瀑布"
+    ],
+    [
+      "D",
+      "两次 run diff"
+    ],
+    [
+      "/",
+      "搜索"
+    ],
+    [
+      "e",
+      "导出当前视图"
+    ],
+    [
+      "?",
+      "帮助"
+    ],
+    [
+      "Esc",
+      "返回三栏（back）"
+    ],
+    [
+      "q",
+      "退出（quit）"
+    ]
+  ],
+  "bindings": {
+    "down": "j",
+    "up": "k",
+    "first": "g",
+    "last": "G",
+    "enter": "enter",
+    "flaky": "F",
+    "slow": "S",
+    "diff": "D",
+    "search": "/",
+    "export": "e",
+    "help": "?",
+    "back": "escape",
+    "quit": "q"
+  },
+  "rules": [
+    "td-junit-file-reason",
+    "td-junit-degraded",
+    "td-junit-framework",
+    "td-flaky-label",
+    "td-flaky-summary",
+    "td-slow-regression",
+    "td-slow-sample-label",
+    "td-slow-summary",
+    "td-diff-class",
+    "td-diff-summary",
+    "td-ingest-report",
+    "td-ingest-missing",
+    "td-tree-order",
+    "td-view-summary",
+    "td-gate",
+    "td-view-degrade",
+    "td-keys-single-source",
+    "td-store-upsert",
+    "td-summary"
+  ],
+  "severity": {
+    "td-junit-file-reason": "error",
+    "td-junit-degraded": "warn",
+    "td-junit-framework": "info",
+    "td-flaky-label": "info",
+    "td-flaky-summary": "info",
+    "td-slow-regression": "info",
+    "td-slow-sample-label": "warn",
+    "td-slow-summary": "info",
+    "td-diff-class": "info",
+    "td-diff-summary": "info",
+    "td-ingest-report": "info",
+    "td-ingest-missing": "error",
+    "td-tree-order": "info",
+    "td-view-summary": "info",
+    "td-gate": "error",
+    "td-view-degrade": "info",
+    "td-keys-single-source": "info",
+    "td-store-upsert": "info",
+    "td-summary": "info"
+  },
+  "modes": [
+    "junit",
+    "ingest",
+    "flaky",
+    "slow",
+    "diff",
+    "views",
+    "gate"
+  ]
+}

@@ -117,6 +117,7 @@ merge-fidelity                   1          Merge 保真度账本：机械树复
 sqltrace                         1          SQL 血缘账本：值/控制双通道分型 + 窗口强制口径 + 写入者普查五节 + lineage diff 闸门 + 零静默诊断
 subset-audit                     1          字体子集产物账本：覆盖三分类（缺源/丢产物）+ GSUB/GPOS 三元组与连字差分 + name 存活与 OS/2 位域过度声明
 subtitle-preflight               1          字幕体检账本：时序 T01–T12（含 fps 漂移拟合）+ 可读性 R01–R07 + 卫生 S01–S10 + 编码回退 + 可逆修复白名单
+testdeck                         1          测试历史账本：JUnit 原因码/降级 + 四类分型（精确有理数）+ p50/p95 回归三态 + 两次 run diff 三类 + 失败优先树 + 门禁
 
 $ byteproof check no-such --input samples/timeseries-anomaly.minimal.json
 PackMissing: 未注册的器官：no-such          # 退出码 3
@@ -148,5 +149,6 @@ PackMissing: 未注册的器官：no-such          # 退出码 3
 | `sqltrace` | 1 | [`sqltrace.md`](sqltrace.md) |
 | `subset-audit` | 1 | [`subset-audit.md`](subset-audit.md) |
 | `subtitle-preflight` | 1 | [`subtitle-preflight.md`](subtitle-preflight.md) |
+| `testdeck` | 1 | [`testdeck.md`](testdeck.md) |
 
 器官表按 `_workspace/target-map-20261125.tsv` 的 ②byteproof 行逐个补齐。
