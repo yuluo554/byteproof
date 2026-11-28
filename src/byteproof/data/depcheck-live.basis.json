@@ -1,0 +1,90 @@
+{
+  "version": "1",
+  "rules": [
+    {
+      "rule_id": "dp-ambiguous",
+      "title": "动态形态，不可静态判定（不代表代码有错）",
+      "source": "迁自 11-1-depcheck-live · scan/check 判定顺序首位；出处：data/README.md §5 判定态表",
+      "text": "kind=ambiguous 或 specifier 抽不出（变量、拼接、插值模板、跨行调用）时记 AMBIGUOUS。核心纪律：严禁把『解析不到』当『不存在』——动态形态必须显式出现在结果里，漏一个 AMBIGUOUS 就等于对用户撒了一次『没问题』。AMBIGUOUS 不是缺陷结论：旧仓退出码对仅 AMBIGUOUS 的工程回 0，但报告里显式计数。账本 verdict=info（不阻断）。"
+    },
+    {
+      "rule_id": "dp-esm-cjs-mismatch",
+      "title": "require() 拿到命名空间对象，API 在 .default 下",
+      "source": "迁自 11-1-depcheck-live · check.judgePoint 第④步；出处：data/README.md §5.2（精确口径）",
+      "text": "判定当且仅当四条同时成立：①包 type 为 module（或入口文件为 .mjs）；②exports 中不存在任何 require 条件分支（含嵌套条件内部）；③引用点为 require() 或等价 CJS 加载；④被取用的属性挂在命名空间上而非 .default 下。核心判据是 exports 的 require 分支存在性，不看 type 字段——zod/date-fns/glob 都是 type:module 却有 require 分支，require() 行为正常，必须判 RESOLVED；chalk/commander 无 require 分支，判 MISMATCH。反面判据：有具名取用且这些名字确实是命名空间上的具名导出时，命名空间直取可达，不判 MISMATCH。error 级。"
+    },
+    {
+      "rule_id": "dp-exports-not-declared",
+      "title": "包未声明 exports（首期不复刻 main 兜底解析）",
+      "source": "迁自 11-1-depcheck-live · check.judgePoint 第②步 EXPORTS_NOT_DECLARED gap；出处：data/README.md §5.1 退出码 3",
+      "text": "依赖的 package.json 没有 exports 字段（或缺省/null，Node 回落 main/index 兜底）时，该项目首期不复刻整个文件系统入口解析，该引用点记『算不了』进 gaps，不判 RESOLVED 也不判 MISSING。exports: null 等同于未声明（Node 官方语义），不是『屏蔽』。旧仓退出码 3 族；账本化为 error 级阻断记录（口径差 3→1，登记在案）。"
+    },
+    {
+      "rule_id": "dp-exports-unparseable",
+      "source": "迁自 11-1-depcheck-live · resolve.buildExportsIndex + snapshot readProject UNPARSEABLE gap；出处：data/README.md §5.4 #9 / §5.3 阈值",
+      "text": "exports 形态无法按 Node 语义解析时整包记 UNPARSEABLE 进 gaps，不得截断静默。触发源：①混合子路径键与条件键（Invalid Package Configuration，原文 #9）；②子路径键数超过 4096 上限（§5.3 阈值，不得截断静默）；③非对象非字符串形态。注意：末尾斜杠键与多 * 键只是被 Node 忽略该键（ignored 记账），其余入口照常可用，不算 unparseable。被本条挡住的引用点不参与判定（算不了≠没问题）。error 级。"
+    },
+    {
+      "rule_id": "dp-export-surface-unparseable",
+      "source": "迁自 11-1-depcheck-live · check.readExportSurface EXPORT_SURFACE_UNPARSEABLE gap；出处：plan/03 §4.3",
+      "text": "入口目标文件读不出或导出集读不出时不猜：module.exports 为表达式/标识符、仅外部 re-export 需递归解析、目标文件缺失（首层）均记『算不了』进 gaps，不判 MISSING。桶文件里一支读不出不算整包算不了（记 sawReexportExternal，若其它分支给出具名导出仍可用）。误报比漏报代价高——读不出导出集时绝不判 MISSING-EXPORT。error 级。"
+    },
+    {
+      "rule_id": "dp-input-gap",
+      "source": "迁自 11-1-depcheck-live · api decideExit 的 gaps 兜底；出处：data/README.md §5.1",
+      "text": "输入层独有事实的 gap（不在已知 gap 枚举内，如 UNREADABLE_FILE）经 subject.input_gaps 透传，仍按『算不了』族阻断——旧仓任何 gap 都把退出码抬离 0，账本化后同样不得回 0（回 0 就是把『没跑』写成『跑了没问题』）。error 级。"
+    },
+    {
+      "rule_id": "dp-large-file-downgraded",
+      "source": "迁自 11-1-depcheck-live · scan.scanSources LARGE_FILE_DOWNGRADED gap；出处：data/README.md §5.3 阈值 + §5.3.1 实测",
+      "text": "单文件超过 524288 UTF-8 字节（512 KiB）时降级为字符串兜底扫描并显式记账，不得静默跳过——用户必须看得见『这份文件没被完整分析』。降级 ≠ 丢弃：文件仍被扫、引用点不得丢（实测 date-fns 的 locale/cdn.js 837 KiB 是真实用例，本实现是『读全文但仍记账』）。旧仓退出码 3 族；账本化为 error 级阻断记录。error 级。"
+    },
+    {
+      "rule_id": "dp-missing-export",
+      "source": "迁自 11-1-depcheck-live · check.judgePoint 第⑥步；出处：data/README.md §5 判定态表",
+      "text": "入口存在、exports 暴露该子路径、导出集可读，但被取用的具名符号不在导出集上时记 MISSING-EXPORT。evidence 必须带 missing（缺的符号）与 available（可用前 20，排序）。default 取用不算缺（ESM default 与 CJS 语义差异不在本层判定）。error 级。"
+    },
+    {
+      "rule_id": "dp-no-baseline",
+      "source": "迁自 11-1-depcheck-live · drift.judgeDriftPoint NO-BASELINE；出处：data/README.md §5.5 + §5.1 NO-BASELINE 单条口径（M3 裁定）",
+      "text": "只在有离线基线时判定；无基线（映射键缺省、文件读不出、形状不对、基线未收录该子路径/视角、已装导出面读不出）一律记 NO-BASELINE，不猜。NO-BASELINE 不算『发现问题』（不进 problems 计数），但它阻断退出码：用户显式跑了 drift（或 check --with-drift）却因缺基线什么都没比成，回 0 等于把『这一层没跑』写成『跑了没问题』。账本化为 error 级阻断记录（旧 rc3 族）。error 级。"
+    },
+    {
+      "rule_id": "dp-no-package-json",
+      "source": "迁自 11-1-depcheck-live · snapshot.readProject / check.judgePoint NO_PACKAGE_JSON gap；出处：data/README.md §5.1 退出码 3",
+      "text": "声明了依赖但 node_modules 下没有该包的 package.json（依赖未安装或不可解析）时，对该包的引用点记『算不了』进 gaps。单依赖未安装不是整工程算不了（其余依赖照常判定），但也不是『没问题』。旧仓退出码 3 族；账本化为 error 级阻断记录（口径差 3→1，登记在案）。error 级。"
+    },
+    {
+      "rule_id": "dp-not-exported-subpath",
+      "source": "迁自 11-1-depcheck-live · check.judgePoint 第③/③b步；出处：data/README.md §5.4 形态③",
+      "text": "两种形态都是 NOT-EXPORTED-SUBPATH：①子路径不在 exports 里（matchSubpath kind=none，evidence 带 exportsKeys 全表）；②exports 显式 null 屏蔽（含数组里落成 blocked 的形态，逐视角求值才能看见数组里的 null）。null 是屏蔽语义（→ 本判定态），不是『不存在』——原文 G2：对 null 子路径 Node 抛 ERR_PACKAGE_PATH_NOT_EXPORTED。evidence 带 rule 区分『未列该子路径』与『显式 null 屏蔽』。error 级。"
+    },
+    {
+      "rule_id": "dp-resolved",
+      "title": "该符号在声明的入口下确实导出",
+      "source": "迁自 11-1-depcheck-live · check.judgePoint 第⑥步；出处：data/README.md §5 判定态表",
+      "text": "解析成功且被取用的具名符号全部在导出集上（或只加载包、不取符号：imported 为空/仅 *）时记 RESOLVED。info 级（不阻断，显式计数——这是『对上了』的正向证据，与 AMBIGUOUS 同为账本 info，但语义相反：一个是有据可查的成功，一个是判不了）。"
+    },
+    {
+      "rule_id": "dp-summary",
+      "title": "运行汇总（显式计数，含 AMBIGUOUS）",
+      "source": "迁自 11-1-depcheck-live · api.summarize；出处：data/README.md §5.1『仅存在 AMBIGUOUS 时退出码 0 并显式列出计数』",
+      "text": "每条运行输出一条 info 级汇总：mode、totalPoints（引用点总数）、resolved、ambiguous、problems（MISSING-EXPORT/ESM-CJS-MISMATCH/NOT-EXPORTED-SUBPATH/DRIFT 计数）、gaps（算不了/覆盖率缺口计数）、byStatus。旧仓的计数口径原样保留：totalPoints = 引用点总数；problems = 进 findings 的问题条目数；AMBIGUOUS 显式计数不并入 problems。计数级与逐条级是两种粒度，不可混读。"
+    },
+    {
+      "rule_id": "dp-unresolvable-target",
+      "source": "迁自 11-1-depcheck-live · check.judgePoint 第⑤步 UNRESOLVABLE_TARGET gap；出处：data/README.md §5.4",
+      "text": "按视角（import/require）解析 exports 目标时条件集不匹配（unmatched）或目标非法（invalid，不以 ./ 开头）时记『算不了』进 gaps，不判判定态。detail 写明视角与 state，供对账。旧仓退出码 3 族；账本化为 error 级阻断记录。error 级。"
+    },
+    {
+      "rule_id": "dp-unreadable-file",
+      "source": "迁自 11-1-depcheck-live · scan.scanSources UNREADABLE_FILE gap；出处：data/README.md §5.1",
+      "text": "工程源码文件读不出时记一条 gap（不静默跳过、不中断整批），其余文件照常判定。文件读取属输入层：输入层读不到的文件经 subject.input_gaps 透传（kind=UNREADABLE_FILE），本规则把它落成显式阻断记录。旧仓退出码 3 族。error 级。"
+    },
+    {
+      "rule_id": "dp-version-behavior-drift",
+      "source": "迁自 11-1-depcheck-live · drift.judgeDriftPoint DRIFT；出处：data/README.md §5.5 / plan/03 §5",
+      "text": "代码引用的这个符号，基线版本里有、已装版本里没有 → VERSION-BEHAVIOR-DRIFT。两条口径：①判据是行为不是版本号——装了更高 major 但符号还在不是漂移（防『版本号一变大就报红』）；②判定单位是引用点不是整包——同包里一个符号没了另一个还在必须 1 红 1 绿（实测 date-fns 3→4 根导出面 251 名字一个不少，按包比指纹是系统性假阳性）。只判『基线里有、已装里没有』且本点实际引用的符号；基线里本来也没有的符号不归 drift 管（那是 MISSING-EXPORT 的判据）。DRIFT 就地取代同引用点上更粗的判定态（通常是 MISSING-EXPORT），不得重复计数。error 级。"
+    }
+  ]
+}

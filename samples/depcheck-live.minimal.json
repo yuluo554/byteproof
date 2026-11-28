@@ -1,0 +1,35 @@
+{
+  "mode": "check",
+  "project": {
+    "name": "demo-clean",
+    "declared_deps": {
+      "demo-pkg": "^1.0.0"
+    },
+    "deps": {
+      "demo-pkg": {
+        "installed_version": "1.0.3",
+        "type": "module",
+        "exports": {
+          ".": { "import": "./index.mjs", "require": "./index.cjs" },
+          "./package.json": "./package.json"
+        },
+        "files": {
+          "index.mjs": {
+            "text": "export function red() {\n  return 'red';\n}\nexport function blue() {\n  return 'blue';\n}\nexport default { red, blue };\n",
+            "type": "module"
+          },
+          "index.cjs": {
+            "text": "exports.red = () => 'red';\nexports.blue = () => 'blue';\n",
+            "type": "commonjs"
+          }
+        }
+      }
+    }
+  },
+  "sources": [
+    { "file": "src/a.mjs", "text": "import { red } from \"demo-pkg\";\nexport const x = red;\n" },
+    { "file": "src/b.cjs", "text": "const { blue } = require(\"demo-pkg\");\nmodule.exports = { blue };\n" }
+  ],
+  "baselines": {},
+  "input_gaps": []
+}
